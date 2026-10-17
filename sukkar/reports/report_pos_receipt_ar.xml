@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =============================================================
+         TILL RECEIPT AS A PDF (owner, 30 Sep 2026)
+
+         The same Arabic slip the register prints, made on the server so
+         an earlier order's receipt can be downloaded as a real file and
+         sent to a customer. Receipt-width paper (80 mm), right to left,
+         the black-and-white logo, every figure — the slip always carries
+         the money.
+
+         Reached from the register: Orders → the order → Receipt →
+         Download PDF. -->
+
+    <record id="paperformat_sukkar_receipt" model="report.paperformat">
+        <field name="name">Sukkar receipt (80 mm)</field>
+        <field name="format">custom</field>
+        <field name="page_width">80</field>
+        <field name="page_height">250</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">4</field>
+        <field name="margin_bottom">4</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_pos_receipt_ar" model="ir.actions.report">
+        <field name="name">Receipt</field>
+        <field name="model">pos.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sukkar.report_pos_receipt_ar</field>
+        <field name="report_file">sukkar.report_pos_receipt_ar</field>
+        <field name="paperformat_id" ref="paperformat_sukkar_receipt"/>
+        <field name="binding_model_id" ref="point_of_sale.model_pos_order"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Receipt %s' % (object.tracking_number or object.name)</field>
+    </record>
+
+    <template id="report_pos_receipt_ar">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+              <t t-call="web.basic_layout">
+                <t t-set="paid" t-value="sum(o.payment_ids.filtered(lambda p: p.amount &gt; 0).mapped('amount'))"/>
+                <t t-set="owed" t-value="max(0.0, o.amount_total - o.amount_paid)"/>
+                <div class="page" dir="rtl" style="direction:rtl; text-align:right; font-size:11px; color:#000;">
+                    <style>
+                        .kr-c { text-align:center; }
+                        .kr-rule { border-top:1px dashed #000; margin:5px 0; }
+                        .kr-row { width:100%; border-collapse:collapse; }
+                        .kr-row, .kr-row tr, .kr-row td { border:0 !important; }
+                        .kr-row td { padding:1px 0; vertical-align:top; }
+                        .kr-amt { text-align:left; white-space:nowrap; }
+                        .kr-b { font-weight:700; }
+                    </style>
+
+                    <!-- الترويسة -->
+                    <div class="kr-c">
+                        <img t-att-src="'/sukkar/static/img/sukkar-logo-line.png'" style="width:90px;" alt="Sukkar"/>
+                        <div class="kr-b" style="font-size:13px;">سُكّر SUKKAR</div>
+                        <div t-if="o.tracking_number">رقم الطلب: <span t-esc="o.tracking_number"/></div>
+                        <div>إيصال الطلب · <span t-esc="o.pos_reference or o.name"/></div>
+                        <div t-if="o.user_id">البائع: <span t-esc="o.user_id.name"/></div>
+                        <div t-field="o.date_order"/>
+                    </div>
+
+                    <!-- العميل والتوصيل -->
+                    <t t-if="o.partner_id or o.sukkar_receiver_name or o.sukkar_delivery_date">
+                        <div class="kr-rule"/>
+                        <div t-if="o.partner_id">
+                            العميل: <span t-esc="o.partner_id.name"/>
+                            <t t-if="o.partner_id.mobile or o.partner_id.phone"> — <span t-esc="o.partner_id.mobile or o.partner_id.phone"/></t>
+                        </div>
+                        <div t-if="o.sukkar_receiver_name">
+                            المستلم: <span t-esc="o.sukkar_receiver_name"/>
+                            <t t-if="o.sukkar_receiver_phone"> — <span t-esc="o.sukkar_receiver_phone"/></t>
+                        </div>
+                        <div t-if="o.sukkar_delivery_date">
+                            <t t-if="o.sukkar_order_type == 'pickup'">الاستلام: </t>
+                            <t t-else="">التوصيل: </t>
+                            <span t-field="o.sukkar_delivery_date"/>
+                            <t t-if="o.sukkar_delivery_slot_id"> · <span t-esc="o.sukkar_delivery_slot_id.name"/></t>
+                        </div>
+                        <div t-if="o.sukkar_addr_area and o.sukkar_order_type != 'pickup'">
+                            العنوان: <span t-esc="', '.join(p for p in [o.sukkar_addr_area,
+                                o.sukkar_addr_block and ('قطعة %s' % o.sukkar_addr_block),
+                                o.sukkar_addr_street and ('شارع %s' % o.sukkar_addr_street),
+                                o.sukkar_addr_avenue and ('جادة %s' % o.sukkar_addr_avenue),
+                                o.sukkar_addr_building] if p)"/>
+                        </div>
+                    </t>
+
+                    <!-- الأصناف -->
+                    <div class="kr-rule"/>
+                    <t t-foreach="o.lines" t-as="line">
+                        <table class="kr-row">
+                            <tr>
+                                <td class="kr-b">
+                                    <span t-esc="line.product_id.sukkar_name_ar or line.full_product_name or line.product_id.name"/>
+                                    <t t-if="line.product_id.sukkar_variant_ar"> — <span t-esc="line.product_id.sukkar_variant_ar"/></t>
+                                </td>
+                                <td class="kr-amt kr-b">
+                                    <span t-esc="line.price_subtotal_incl"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span t-esc="'%g' % line.qty"/> ×
+                                    <span t-esc="line.price_unit"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr t-if="line.sukkar_flavour_summary">
+                                <td colspan="2">النكهات: <span t-esc="line.sukkar_flavour_summary"/></td>
+                            </tr>
+                            <tr t-if="line.customer_note">
+                                <td colspan="2">الملاحظة: <span t-esc="line.customer_note"/></td>
+                            </tr>
+                        </table>
+                    </t>
+
+                    <!-- The till's General Note (owner, 2 Oct 2026). -->
+                    <div t-if="o.general_note" style="margin-top:4px; white-space:pre-line;">
+                        <span class="kr-b">ملاحظة عامة: </span><span t-esc="o.general_note"/>
+                    </div>
+
+                    <!-- المبالغ -->
+                    <div class="kr-rule"/>
+                    <table class="kr-row">
+                        <tr class="kr-b" style="font-size:14px;">
+                            <td>الإجمالي</td>
+                            <td class="kr-amt">
+                                <span t-field="o.amount_total"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr t-foreach="o.payment_ids.filtered(lambda p: p.amount &gt; 0)" t-as="pay">
+                            <td t-esc="pay.payment_method_id.name"/>
+                            <td class="kr-amt">
+                                <span t-esc="pay.amount"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr t-if="o.amount_return">
+                            <td>الباقي</td>
+                            <td class="kr-amt">
+                                <span t-esc="o.amount_return"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                        <tr t-if="owed &gt; 0.0001" class="kr-b">
+                            <td>المبلغ المستحق</td>
+                            <td class="kr-amt">
+                                <span t-esc="owed"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="kr-rule"/>
+                    <div class="kr-c">س.ت: ٢٠٢٥/٦٤٤٦</div>
+                    <div class="kr-c"><t t-if="o.company_id.phone">هاتف: <span dir="ltr" t-field="o.company_id.phone"/>&#x200F; | &#x200F;</t><span dir="ltr">sukkar-demo.com</span></div>
+                    <div class="kr-c" style="margin-top:3px;">شكراً لاختياركم سُكّر</div>
+                </div>
+              </t>
+            </t>
+        </t>
+    </template>
+</odoo>

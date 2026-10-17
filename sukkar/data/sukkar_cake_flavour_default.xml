@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The settings that must not start blank, filled once per company.
+     Deliberately NOT noupdate: a data record inside a noupdate file is skipped
+     on upgrade, and each of these fills the setting only while it IS blank, so
+     a company that chose differently keeps its choice. -->
+<odoo>
+    <!-- "Mixed Cake Flavours" is what the shop means when nobody picks. -->
+    <function model="res.company" name="_sukkar_seed_default_flavour"/>
+    <!-- The item the register charges a delivery fee on, so the fee is its own
+         line on the receipt and the invoice from the very first sale. -->
+    <function model="res.company" name="_sukkar_seed_fee_product"/>
+</odoo>

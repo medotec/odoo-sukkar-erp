@@ -1,0 +1,468 @@
+// ============================================================================
+//  The register's arrangement: the Counter (owner's pick of three mocks,
+//  29 Sep 2026 — docs/mockups/layout-2-rtl-counter.html), English only and
+//  left to right since 29 Sep.
+//
+//      ┌───────────────┬───────────────────────────────┬────────┐
+//      │ the ticket    │  the bouquets, each with its  │  the   │
+//      │               │  price on the photo           │  rail  │
+//      └───────────────┴───────────────────────────────┴────────┘
+//
+//  Every figure — price, quantity, total — is set in --ks-num (Roboto) with
+//  tabular figures, so amounts line up in a column and read at a glance.
+//
+//  The look (paper, serif, frames) is sukkar_pos_boutique.scss; this file only
+//  places things, and loads after it. Scoped to the register screen, so the
+//  orders list, the payment screen and every popup are untouched.
+//
+//  House rule (27 Sep): no margin, padding or border on the Odoo containers
+//  that size the photos — a photo collapses to a strip. Frames and dividers
+//  are drawn with inset box-shadows.
+// ============================================================================
+
+$ks-tap: 44px;
+
+.pos .product-screen {
+
+    // ================================================================ ticket
+    .leftpane {
+        position: relative;
+        background: var(--ks-card);
+
+        // The torn top edge of a paper ticket.
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            z-index: 2;
+            pointer-events: none;
+            background:
+                linear-gradient(-45deg, var(--ks-cream) 5px, transparent 0) 0 0 / 12px 10px,
+                linear-gradient(45deg, var(--ks-cream) 5px, transparent 0) 0 0 / 12px 10px;
+        }
+
+        .bg-white, .bg-light, .bg-100 { background: var(--ks-card) !important; }
+
+        // Every amount on the ticket, wherever Odoo draws it.
+        .loyalty-points-title + div,
+        .order-summary .price,
+        .ks-num { font-family: var(--ks-num); font-variant-numeric: tabular-nums; }
+    }
+
+    .ks-ticket-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 10px 12px;
+        border-bottom: 1px dashed var(--ks-beige);
+    }
+    .ks-ticket-no {
+        margin: 0;
+        font-family: var(--ks-num);
+        font-variant-numeric: tabular-nums;
+        font-size: 1.45rem;
+        letter-spacing: -.01em;
+        font-weight: 600;
+        color: var(--ks-ink);
+    }
+    .ks-ticket-tag {
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: var(--ks-tint);
+        color: var(--ks-deep);
+        font-size: .85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    // ----------------------------------------------------------- the lines
+    .orderline {
+        gap: 12px;
+        align-items: flex-start !important;
+
+        // The bouquet's photo, framed like the ones on the wall.
+        .o_line_container {
+            flex-shrink: 0;
+
+            img {
+                box-sizing: border-box;
+                width: 60px;
+                height: 60px;
+                padding: 3px;
+                object-fit: cover;
+                background: #fff;
+                border: 1px solid var(--ks-beige);
+                border-radius: 3px !important;
+                box-shadow: none;
+            }
+        }
+
+        .product-name {
+            display: flex !important;
+            flex-direction: column;
+            gap: 1px;
+            white-space: normal;
+
+            .text-wrap {
+                font-family: var(--ks-serif);
+                font-size: 1.08rem;
+                font-weight: 600;
+                line-height: 1.35;
+                color: var(--ks-ink);
+            }
+        }
+
+        .product-price {
+            white-space: nowrap;
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .info-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        // − 2 + replaces Odoo's "2 x 12.000 / Units" on the things being sold.
+        &.ks-steppable .price-per-unit,
+        &.ks-fee .price-per-unit { display: none !important; }
+
+        .ks-stepper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .ks-step {
+            width: $ks-tap;
+            height: $ks-tap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border: 1px solid var(--ks-beige);
+            border-radius: 6px;
+            background: var(--ks-cream);
+            color: var(--ks-deep);
+            font-size: 1.35rem;
+            line-height: 1;
+
+            &:active { background: var(--ks-tint); }
+            &:disabled { opacity: .35; }
+        }
+        .ks-step-qty {
+            min-width: 24px;
+            text-align: center;
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        .ks-step-unit {
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: .92rem;
+            color: var(--ks-soft);
+        }
+
+        .ks-line-flavour .fa { margin-inline-end: 4px; }
+    }
+
+    // ------------------------------------------------------------ the bill
+    .ks-bill {
+        padding: 12px 14px 10px;
+        border-top: 1px dashed var(--ks-beige);
+    }
+    .ks-bill-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 4px;
+        font-size: .95rem;
+        color: var(--ks-soft);
+
+        > span:first-child {
+            font-family: var(--ks-serif);
+            font-size: 1rem;
+        }
+        > span:last-child {
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.08rem;
+            font-weight: 600;
+        }
+    }
+    .ks-bill-total {
+        margin: 6px 0 0;
+        color: var(--ks-ink);
+        font-size: 1.15rem;
+        font-weight: 600;
+
+        > span:last-child {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -.02em;
+        }
+    }
+
+    // -------------------------------------------- the three tiles and More
+    .control-buttons {
+        > .btn {
+            flex: 1 1 0;
+            min-width: 0;
+            height: 62px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            padding: 4px 6px;
+            line-height: 1.2;
+            background: var(--ks-cream);
+            border: 1px solid var(--ks-beige);
+            border-radius: 6px;
+
+            &.ks-set {
+                background: var(--ks-tint);
+                border-color: var(--ks-deep);
+                .ks-tile-name { color: var(--ks-deep); }
+            }
+        }
+
+        // More keeps Odoo's own "Actions" text for the other screens that use
+        // it; here the tile's two labels speak instead.
+        .more-btn { font-size: 0; }
+
+        // Two lines before it gives up, so "Delivery / Pickup" reads whole and
+        // a long customer name still cuts off cleanly.
+        .ks-tile-name {
+            max-width: 100%;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-family: var(--ks-serif);
+            font-size: 1.08rem;
+            font-weight: 600;
+            line-height: 1.15;
+            color: var(--ks-ink);
+        }
+    }
+
+    .ks-numpad-close {
+        width: 100%;
+        min-height: $ks-tap;
+        border: 1px dashed var(--ks-deep);
+        border-radius: 6px;
+        background: var(--ks-tint);
+        color: var(--ks-deep);
+        font-family: var(--ks-serif);
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    // ------------------------------------------------------------------ Pay
+    .pay-order-button {
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        --btn-bg: var(--ks-deep);
+        --btn-border-color: var(--ks-deep);
+        --btn-hover-bg: var(--ks-deep);
+        --btn-hover-border-color: var(--ks-deep);
+        --btn-active-bg: var(--ks-pink);
+        --btn-active-border-color: var(--ks-pink);
+        background: var(--ks-deep) !important;
+        border-color: var(--ks-deep) !important;
+
+        &:active { background: var(--ks-pink) !important; }
+
+        .ks-pay-word {
+            font-family: var(--ks-serif);
+            font-size: 1.45rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+        }
+        .ks-pay-total {
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -.02em;
+        }
+    }
+
+    // ============================================================ the wall
+    .product-list:not(.category-list) {
+        grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+        // A tile is a square, whatever else is on the shelf. Without these
+        // three lines a tab holding two products stretched them from the top
+        // of the screen to the bottom (owner, 30 Sep 2026).
+        grid-auto-rows: min-content;
+        align-content: start;
+        align-items: start;
+        gap: 16px;
+    }
+
+    .product {
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+
+        // Things pinned to the photo are placed against it.
+        .product-img { position: relative; }
+
+        // The price, on the photo, like a tag on a shop window.
+        .ks-ribbon {
+            position: absolute;
+            top: 12px;
+            left: 0;
+            padding: 6px 14px 6px 12px;
+            border-radius: 0 3px 3px 0;
+            background: var(--ks-deep);
+            color: #fff;
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1;
+            box-shadow: 0 2px 6px rgba(26, 20, 16, .18);
+        }
+
+        // How many are already in the order, in the photo's corner.
+        .ks-card-qty {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: var(--ks-deep);
+            color: #fff;
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.05rem;
+            font-weight: 600;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .85);
+        }
+        // With a photo, the badge on it says how many; without one, Odoo's
+        // own number beside the name stays.
+        .product-img ~ .product-content .product-cart-qty { display: none !important; }
+
+        // Odoo's grey corner triangle becomes a small "i" in the top-left, out
+        // of the price's way. It still opens the same product information.
+        .product-information-tag {
+            top: 10px;
+            right: 10px;
+            left: auto;
+            z-index: 1;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-width: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .92);
+            box-shadow: inset 0 0 0 1px var(--ks-beige);
+            color: var(--ks-soft);
+
+            &.red-tag { background: #FDECEC; color: #C0392B; }
+        }
+        .product-information-tag-logo {
+            position: static;
+            font-size: .95rem;
+        }
+
+        .product-content { justify-content: center !important; }
+
+        // Two lines before it gives up, so "12 Pieces Elegant Box" reads whole
+        // at this weight instead of trailing off into dots.
+        .product-name {
+            width: 100%;
+            text-align: center;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: normal;
+            font-family: var(--ks-serif);
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.25;
+            color: var(--ks-ink);
+        }
+    }
+
+    // ============================================================ the rail
+    // From tablet width up the categories stand in a rail on the right; on a
+    // phone Odoo's own row across the top stays.
+    @media (min-width: 768px) {
+        .rightpane > .position-relative {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) 118px;
+            grid-template-rows: minmax(0, 1fr) auto;
+
+            > * { grid-column: 1; }
+
+            > .category-list {
+                grid-column: 2;
+                grid-row: 1 / -1;
+                display: flex !important;
+                flex-direction: column;
+                gap: 8px;
+                height: 100%;
+                max-height: none;
+                overflow-y: auto;
+                background: var(--ks-card);
+                box-shadow: inset 1px 0 0 var(--ks-beige);
+            }
+        }
+
+        .category-list .category-button {
+            height: auto !important;
+            min-height: 76px;
+            flex-shrink: 0;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px !important;
+            text-align: center;
+            border-radius: 10px !important;
+
+            // Odoo dims the other categories once one is picked; on the rail
+            // they stay readable, and the picked one is marked instead.
+            &.opacity-50 { opacity: 1 !important; }
+
+            > div { width: 100% !important; }
+            > .ratio { width: 44px !important; }
+
+            // Odoo's own category label: the span inside the button's text box.
+            > div span {
+                font-family: var(--ks-serif);
+                font-size: 1rem;
+                font-weight: 600;
+                line-height: 1.3;
+            }
+        }
+
+        // The picked category: once one is picked, Odoo dims the rest, which
+        // is how the rail knows which one to mark.
+        .category-list:has(.opacity-50) .category-button:not([class*="transparent_"]) {
+            background: var(--ks-tint) !important;
+            border-color: var(--ks-deep) !important;
+            color: var(--ks-deep) !important;
+        }
+    }
+}

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The register as the Counter layout (owner's pick, 29 Sep 2026 —
+         docs/mockups/layout-2-rtl-counter.html), turned English-only and left
+         to right on 29 Sep. The arrangement itself is in sukkar_pos_layout.scss;
+         these add what the screen did not have: the ticket's heading, the price
+         on each photo, − / + on each line, the bill, and Pay with its amount. -->
+
+    <t t-inherit="point_of_sale.ProductScreen" t-inherit-mode="extension">
+        <xpath expr="//OrderSummary" position="before">
+            <div class="ks-ticket-head">
+                <h2 class="ks-ticket-no">Order № <t t-esc="sukkarOrderNumber"/></h2>
+                <span t-if="sukkarTicketTag" class="ks-ticket-tag" t-esc="sukkarTicketTag"/>
+            </div>
+        </xpath>
+        <!-- The number pad waits behind More (Price / Discount) and folds away
+             again from here. -->
+        <xpath expr="//Numpad" position="attributes">
+            <attribute name="t-if">pos.sukkarNumpadOpen and !currentOrder?.is_empty() and pos.get_order()?.uiState.selected_orderline_uuid</attribute>
+        </xpath>
+        <xpath expr="//Numpad" position="before">
+            <button t-if="pos.sukkarNumpadOpen" class="ks-numpad-close btn"
+                    t-on-click="() => this.sukkarCloseNumpad()">
+                Hide keypad
+            </button>
+        </xpath>
+        <xpath expr="//ActionpadWidget" position="attributes">
+            <attribute name="sukkarTotal">sukkarPayTotal</attribute>
+        </xpath>
+        <xpath expr="//ProductCard" position="attributes">
+            <attribute name="sukkarPrice">sukkarCardPrice(product)</attribute>
+        </xpath>
+    </t>
+
+    <!-- A bouquet on the wall: the price on the photo, and how many are already
+         in the order in its corner. The price hangs on the card itself, so a
+         product without a photo shows it too. -->
+    <t t-inherit="point_of_sale.ProductCard" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('product-img')]" position="inside">
+            <span t-if="props.productCartQty" class="ks-card-qty" t-esc="productQty"/>
+        </xpath>
+        <xpath expr="//article" position="inside">
+            <span t-if="props.sukkarPrice" class="ks-ribbon" t-esc="props.sukkarPrice"/>
+        </xpath>
+    </t>
+
+    <!-- The order lines: the photo, the name, − / + under them. Odoo's own
+         "Taxes / Total" block gives way to the bill, which sits inside the
+         ticket right under the lines. -->
+    <t t-inherit="point_of_sale.OrderSummary" t-inherit-mode="extension">
+        <xpath expr="//OrderWidget" position="attributes">
+            <attribute name="taxTotals">undefined</attribute>
+        </xpath>
+        <xpath expr="//Orderline" position="attributes">
+            <attribute name="line">sukkarLineData(line)</attribute>
+            <attribute name="class">{ ...line.getDisplayClasses(), 'selected': line.isSelected(), 'ks-steppable': sukkarCanStep(line), 'ks-fee': sukkarIsFee(line) }</attribute>
+        </xpath>
+        <xpath expr="//Orderline" position="inside">
+            <li t-if="sukkarCanStep(line)" class="ks-stepper">
+                <button class="ks-step" aria-label="One less" t-att-disabled="line.qty &lt;= 1"
+                        t-on-click.stop="() => this.sukkarStep(line, -1)">−</button>
+                <span class="ks-step-qty" t-esc="env.utils.formatProductQty(line.get_quantity(), false)"/>
+                <button class="ks-step" aria-label="One more"
+                        t-on-click.stop="() => this.sukkarStep(line, 1)">+</button>
+                <span t-if="line.qty !== 1" class="ks-step-unit">
+                    × <t t-esc="env.utils.formatCurrency(line.get_unit_display_price(), false)"/>
+                </span>
+            </li>
+        </xpath>
+        <xpath expr="//OrderWidget" position="inside">
+            <t t-set-slot="sukkarTotals">
+                <t t-set="bill" t-value="sukkarTotals"/>
+                <div class="ks-bill">
+                    <div t-if="bill.fee" class="ks-bill-row">
+                        <span>Items</span><span t-esc="bill.items"/>
+                    </div>
+                    <div t-if="bill.fee" class="ks-bill-row">
+                        <span>Delivery</span><span t-esc="bill.fee"/>
+                    </div>
+                    <div t-if="bill.tax" class="ks-bill-row">
+                        <span>Tax</span><span t-esc="bill.tax"/>
+                    </div>
+                    <div class="ks-bill-row ks-bill-total">
+                        <span>Total</span><span t-esc="bill.total"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+    <!-- Where the bill goes: inside the ticket, under the lines. Only the
+         register's own order fills this; every other list of lines (past
+         orders, refunds) leaves it empty and looks as before. -->
+    <t t-inherit="point_of_sale.OrderWidget" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('order-summary')]" position="after">
+            <t t-slot="sukkarTotals"/>
+        </xpath>
+    </t>
+
+    <!-- Pay, with the amount on it. -->
+    <t t-inherit="point_of_sale.ActionpadWidget" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('validation')]/button[hasclass('pay-order-button')]" position="attributes">
+            <attribute name="t-esc"/>
+        </xpath>
+        <xpath expr="//div[hasclass('validation')]/button[hasclass('pay-order-button')]" position="inside">
+            <t t-if="props.sukkarTotal">
+                <span class="ks-pay-word">Pay</span>
+                <span class="ks-pay-total" t-esc="props.sukkarTotal"/>
+            </t>
+            <t t-else="" t-esc="props.actionName"/>
+        </xpath>
+    </t>
+</templates>

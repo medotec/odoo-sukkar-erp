@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_sukkar_production" model="ir.sequence">
+        <field name="name">Sukkar Kitchen Production</field>
+        <field name="code">sukkar.production</field>
+        <field name="prefix">KP</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_sukkar_expense" model="ir.sequence">
+        <field name="name">Sukkar Expense</field>
+        <field name="code">sukkar.expense</field>
+        <field name="prefix">EXP</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_sukkar_display_production" model="ir.sequence">
+        <field name="name">Sukkar Display Production</field>
+        <field name="code">sukkar.display.production</field>
+        <field name="prefix">DISP</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

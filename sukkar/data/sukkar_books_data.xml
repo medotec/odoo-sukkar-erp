@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Runs on every install/upgrade (noupdate=0) and is idempotent: it only
+         ever fills a blank. Creates the accounts a Kuwaiti cake shop needs and
+         the generic chart lacks, the depreciation profiles, the fiscal years,
+         the KNET settlement rule, and the shop's own Profit & Loss report.
+         An accountant who changes any of it keeps his change. -->
+    <data noupdate="0">
+        <function model="sukkar.books.setup" name="_sukkar_setup_books"/>
+        <!-- Last word on rights: a delivery driver never keeps payroll, the
+             accounts or an admin menu, whoever or whatever granted them. -->
+        <function model="res.users" name="_sukkar_repair_driver_groups"/>
+    </data>
+
+    <data noupdate="1">
+        <!-- On a brand-new database the chart of accounts is installed after
+             every module, so the pass above finds nothing to work with. This
+             finishes the job minutes later and then switches itself off. -->
+        <record id="cron_setup_books" model="ir.cron">
+            <field name="name">Sukkar: finish the books setup</field>
+            <field name="model_id" ref="sukkar.model_sukkar_books_setup"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_setup_books()</field>
+            <field name="interval_number">10</field>
+            <field name="interval_type">minutes</field>
+            <field name="nextcall">2026-01-01 00:00:00</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_generate_recurring_expenses" model="ir.cron">
+            <field name="name">Sukkar: create this month's fixed costs (draft)</field>
+            <field name="model_id" ref="sukkar.model_sukkar_expense"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_generate_recurring()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall">2026-10-01 05:00:00</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_missing_punch_wizard_form" model="ir.ui.view">
+        <field name="name">sukkar.missing.punch.wizard.form</field>
+        <field name="model">sukkar.missing.punch.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Missing clock-out">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Someone did not clock out.</strong>
+                    Until this is decided the day carries <strong>no hours at all</strong> —
+                    nobody knows when they left, and the system will not guess.
+                </div>
+                <group>
+                    <field name="punch_ids" invisible="1"/>
+                    <field name="employee_summary" readonly="1"/>
+                    <field name="occurrence_warning" readonly="1"
+                           invisible="not occurrence_warning"
+                           class="text-danger fw-bold"/>
+                </group>
+                <group string="Decision">
+                    <field name="decision" widget="radio"/>
+                    <field name="manual_check_out"
+                           invisible="decision != 'manual_out'"
+                           required="decision == 'manual_out'"/>
+                    <field name="penalty_minutes"
+                           invisible="decision != 'penalty'"
+                           required="decision == 'penalty'"/>
+                    <field name="note" placeholder="e.g. confirmed with the supervisor"/>
+                </group>
+                <div class="text-muted" invisible="decision != 'penalty'">
+                    Deducted from <strong>overtime, never from basic pay</strong> — the
+                    same rule already applied to lateness.
+                </div>
+                <div class="text-muted" invisible="decision != 'no_overtime'">
+                    The scheduled hours still stand; only overtime above them is
+                    cancelled for that day.
+                </div>
+                <footer>
+                    <button name="action_apply" type="object" string="Apply Decision"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

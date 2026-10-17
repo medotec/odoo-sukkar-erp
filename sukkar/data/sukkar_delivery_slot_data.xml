@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Starter delivery windows. noupdate="1" so the shop can rename, retime,
+         reorder or archive them without an upgrade putting them back. -->
+    <record id="slot_09_11" model="sukkar.delivery.slot">
+        <field name="start_hour">9.0</field><field name="end_hour">11.0</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="slot_11_13" model="sukkar.delivery.slot">
+        <field name="start_hour">11.0</field><field name="end_hour">13.0</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="slot_13_15" model="sukkar.delivery.slot">
+        <field name="start_hour">13.0</field><field name="end_hour">15.0</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="slot_15_17" model="sukkar.delivery.slot">
+        <field name="start_hour">15.0</field><field name="end_hour">17.0</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="slot_17_19" model="sukkar.delivery.slot">
+        <field name="start_hour">17.0</field><field name="end_hour">19.0</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="slot_19_21" model="sukkar.delivery.slot">
+        <field name="start_hour">19.0</field><field name="end_hour">21.0</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="slot_21_23" model="sukkar.delivery.slot">
+        <field name="start_hour">21.0</field><field name="end_hour">23.0</field>
+        <field name="sequence">70</field>
+    </record>
+</odoo>

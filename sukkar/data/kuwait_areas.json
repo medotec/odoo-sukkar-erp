@@ -1,0 +1,1586 @@
+[
+ {
+  "gov": "AH",
+  "ar": "أبو حليفة",
+  "en": "Abu Halifa",
+  "paci_no": 307,
+  "lat": 29.128268,
+  "lon": 48.125146
+ },
+ {
+  "gov": "AH",
+  "ar": "بر محافظة الأحمدي",
+  "en": "Ahmadi Governorate Desert",
+  "paci_no": 321,
+  "lat": 28.847728,
+  "lon": 47.896231
+ },
+ {
+  "gov": "AH",
+  "ar": "الشدادية الصناعية",
+  "en": "Al shadadyia Industrial",
+  "paci_no": 459,
+  "lat": 29.182479,
+  "lon": 47.858617
+ },
+ {
+  "gov": "AH",
+  "ar": "الفنطاس",
+  "en": "Al-Fintas",
+  "paci_no": 305,
+  "lat": 29.170506,
+  "lon": 48.118417
+ },
+ {
+  "gov": "AH",
+  "ar": "النويصيب",
+  "en": "Al-Nuwaiseeb",
+  "paci_no": 329,
+  "lat": 28.572686,
+  "lon": 48.377334
+ },
+ {
+  "gov": "AH",
+  "ar": "علي صباح السالم",
+  "en": "Ali Subah Al-Salem",
+  "paci_no": 312,
+  "lat": 28.957264,
+  "lon": 48.152815
+ },
+ {
+  "gov": "AH",
+  "ar": "الظهر",
+  "en": "Dhaher",
+  "paci_no": 316,
+  "lat": 29.164346,
+  "lon": 48.067017
+ },
+ {
+  "gov": "AH",
+  "ar": "شرق الأحمدي",
+  "en": "East Ahmadi",
+  "paci_no": 314,
+  "lat": 29.078967,
+  "lon": 48.088384
+ },
+ {
+  "gov": "AH",
+  "ar": "العقيلة",
+  "en": "Egaila",
+  "paci_no": 301,
+  "lat": 29.170947,
+  "lon": 48.102374
+ },
+ {
+  "gov": "AH",
+  "ar": "فهد الأحمد",
+  "en": "Fahad Al-Ahmad",
+  "paci_no": 439,
+  "lat": 29.127554,
+  "lon": 48.105337
+ },
+ {
+  "gov": "AH",
+  "ar": "الفحيحيل",
+  "en": "Fahaheel",
+  "paci_no": 310,
+  "lat": 29.080367,
+  "lon": 48.128471
+ },
+ {
+  "gov": "AH",
+  "ar": "هدية",
+  "en": "Hadiya",
+  "paci_no": 303,
+  "lat": 29.14515,
+  "lon": 48.09164
+ },
+ {
+  "gov": "AH",
+  "ar": "ضاحية جابر العلي",
+  "en": "Jaber Al-Ali",
+  "paci_no": 340,
+  "lat": 29.168784,
+  "lon": 48.082835
+ },
+ {
+  "gov": "AH",
+  "ar": "الجنوبية الجواخير",
+  "en": "Janobyia Aljawakheer",
+  "paci_no": 432,
+  "lat": 28.708525,
+  "lon": 47.933168
+ },
+ {
+  "gov": "AH",
+  "ar": "الخيران السكنية",
+  "en": "Khiran City",
+  "paci_no": 359,
+  "lat": 28.664434,
+  "lon": 48.281194
+ },
+ {
+  "gov": "AH",
+  "ar": "المقوع",
+  "en": "Magwa",
+  "paci_no": 322,
+  "lat": 29.143299,
+  "lon": 48.045731
+ },
+ {
+  "gov": "AH",
+  "ar": "المهبولة",
+  "en": "Mahboula",
+  "paci_no": 306,
+  "lat": 29.14777,
+  "lon": 48.120984
+ },
+ {
+  "gov": "AH",
+  "ar": "المنقف",
+  "en": "Mangaf",
+  "paci_no": 308,
+  "lat": 29.105257,
+  "lon": 48.127817
+ },
+ {
+  "gov": "AH",
+  "ar": "وسط الأحمدي",
+  "en": "Middle of Ahmadi",
+  "paci_no": 332,
+  "lat": 29.091184,
+  "lon": 48.069906
+ },
+ {
+  "gov": "AH",
+  "ar": "ميناء عبدالله",
+  "en": "Mina Abdulla",
+  "paci_no": 320,
+  "lat": 28.977687,
+  "lon": 48.09198
+ },
+ {
+  "gov": "AH",
+  "ar": "مصفاة ميناء عبدالله",
+  "en": "Mina Abdullah Refinery",
+  "paci_no": 453,
+  "lat": 29.005404,
+  "lon": 48.14921
+ },
+ {
+  "gov": "AH",
+  "ar": "مصفاة ميناء الأحمدي",
+  "en": "Mina Al-Ahmadi Refinery",
+  "paci_no": 454,
+  "lat": 29.055007,
+  "lon": 48.122487
+ },
+ {
+  "gov": "AH",
+  "ar": "الوفرة الجديدة",
+  "en": "New Wafra",
+  "paci_no": 319,
+  "lat": 28.606232,
+  "lon": 48.021612
+ },
+ {
+  "gov": "AH",
+  "ar": "شمال الأحمدي",
+  "en": "North Ahmadi",
+  "paci_no": 333,
+  "lat": 29.101475,
+  "lon": 48.066253
+ },
+ {
+  "gov": "AH",
+  "ar": "رجم خشمان",
+  "en": "Rajim Khashman",
+  "paci_no": 350,
+  "lat": 29.170229,
+  "lon": 47.837573
+ },
+ {
+  "gov": "AH",
+  "ar": "الرقة",
+  "en": "Riqqa",
+  "paci_no": 302,
+  "lat": 29.148068,
+  "lon": 48.105349
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد 1",
+  "en": "Sabah Al-Ahmad 1",
+  "paci_no": 352,
+  "lat": 28.801888,
+  "lon": 48.062769
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد 2",
+  "en": "Sabah Al-Ahmad 2",
+  "paci_no": 353,
+  "lat": 28.792751,
+  "lon": 48.051985
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد 3",
+  "en": "Sabah Al-Ahmad 3",
+  "paci_no": 354,
+  "lat": 28.778599,
+  "lon": 48.037313
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد 4",
+  "en": "Sabah Al-Ahmad 4",
+  "paci_no": 355,
+  "lat": 28.767731,
+  "lon": 48.068302
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد 5",
+  "en": "Sabah Al-Ahmad 5",
+  "paci_no": 356,
+  "lat": 28.782472,
+  "lon": 48.084476
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد 6",
+  "en": "Sabah Al-Ahmad 6",
+  "paci_no": 458,
+  "lat": 28.760725,
+  "lon": 48.058874
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الاحمد البحرية",
+  "en": "Sabah Al-Ahmad Al-marine",
+  "paci_no": 351,
+  "lat": 28.647902,
+  "lon": 48.347203
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد استثمارية",
+  "en": "Sabah Al-Ahmad Investment",
+  "paci_no": 358,
+  "lat": 28.751995,
+  "lon": 48.056905
+ },
+ {
+  "gov": "AH",
+  "ar": "صباح الأحمد الخدمية",
+  "en": "Sabah Al-Ahmad Services",
+  "paci_no": 357,
+  "lat": 28.790054,
+  "lon": 48.068958
+ },
+ {
+  "gov": "AH",
+  "ar": "الصباحية",
+  "en": "Sabahiya",
+  "paci_no": 309,
+  "lat": 29.107207,
+  "lon": 48.106424
+ },
+ {
+  "gov": "AH",
+  "ar": "شاليهات الخيران",
+  "en": "Shalehat Al-Khiran",
+  "paci_no": 318,
+  "lat": 28.629465,
+  "lon": 48.383884
+ },
+ {
+  "gov": "AH",
+  "ar": "شاليهات النويصيب",
+  "en": "Shalehat Al-Nuwaiseeb",
+  "paci_no": 317,
+  "lat": 28.56162,
+  "lon": 48.408912
+ },
+ {
+  "gov": "AH",
+  "ar": "شاليهات بنيدر",
+  "en": "Shalehat Bneder",
+  "paci_no": 344,
+  "lat": 28.816979,
+  "lon": 48.275896
+ },
+ {
+  "gov": "AH",
+  "ar": "شاليهات الضباعية",
+  "en": "Shalehat Dba'ayeh",
+  "paci_no": 346,
+  "lat": 28.921196,
+  "lon": 48.207237
+ },
+ {
+  "gov": "AH",
+  "ar": "شاليهات الجليعة",
+  "en": "Shalehat Jlea'a",
+  "paci_no": 343,
+  "lat": 28.88362,
+  "lon": 48.263067
+ },
+ {
+  "gov": "AH",
+  "ar": "شاليهات ميناء عبدالله",
+  "en": "Shalehat Mina Abdullah",
+  "paci_no": 349,
+  "lat": 28.967685,
+  "lon": 48.172609
+ },
+ {
+  "gov": "AH",
+  "ar": "شاليهات الزور",
+  "en": "Shalehat Zoor",
+  "paci_no": 342,
+  "lat": 28.674297,
+  "lon": 48.384262
+ },
+ {
+  "gov": "AH",
+  "ar": "الشعيبه الصناعيه الغربيه",
+  "en": "Shuaiba Industrial Western",
+  "paci_no": 434,
+  "lat": 29.00345,
+  "lon": 48.115375
+ },
+ {
+  "gov": "AH",
+  "ar": "الشعيبة الصناعية الشرقية",
+  "en": "Shuaiba Industrial esterly",
+  "paci_no": 311,
+  "lat": 29.034157,
+  "lon": 48.139827
+ },
+ {
+  "gov": "AH",
+  "ar": "جنوب عبدالله المبارك",
+  "en": "South Abdullah Al-Mubarak",
+  "paci_no": 460,
+  "lat": 29.211057,
+  "lon": 47.894751
+ },
+ {
+  "gov": "AH",
+  "ar": "جنوب الأحمدي",
+  "en": "South Ahmadi",
+  "paci_no": 330,
+  "lat": 29.07688,
+  "lon": 48.061503
+ },
+ {
+  "gov": "AH",
+  "ar": "جنوب الصباحية",
+  "en": "South-Sabahiya",
+  "paci_no": 338,
+  "lat": 29.078406,
+  "lon": 48.105973
+ },
+ {
+  "gov": "AH",
+  "ar": "الصليبية الصناعية 3",
+  "en": "Sulaibyia Industrial 3",
+  "paci_no": 433,
+  "lat": 29.209152,
+  "lon": 47.829893
+ },
+ {
+  "gov": "AH",
+  "ar": "الوفرة",
+  "en": "Wafra",
+  "paci_no": 315,
+  "lat": 28.602481,
+  "lon": 47.897403
+ },
+ {
+  "gov": "AH",
+  "ar": "مزارع الوفرة",
+  "en": "Wafra Farms",
+  "paci_no": 337,
+  "lat": 28.587872,
+  "lon": 48.166151
+ },
+ {
+  "gov": "AH",
+  "ar": "الزور",
+  "en": "Zoor",
+  "paci_no": 325,
+  "lat": 28.716332,
+  "lon": 48.334625
+ },
+ {
+  "gov": "AH",
+  "ar": "كبد الزراعية",
+  "en": "kabd Agricultural",
+  "paci_no": 447,
+  "lat": 29.057843,
+  "lon": 47.799178
+ },
+ {
+  "gov": "FA",
+  "ar": "عبدالله مبارك الصباح",
+  "en": "Abdullah Mubarak Al-Sabah",
+  "paci_no": 438,
+  "lat": 29.239628,
+  "lon": 47.903898
+ },
+ {
+  "gov": "FA",
+  "ar": "الأندلس",
+  "en": "Andalus",
+  "paci_no": 225,
+  "lat": 29.303037,
+  "lon": 47.883008
+ },
+ {
+  "gov": "FA",
+  "ar": "العارضية",
+  "en": "Ardhiya",
+  "paci_no": 226,
+  "lat": 29.28808,
+  "lon": 47.894129
+ },
+ {
+  "gov": "FA",
+  "ar": "العارضية 4",
+  "en": "Ardhiya 4",
+  "paci_no": 242,
+  "lat": 29.278393,
+  "lon": 47.91694
+ },
+ {
+  "gov": "FA",
+  "ar": "العارضية 6",
+  "en": "Ardhiya 6",
+  "paci_no": 244,
+  "lat": 29.294221,
+  "lon": 47.922065
+ },
+ {
+  "gov": "FA",
+  "ar": "العارضية الحرفية",
+  "en": "Ardhiya Herafiya",
+  "paci_no": 445,
+  "lat": 29.29406,
+  "lon": 47.910855
+ },
+ {
+  "gov": "FA",
+  "ar": "أشبيلية",
+  "en": "Ashbeliah",
+  "paci_no": 243,
+  "lat": 29.273156,
+  "lon": 47.938606
+ },
+ {
+  "gov": "FA",
+  "ar": "ضجيج الطائرات",
+  "en": "Dajeej",
+  "paci_no": 246,
+  "lat": 29.262001,
+  "lon": 47.962213
+ },
+ {
+  "gov": "FA",
+  "ar": "الفروانية",
+  "en": "Farwaniya",
+  "paci_no": 220,
+  "lat": 29.277765,
+  "lon": 47.959215
+ },
+ {
+  "gov": "FA",
+  "ar": "الفردوس",
+  "en": "Ferdous",
+  "paci_no": 227,
+  "lat": 29.283987,
+  "lon": 47.874431
+ },
+ {
+  "gov": "FA",
+  "ar": "المطار الدولي",
+  "en": "International Airport",
+  "paci_no": 233,
+  "lat": 29.215584,
+  "lon": 47.971258
+ },
+ {
+  "gov": "FA",
+  "ar": "جليب الشيوخ",
+  "en": "Jleeb Al-Shiyoukh",
+  "paci_no": 228,
+  "lat": 29.257059,
+  "lon": 47.93437
+ },
+ {
+  "gov": "FA",
+  "ar": "خيطان",
+  "en": "Khaitan",
+  "paci_no": 252,
+  "lat": 29.284365,
+  "lon": 47.975823
+ },
+ {
+  "gov": "FA",
+  "ar": "العمرية",
+  "en": "Omariya",
+  "paci_no": 222,
+  "lat": 29.29596,
+  "lon": 47.955788
+ },
+ {
+  "gov": "FA",
+  "ar": "الرابية",
+  "en": "Rabiya",
+  "paci_no": 223,
+  "lat": 29.294879,
+  "lon": 47.937409
+ },
+ {
+  "gov": "FA",
+  "ar": "الري",
+  "en": "Rai",
+  "paci_no": 221,
+  "lat": 29.308388,
+  "lon": 47.944938
+ },
+ {
+  "gov": "FA",
+  "ar": "الرحاب",
+  "en": "Rehab",
+  "paci_no": 247,
+  "lat": 29.284323,
+  "lon": 47.938513
+ },
+ {
+  "gov": "FA",
+  "ar": "الرقعي",
+  "en": "Riggai",
+  "paci_no": 224,
+  "lat": 29.305078,
+  "lon": 47.916831
+ },
+ {
+  "gov": "FA",
+  "ar": "صباح الناصر",
+  "en": "Sabah Al-Nasser",
+  "paci_no": 241,
+  "lat": 29.271419,
+  "lon": 47.887218
+ },
+ {
+  "gov": "FA",
+  "ar": "مدينة صباح السالم الجامعية",
+  "en": "Sabah Al-Salem University City",
+  "paci_no": 457,
+  "lat": 29.257077,
+  "lon": 47.897889
+ },
+ {
+  "gov": "FA",
+  "ar": "غرب عبدالله المبارك",
+  "en": "West Abdullah Al-Mubarak",
+  "paci_no": 450,
+  "lat": 29.237982,
+  "lon": 47.85445
+ },
+ {
+  "gov": "HA",
+  "ar": "البدع",
+  "en": "Al Bida'a",
+  "paci_no": 231,
+  "lat": 29.315749,
+  "lon": 48.088811
+ },
+ {
+  "gov": "HA",
+  "ar": "الصديق",
+  "en": "Al-Siddiq",
+  "paci_no": 236,
+  "lat": 29.295189,
+  "lon": 47.992061
+ },
+ {
+  "gov": "HA",
+  "ar": "أنجفة",
+  "en": "Anjafa",
+  "paci_no": 239,
+  "lat": 29.294046,
+  "lon": 48.087348
+ },
+ {
+  "gov": "HA",
+  "ar": "بيان",
+  "en": "Bayan",
+  "paci_no": 213,
+  "lat": 29.298405,
+  "lon": 48.045567
+ },
+ {
+  "gov": "HA",
+  "ar": "حولي",
+  "en": "Hawalli",
+  "paci_no": 204,
+  "lat": 29.336381,
+  "lon": 48.019359
+ },
+ {
+  "gov": "HA",
+  "ar": "حطين",
+  "en": "Hitteen",
+  "paci_no": 235,
+  "lat": 29.283821,
+  "lon": 48.019932
+ },
+ {
+  "gov": "HA",
+  "ar": "الجابرية",
+  "en": "Jabriya",
+  "paci_no": 217,
+  "lat": 29.318556,
+  "lon": 48.032747
+ },
+ {
+  "gov": "HA",
+  "ar": "منطقة الوزارات",
+  "en": "Ministries Area",
+  "paci_no": 229,
+  "lat": 29.271219,
+  "lon": 48.017354
+ },
+ {
+  "gov": "HA",
+  "ar": "مشرف",
+  "en": "Mishrif",
+  "paci_no": 209,
+  "lat": 29.276826,
+  "lon": 48.067086
+ },
+ {
+  "gov": "HA",
+  "ar": "مبارك العبدالله",
+  "en": "Mubarak Al-Abdullah",
+  "paci_no": 436,
+  "lat": 29.273876,
+  "lon": 48.046861
+ },
+ {
+  "gov": "HA",
+  "ar": "المباركية",
+  "en": "Mubarakyia",
+  "paci_no": 253,
+  "lat": 29.284625,
+  "lon": 48.03892
+ },
+ {
+  "gov": "HA",
+  "ar": "الرميثية",
+  "en": "Rumaithiya",
+  "paci_no": 208,
+  "lat": 29.316027,
+  "lon": 48.071966
+ },
+ {
+  "gov": "HA",
+  "ar": "السلام",
+  "en": "Salam",
+  "paci_no": 237,
+  "lat": 29.297344,
+  "lon": 48.014438
+ },
+ {
+  "gov": "HA",
+  "ar": "السالمية",
+  "en": "Salmiya",
+  "paci_no": 207,
+  "lat": 29.334776,
+  "lon": 48.067869
+ },
+ {
+  "gov": "HA",
+  "ar": "سلوى",
+  "en": "Salwa",
+  "paci_no": 210,
+  "lat": 29.293942,
+  "lon": 48.077788
+ },
+ {
+  "gov": "HA",
+  "ar": "الشعب",
+  "en": "Shaab",
+  "paci_no": 205,
+  "lat": 29.3506,
+  "lon": 48.026803
+ },
+ {
+  "gov": "HA",
+  "ar": "الشهداء",
+  "en": "Shuhada",
+  "paci_no": 230,
+  "lat": 29.270929,
+  "lon": 48.030964
+ },
+ {
+  "gov": "HA",
+  "ar": "الزهراء",
+  "en": "Zahra",
+  "paci_no": 234,
+  "lat": 29.275059,
+  "lon": 47.999661
+ },
+ {
+  "gov": "JA",
+  "ar": "العبدلي",
+  "en": "Abdally",
+  "paci_no": 409,
+  "lat": 29.98923,
+  "lon": 47.789718
+ },
+ {
+  "gov": "JA",
+  "ar": "المطلاع",
+  "en": "Al Mutlaa",
+  "paci_no": 412,
+  "lat": 29.490477,
+  "lon": 47.535077
+ },
+ {
+  "gov": "JA",
+  "ar": "النعايم",
+  "en": "Al Naayem",
+  "paci_no": 448,
+  "lat": 29.227414,
+  "lon": 47.275287
+ },
+ {
+  "gov": "JA",
+  "ar": "الشقايا",
+  "en": "Al Sheqaya",
+  "paci_no": 421,
+  "lat": 29.356633,
+  "lon": 46.900976
+ },
+ {
+  "gov": "JA",
+  "ar": "أمغرة الصناعية",
+  "en": "Amghara Industrial",
+  "paci_no": 410,
+  "lat": 29.303465,
+  "lon": 47.760589
+ },
+ {
+  "gov": "JA",
+  "ar": "بر محافظة الجهراء",
+  "en": "Bar Al-Jahra Governorate",
+  "paci_no": 418,
+  "lat": 29.510911,
+  "lon": 47.327264
+ },
+ {
+  "gov": "JA",
+  "ar": "البحيث",
+  "en": "Bhaith",
+  "paci_no": 442,
+  "lat": 29.953447,
+  "lon": 47.96082
+ },
+ {
+  "gov": "JA",
+  "ar": "جزيرة بوبيان",
+  "en": "Bubyan Island",
+  "paci_no": 122,
+  "lat": 29.785773,
+  "lon": 48.21173
+ },
+ {
+  "gov": "JA",
+  "ar": "الجهراء",
+  "en": "Jahra",
+  "paci_no": 403,
+  "lat": 29.348211,
+  "lon": 47.672724
+ },
+ {
+  "gov": "JA",
+  "ar": "معسكرات الجهراء",
+  "en": "Jahra Camps",
+  "paci_no": 428,
+  "lat": 29.352681,
+  "lon": 47.709032
+ },
+ {
+  "gov": "JA",
+  "ar": "الجهراء الصناعية",
+  "en": "Jahra-Industrial",
+  "paci_no": 431,
+  "lat": 29.321004,
+  "lon": 47.653249
+ },
+ {
+  "gov": "JA",
+  "ar": "جواخير الجهراء",
+  "en": "Jawakher Al Jahra",
+  "paci_no": 441,
+  "lat": 29.306335,
+  "lon": 47.659692
+ },
+ {
+  "gov": "JA",
+  "ar": "كبد",
+  "en": "Kabd",
+  "paci_no": 417,
+  "lat": 29.096577,
+  "lon": 47.742306
+ },
+ {
+  "gov": "JA",
+  "ar": "القيروان",
+  "en": "Kaerawan",
+  "paci_no": 440,
+  "lat": 29.302642,
+  "lon": 47.798479
+ },
+ {
+  "gov": "JA",
+  "ar": "كاظمة",
+  "en": "Kazima",
+  "paci_no": 413,
+  "lat": 29.511669,
+  "lon": 47.769073
+ },
+ {
+  "gov": "JA",
+  "ar": "النعيم",
+  "en": "Naeem",
+  "paci_no": 405,
+  "lat": 29.332932,
+  "lon": 47.695016
+ },
+ {
+  "gov": "JA",
+  "ar": "النهضة",
+  "en": "Nahda",
+  "paci_no": 435,
+  "lat": 29.303089,
+  "lon": 47.859238
+ },
+ {
+  "gov": "JA",
+  "ar": "النسيم",
+  "en": "Nasseem",
+  "paci_no": 429,
+  "lat": 29.319139,
+  "lon": 47.677692
+ },
+ {
+  "gov": "JA",
+  "ar": "شمال غرب الجهراء",
+  "en": "North West Jahra",
+  "paci_no": 444,
+  "lat": 29.35479,
+  "lon": 47.649685
+ },
+ {
+  "gov": "JA",
+  "ar": "العيون",
+  "en": "Oyoun",
+  "paci_no": 427,
+  "lat": 29.329516,
+  "lon": 47.655922
+ },
+ {
+  "gov": "JA",
+  "ar": "القصر",
+  "en": "Qasr",
+  "paci_no": 404,
+  "lat": 29.341874,
+  "lon": 47.69359
+ },
+ {
+  "gov": "JA",
+  "ar": "الروضتين",
+  "en": "Rawdatain",
+  "paci_no": 414,
+  "lat": 29.795627,
+  "lon": 47.863465
+ },
+ {
+  "gov": "JA",
+  "ar": "مدينة سعد العبدالله",
+  "en": "Saad Al-Abdulla City",
+  "paci_no": 437,
+  "lat": 29.310763,
+  "lon": 47.715462
+ },
+ {
+  "gov": "JA",
+  "ar": "السالمي",
+  "en": "Salmy",
+  "paci_no": 416,
+  "lat": 29.175628,
+  "lon": 46.767915
+ },
+ {
+  "gov": "JA",
+  "ar": "شاليهات كاظمة",
+  "en": "Shalehat Kazima",
+  "paci_no": 347,
+  "lat": 29.488314,
+  "lon": 47.838028
+ },
+ {
+  "gov": "JA",
+  "ar": "شاليهات الصبية",
+  "en": "Shalehat Subiya",
+  "paci_no": 348,
+  "lat": 29.662516,
+  "lon": 48.125882
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع",
+  "en": "South Al Mutlaa",
+  "paci_no": 451,
+  "lat": 29.482266,
+  "lon": 47.622731
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 1",
+  "en": "South Al Mutlaa 1",
+  "paci_no": 901,
+  "lat": 29.525914,
+  "lon": 47.625677
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 10",
+  "en": "South Al Mutlaa 10",
+  "paci_no": 920,
+  "lat": 29.444926,
+  "lon": 47.559384
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 11",
+  "en": "South Al Mutlaa 11",
+  "paci_no": 911,
+  "lat": 29.44427,
+  "lon": 47.579647
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 12",
+  "en": "South Al Mutlaa 12",
+  "paci_no": 912,
+  "lat": 29.422803,
+  "lon": 47.58502
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 2",
+  "en": "South Al Mutlaa 2",
+  "paci_no": 902,
+  "lat": 29.508015,
+  "lon": 47.626057
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 3",
+  "en": "South Al Mutlaa 3",
+  "paci_no": 903,
+  "lat": 29.487846,
+  "lon": 47.625639
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 4",
+  "en": "South Al Mutlaa 4",
+  "paci_no": 904,
+  "lat": 29.4934,
+  "lon": 47.606669
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 5",
+  "en": "South Al Mutlaa 5",
+  "paci_no": 905,
+  "lat": 29.478188,
+  "lon": 47.599658
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 6",
+  "en": "South Al Mutlaa 6",
+  "paci_no": 906,
+  "lat": 29.480117,
+  "lon": 47.579861
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 7",
+  "en": "South Al Mutlaa 7",
+  "paci_no": 907,
+  "lat": 29.4804,
+  "lon": 47.559966
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 8",
+  "en": "South Al Mutlaa 8",
+  "paci_no": 908,
+  "lat": 29.462581,
+  "lon": 47.559703
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب المطلاع 9",
+  "en": "South Al Mutlaa 9",
+  "paci_no": 909,
+  "lat": 29.462202,
+  "lon": 47.580475
+ },
+ {
+  "gov": "JA",
+  "ar": "جنوب أمغره",
+  "en": "South Amghara",
+  "paci_no": 456,
+  "lat": 29.285484,
+  "lon": 47.710408
+ },
+ {
+  "gov": "JA",
+  "ar": "الصبية",
+  "en": "Subiya",
+  "paci_no": 422,
+  "lat": 29.679481,
+  "lon": 48.04558
+ },
+ {
+  "gov": "JA",
+  "ar": "الصليبية الشعبية",
+  "en": "Sulaibiya",
+  "paci_no": 407,
+  "lat": 29.28518,
+  "lon": 47.825235
+ },
+ {
+  "gov": "JA",
+  "ar": "الصليبية الزراعية",
+  "en": "Sulaibiya Agricultural",
+  "paci_no": 424,
+  "lat": 29.248242,
+  "lon": 47.772455
+ },
+ {
+  "gov": "JA",
+  "ar": "الصليبية الصناعية 1",
+  "en": "Sulaibiya Industrial 1",
+  "paci_no": 408,
+  "lat": 29.288542,
+  "lon": 47.840313
+ },
+ {
+  "gov": "JA",
+  "ar": "الصليبية الصناعية 2",
+  "en": "Sulaibiya Industrial 2",
+  "paci_no": 423,
+  "lat": 29.278295,
+  "lon": 47.853353
+ },
+ {
+  "gov": "JA",
+  "ar": "تيماء",
+  "en": "Taima",
+  "paci_no": 419,
+  "lat": 29.328676,
+  "lon": 47.68163
+ },
+ {
+  "gov": "JA",
+  "ar": "ام العيش",
+  "en": "Umm Al-Aish",
+  "paci_no": 415,
+  "lat": 29.682761,
+  "lon": 47.75949
+ },
+ {
+  "gov": "JA",
+  "ar": "الواحة",
+  "en": "Waha",
+  "paci_no": 420,
+  "lat": 29.34202,
+  "lon": 47.658531
+ },
+ {
+  "gov": "JA",
+  "ar": "جزيرة وربة",
+  "en": "Warba Island",
+  "paci_no": 121,
+  "lat": 29.993199,
+  "lon": 48.073824
+ },
+ {
+  "gov": "KU",
+  "ar": "ضاحية عبدالله السالم",
+  "en": "Abdulla Al-Salem",
+  "paci_no": 110,
+  "lat": 29.352216,
+  "lon": 47.981888
+ },
+ {
+  "gov": "KU",
+  "ar": "العديلية",
+  "en": "Adailiya",
+  "paci_no": 202,
+  "lat": 29.326195,
+  "lon": 47.981893
+ },
+ {
+  "gov": "KU",
+  "ar": "حدائق السور",
+  "en": "Al Sour Gardens",
+  "paci_no": 104,
+  "lat": 29.363477,
+  "lon": 47.98267
+ },
+ {
+  "gov": "KU",
+  "ar": "جزيرة عوهة",
+  "en": "Auha Island",
+  "paci_no": 124,
+  "lat": 29.377898,
+  "lon": 48.439967
+ },
+ {
+  "gov": "KU",
+  "ar": "بنيد القار",
+  "en": "Bnaid Al-Qar",
+  "paci_no": 108,
+  "lat": 29.374103,
+  "lon": 48.003311
+ },
+ {
+  "gov": "KU",
+  "ar": "الدعية",
+  "en": "Daiya",
+  "paci_no": 112,
+  "lat": 29.359913,
+  "lon": 48.014214
+ },
+ {
+  "gov": "KU",
+  "ar": "الدسمة",
+  "en": "Dasma",
+  "paci_no": 107,
+  "lat": 29.365241,
+  "lon": 48.001308
+ },
+ {
+  "gov": "KU",
+  "ar": "دسمان",
+  "en": "Dasman",
+  "paci_no": 101,
+  "lat": 29.386196,
+  "lon": 47.998548
+ },
+ {
+  "gov": "KU",
+  "ar": "الدوحة",
+  "en": "Doha",
+  "paci_no": 401,
+  "lat": 29.319067,
+  "lon": 47.803842
+ },
+ {
+  "gov": "KU",
+  "ar": "الفيحاء",
+  "en": "Faiha",
+  "paci_no": 113,
+  "lat": 29.338371,
+  "lon": 47.978646
+ },
+ {
+  "gov": "KU",
+  "ar": "جزيرة فيلكا",
+  "en": "Failaka Island",
+  "paci_no": 120,
+  "lat": 29.434445,
+  "lon": 48.333806
+ },
+ {
+  "gov": "KU",
+  "ar": "غرناطة",
+  "en": "Ghornata",
+  "paci_no": 119,
+  "lat": 29.316547,
+  "lon": 47.872758
+ },
+ {
+  "gov": "KU",
+  "ar": "المنطقة الصحية",
+  "en": "Health Area",
+  "paci_no": 131,
+  "lat": 29.323341,
+  "lon": 47.895062
+ },
+ {
+  "gov": "KU",
+  "ar": "جابر الأحمد",
+  "en": "Jaber Al-Ahmad",
+  "paci_no": 446,
+  "lat": 29.339651,
+  "lon": 47.765572
+ },
+ {
+  "gov": "KU",
+  "ar": "الخالدية",
+  "en": "Khaldiya",
+  "paci_no": 201,
+  "lat": 29.325676,
+  "lon": 47.964416
+ },
+ {
+  "gov": "KU",
+  "ar": "كيفان",
+  "en": "Kifan",
+  "paci_no": 116,
+  "lat": 29.339516,
+  "lon": 47.960196
+ },
+ {
+  "gov": "KU",
+  "ar": "جزيرة كبر",
+  "en": "Kubbar Island",
+  "paci_no": 125,
+  "lat": 29.071613,
+  "lon": 48.492311
+ },
+ {
+  "gov": "KU",
+  "ar": "المنصورية",
+  "en": "Mansouriya",
+  "paci_no": 106,
+  "lat": 29.357834,
+  "lon": 47.994623
+ },
+ {
+  "gov": "KU",
+  "ar": "ميناء الدوحة",
+  "en": "Mina Doha",
+  "paci_no": 426,
+  "lat": 29.359766,
+  "lon": 47.803663
+ },
+ {
+  "gov": "KU",
+  "ar": "المرقاب",
+  "en": "Mirqab",
+  "paci_no": 103,
+  "lat": 29.368123,
+  "lon": 47.98432
+ },
+ {
+  "gov": "KU",
+  "ar": "جزيرة مسكان",
+  "en": "Mischan Island",
+  "paci_no": 123,
+  "lat": 29.485754,
+  "lon": 48.251608
+ },
+ {
+  "gov": "KU",
+  "ar": "معسكرات المباركية",
+  "en": "Mubarakiya Camps",
+  "paci_no": 117,
+  "lat": 29.315036,
+  "lon": 47.908913
+ },
+ {
+  "gov": "KU",
+  "ar": "شمال غرب الصليبيخات",
+  "en": "Northwest Sulaibikhat",
+  "paci_no": 134,
+  "lat": 29.327331,
+  "lon": 47.810997
+ },
+ {
+  "gov": "KU",
+  "ar": "النزهة",
+  "en": "Nuzha",
+  "paci_no": 114,
+  "lat": 29.342489,
+  "lon": 47.991482
+ },
+ {
+  "gov": "KU",
+  "ar": "القادسية",
+  "en": "Qadsiya",
+  "paci_no": 111,
+  "lat": 29.348931,
+  "lon": 48.003268
+ },
+ {
+  "gov": "KU",
+  "ar": "جزيرة قاروه",
+  "en": "Qaruh Island",
+  "paci_no": 126,
+  "lat": 28.814622,
+  "lon": 48.758952
+ },
+ {
+  "gov": "KU",
+  "ar": "القبلة",
+  "en": "Qibla",
+  "paci_no": 105,
+  "lat": 29.369095,
+  "lon": 47.969953
+ },
+ {
+  "gov": "KU",
+  "ar": "قرطبة",
+  "en": "Qortuba",
+  "paci_no": 215,
+  "lat": 29.311991,
+  "lon": 47.986849
+ },
+ {
+  "gov": "KU",
+  "ar": "الروضة",
+  "en": "Rawda",
+  "paci_no": 203,
+  "lat": 29.329349,
+  "lon": 47.99896
+ },
+ {
+  "gov": "KU",
+  "ar": "شاليهات الدوحة",
+  "en": "Shalehat Doha",
+  "paci_no": 345,
+  "lat": 29.371003,
+  "lon": 47.76144
+ },
+ {
+  "gov": "KU",
+  "ar": "الشامية",
+  "en": "Shamiya",
+  "paci_no": 109,
+  "lat": 29.351555,
+  "lon": 47.966618
+ },
+ {
+  "gov": "KU",
+  "ar": "شرق",
+  "en": "Sharq",
+  "paci_no": 102,
+  "lat": 29.381194,
+  "lon": 47.986694
+ },
+ {
+  "gov": "KU",
+  "ar": "الشويخ",
+  "en": "Shuwaikh",
+  "paci_no": 115,
+  "lat": 29.35301,
+  "lon": 47.951782
+ },
+ {
+  "gov": "KU",
+  "ar": "الشويخ الصناعية 1",
+  "en": "Shuwaikh Industrial-1",
+  "paci_no": 129,
+  "lat": 29.337085,
+  "lon": 47.927234
+ },
+ {
+  "gov": "KU",
+  "ar": "الشويخ الصناعية 2",
+  "en": "Shuwaikh Industrial-2",
+  "paci_no": 118,
+  "lat": 29.322766,
+  "lon": 47.948956
+ },
+ {
+  "gov": "KU",
+  "ar": "الشويخ الصناعية 3",
+  "en": "Shuwaikh Industrial-3",
+  "paci_no": 130,
+  "lat": 29.321533,
+  "lon": 47.930664
+ },
+ {
+  "gov": "KU",
+  "ar": "المنطقة الحرة",
+  "en": "Shuwaikh Port",
+  "paci_no": 133,
+  "lat": 29.352055,
+  "lon": 47.918948
+ },
+ {
+  "gov": "KU",
+  "ar": "الصليبيخات",
+  "en": "Sulaibikhat",
+  "paci_no": 402,
+  "lat": 29.315991,
+  "lon": 47.844675
+ },
+ {
+  "gov": "KU",
+  "ar": "مقبرة الصليبيخات",
+  "en": "Sulaibikhat Cemetery",
+  "paci_no": 455,
+  "lat": 29.303909,
+  "lon": 47.831116
+ },
+ {
+  "gov": "KU",
+  "ar": "السرة",
+  "en": "Surra",
+  "paci_no": 216,
+  "lat": 29.313742,
+  "lon": 48.007416
+ },
+ {
+  "gov": "KU",
+  "ar": "الواجهة البحرية",
+  "en": "The Sea Front",
+  "paci_no": 132,
+  "lat": 29.380086,
+  "lon": 47.990194
+ },
+ {
+  "gov": "KU",
+  "ar": "جزيرة أم المرادم",
+  "en": "Umm Al-Maradim Island",
+  "paci_no": 127,
+  "lat": 28.680474,
+  "lon": 48.651137
+ },
+ {
+  "gov": "KU",
+  "ar": "جزيرة أم النمل",
+  "en": "Umm Al-Namel Island",
+  "paci_no": 128,
+  "lat": 29.381621,
+  "lon": 47.864659
+ },
+ {
+  "gov": "KU",
+  "ar": "اليرموك",
+  "en": "Yarmouk",
+  "paci_no": 214,
+  "lat": 29.31046,
+  "lon": 47.969647
+ },
+ {
+  "gov": "MU",
+  "ar": "ضاحية أبو فطيرة",
+  "en": "Abu Ftaira",
+  "paci_no": 326,
+  "lat": 29.197306,
+  "lon": 48.101435
+ },
+ {
+  "gov": "MU",
+  "ar": "أبو الحصانية",
+  "en": "Abu Hassaniah",
+  "paci_no": 324,
+  "lat": 29.197737,
+  "lon": 48.110607
+ },
+ {
+  "gov": "MU",
+  "ar": "المسايل",
+  "en": "Al Masayel",
+  "paci_no": 206,
+  "lat": 29.238184,
+  "lon": 48.088828
+ },
+ {
+  "gov": "MU",
+  "ar": "العدان",
+  "en": "Al-Adan",
+  "paci_no": 248,
+  "lat": 29.232226,
+  "lon": 48.068163
+ },
+ {
+  "gov": "MU",
+  "ar": "ضاحية الفنيطيس",
+  "en": "Al-Fnaitees",
+  "paci_no": 430,
+  "lat": 29.220379,
+  "lon": 48.095445
+ },
+ {
+  "gov": "MU",
+  "ar": "القرين",
+  "en": "Al-Qurain",
+  "paci_no": 250,
+  "lat": 29.202243,
+  "lon": 48.076122
+ },
+ {
+  "gov": "MU",
+  "ar": "القصور",
+  "en": "Al-Qusour",
+  "paci_no": 249,
+  "lat": 29.215186,
+  "lon": 48.073166
+ },
+ {
+  "gov": "MU",
+  "ar": "المسيلة",
+  "en": "Messila",
+  "paci_no": 211,
+  "lat": 29.249222,
+  "lon": 48.094028
+ },
+ {
+  "gov": "MU",
+  "ar": "مبارك الكبير",
+  "en": "Mubarak Al-Kabeer",
+  "paci_no": 251,
+  "lat": 29.187786,
+  "lon": 48.082416
+ },
+ {
+  "gov": "MU",
+  "ar": "صباح السالم",
+  "en": "Sabah Al-Salem",
+  "paci_no": 212,
+  "lat": 29.254113,
+  "lon": 48.066716
+ },
+ {
+  "gov": "MU",
+  "ar": "صبحان الصناعية",
+  "en": "Subhan Industrial",
+  "paci_no": 232,
+  "lat": 29.231649,
+  "lon": 48.003853
+ },
+ {
+  "gov": "MU",
+  "ar": "غرب أبو فطيرة الحرفية",
+  "en": "West Abu Ftirah Hirafyia",
+  "paci_no": 443,
+  "lat": 29.198174,
+  "lon": 48.050723
+ },
+ {
+  "gov": "MU",
+  "ar": "المنطقة الوسطى",
+  "en": "Wista",
+  "paci_no": 245,
+  "lat": 29.219108,
+  "lon": 48.028875
+ }
+]

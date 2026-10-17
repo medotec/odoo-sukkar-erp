@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============ LIST ============ -->
+    <record id="sukkar_expense_view_list" model="ir.ui.view">
+        <field name="name">sukkar.expense.list</field>
+        <field name="model">sukkar.expense</field>
+        <field name="arch" type="xml">
+            <list default_order="date desc" sample="1"
+                  decoration-muted="state == 'paid'" decoration-info="state == 'draft'">
+                <field name="reference"/>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="employee_name" optional="hide"/>
+                <field name="payment_method" optional="show"/>
+                <field name="is_recurring" optional="hide"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-success="state == 'paid'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============ FORM ============ -->
+    <record id="sukkar_expense_view_form" model="ir.ui.view">
+        <field name="name">sukkar.expense.form</field>
+        <field name="model">sukkar.expense</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_mark_paid" type="object" string="Mark Paid"
+                            class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_set_draft" type="object" string="Reset to Draft"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_move" type="object" class="oe_stat_button"
+                                icon="fa-book" invisible="not move_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">In the Books</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="move_id" invisible="1"/>
+                    <field name="posts_to_books" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. June salaries — Ahmed"/></h1>
+                        <field name="reference" readonly="1"/>
+                    </div>
+                    <group>
+                        <group string="Details">
+                            <field name="category_id"/>
+                            <field name="is_salary" invisible="1"/>
+                            <field name="date"/>
+                            <field name="partner_id"/>
+                            <field name="employee_name" invisible="not is_salary"/>
+                        </group>
+                        <group string="Payment">
+                            <field name="payment_method"/>
+                            <field name="is_recurring"/>
+                            <field name="recurrence" invisible="not is_recurring"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <!-- Shown on a recurring template too: the copies the
+                                 cron makes inherit this account, so a blank here
+                                 is twelve costs a year that cannot be confirmed. -->
+                            <field name="account_id"
+                                   invisible="not posts_to_books and not is_recurring"/>
+                            <field name="source_id" readonly="1" invisible="not source_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Amount">
+                            <field name="basic_amount"/>
+                            <field name="amount" readonly="1" class="oe_subtotal_footer_separator"/>
+                        </group>
+                        <!-- The old flat ×1.25 overtime calculator lived here. It was
+                             retired 29 Aug 2026: overtime now has ONE engine — Payroll
+                             (attendance → payslip → accounting) — and two calculators
+                             that can disagree is how people get paid wrong. The fields
+                             stay on the model so old expenses keep their history. -->
+                        <group string="Salaries &amp; Overtime" invisible="not is_salary">
+                            <div class="alert alert-info" role="alert" colspan="2">
+                                Overtime is calculated by <b>Payroll</b> (Employees →
+                                Payslips) from attendance — rates ×1.25/×1.5/×2, the
+                                15-minute block, lateness and the monthly caps are all
+                                applied there and post to accounting. Record here only
+                                a payment that happened outside payroll.
+                            </div>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert" invisible="not is_recurring">
+                        This is a <b>monthly fixed cost</b>, not money that has
+                        already gone out. It stays out of the accounts — on the
+                        1st of each month the system copies it into a draft
+                        expense for that month, and confirming that one is what
+                        puts the cost in the books.
+                    </div>
+                    <group string="Notes">
+                        <field name="note" nolabel="1" placeholder="Optional notes…"/>
+                        <field name="receipt" filename="receipt_filename" string="Receipt"/>
+                        <field name="receipt_filename" invisible="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============ SEARCH ============ -->
+    <record id="sukkar_expense_view_search" model="ir.ui.view">
+        <field name="name">sukkar.expense.search</field>
+        <field name="model">sukkar.expense</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="category_id"/>
+                <field name="partner_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="paid" string="Paid" domain="[('state', '=', 'paid')]"/>
+                <separator/>
+                <filter name="recurring" string="Recurring" domain="[('is_recurring', '=', True)]"/>
+                <filter name="this_month" string="This Month"
+                        domain="[('date', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="g_category" string="Category" context="{'group_by': 'category_id'}"/>
+                    <filter name="g_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="g_payment" string="Payment Method" context="{'group_by': 'payment_method'}"/>
+                    <filter name="g_month" string="Month" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============ PIVOT & GRAPH ============ -->
+    <record id="sukkar_expense_view_pivot" model="ir.ui.view">
+        <field name="name">sukkar.expense.pivot</field>
+        <field name="model">sukkar.expense</field>
+        <field name="arch" type="xml">
+            <pivot string="Expenses">
+                <field name="category_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="sukkar_expense_view_graph" model="ir.ui.view">
+        <field name="name">sukkar.expense.graph</field>
+        <field name="model">sukkar.expense</field>
+        <field name="arch" type="xml">
+            <graph string="Expenses" type="bar">
+                <field name="category_id"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============ ACTIONS ============ -->
+    <record id="sukkar_expense_action" model="ir.actions.act_window">
+        <field name="name">Expenses</field>
+        <field name="res_model">sukkar.expense</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="context">{'search_default_g_category': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Record your first expense</p>
+            <p>Track salaries, licenses, ad spend and more — categorized, with overtime.</p>
+        </field>
+    </record>
+
+    <record id="sukkar_expense_category_view_list" model="ir.ui.view">
+        <field name="name">sukkar.expense.category.list</field>
+        <field name="model">sukkar.expense.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="account_id"/>
+                <field name="is_salary"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_expense_category_action" model="ir.actions.act_window">
+        <field name="name">Expense Categories</field>
+        <field name="res_model">sukkar.expense.category</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

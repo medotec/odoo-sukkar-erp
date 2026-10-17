@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_stage_log_view_list" model="ir.ui.view">
+        <field name="name">sukkar.production.stage.log.list</field>
+        <field name="model">sukkar.production.stage.log</field>
+        <field name="arch" type="xml">
+            <list default_order="entered_at desc" decoration-danger="overrun == True"
+                  decoration-muted="is_open == True">
+                <field name="production_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="stage_id"/>
+                <field name="entered_at"/>
+                <field name="exited_at"/>
+                <field name="planned_min" sum="Planned"/>
+                <field name="duration_min" string="Actual (min)" sum="Actual"/>
+                <field name="overrun"/>
+                <field name="is_open" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_stage_log_view_pivot" model="ir.ui.view">
+        <field name="name">sukkar.production.stage.log.pivot</field>
+        <field name="model">sukkar.production.stage.log</field>
+        <field name="arch" type="xml">
+            <pivot string="Step Times">
+                <field name="stage_id" type="row"/>
+                <field name="duration_min" type="measure"/>
+                <field name="planned_min" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="sukkar_stage_log_view_graph" model="ir.ui.view">
+        <field name="name">sukkar.production.stage.log.graph</field>
+        <field name="model">sukkar.production.stage.log</field>
+        <field name="arch" type="xml">
+            <graph string="Average time per step" type="bar" sample="1">
+                <field name="stage_id"/>
+                <field name="duration_min" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="sukkar_stage_log_action" model="ir.actions.act_window">
+        <field name="name">Step Times</field>
+        <field name="res_model">sukkar.production.stage.log</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="domain">[('exited_at', '!=', False)]</field>
+        <field name="context">{'search_default_group_stage': 1}</field>
+    </record>
+
+    <record id="sukkar_stage_log_view_search" model="ir.ui.view">
+        <field name="name">sukkar.production.stage.log.search</field>
+        <field name="model">sukkar.production.stage.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="production_id"/>
+                <field name="stage_id"/>
+                <filter name="overrun" string="Overran" domain="[('overrun', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_stage" string="Stage" context="{'group_by': 'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

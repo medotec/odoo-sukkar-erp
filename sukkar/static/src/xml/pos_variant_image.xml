@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The size chooser ships with no photos at all. For a bouquet shop the
+         photo IS the decision, so the popup shows TWO pictures side by side
+         (owner's design, 30 Aug 2026):
+
+           left  — the design's real bouquet photo (the product image),
+           right — the exact arrangement of the size being picked, taken from
+                   the Master Bouquet Arrangement sheet (per-variant image).
+
+         state.product is recomputed by the popup on every real click/touch, so
+         the right image follows the chosen size live. A design whose variants
+         have no arrangement images yet just shows its main photo twice-ish —
+         harmless, and it disappears as the arrangement images are loaded. -->
+    <t t-name="sukkar.ProductConfiguratorPopupImage"
+       t-inherit="point_of_sale.ProductConfiguratorPopup" t-inherit-mode="extension">
+        <xpath expr="//ProductInfoBanner" position="after">
+            <!-- Owner's layout (30 Aug 2026): LEFT = the product's main photo;
+                 RIGHT = the selected variant's TITLE above its arrangement. -->
+            <div class="ks-variant-photo d-flex justify-content-center align-items-center gap-4 my-2 flex-nowrap text-center">
+                <div style="flex:1; min-width:0;">
+                    <img style="max-height:220px; max-width:100%; object-fit:contain; border-radius:12px;"
+                         t-att-src="'/web/image/product.template/' + ((this.state.product.raw &amp;&amp; this.state.product.raw.product_tmpl_id) || this.state.product.id) + '/image_512?unique=' + (this.state.product.write_date || '')"
+                         t-att-alt="this.state.product.display_name"/>
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <div class="fw-bolder mb-1"
+                         t-esc="(this.state.product.product_template_variant_value_ids || []).map((v) =&gt; v.name).join(', ')"/>
+                    <div class="text-muted small mb-1"
+                         t-esc="this.env.utils.formatCurrency(this.state.product.lst_price || 0)"/>
+                    <img style="max-height:200px; max-width:100%; object-fit:contain; border-radius:12px;"
+                         t-att-src="'/web/image/product.product/' + this.state.product.id + '/image_512?unique=' + (this.state.product.write_date || '')"
+                         t-att-alt="this.state.product.display_name"/>
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

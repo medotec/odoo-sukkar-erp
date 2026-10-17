@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The kitchen wall screen.
+
+         Deliberately different from the Kitchen Board: that one is for managing,
+         this one is for working. Five rules shape it —
+
+         1. Sorted by DEADLINE, never by order number. The board answers exactly
+            one question: what do I touch next.
+         2. A COUNTDOWN, not a clock time. "38 min" is actionable; "18:30" is
+            arithmetic nobody should do with their hands full.
+         3. Nine tickets at a time, in a 3x3 grid. Nine is not arbitrary: it is what
+            a numeric keypad can address with one press, and what stays legible on
+            the 20-inch panel this is built for. The rest of the queue is one key
+            away, and a counter always says how many are waiting — a kitchen works
+            the next few, not the whole day.
+         4. Only the buttons that are needed. Every step of the kitchen means the
+            same thing when it ends — move it on — so there is one big Done button,
+            plus Problem, which exists because a stuck ticket must be visible.
+            An order that cannot legally advance (unpaid link payment) shows the
+            reason instead of a button that would only throw an error.
+         5. Only what is MADE (19 Sep 2026). The tile carries the items, the cake
+            flavours and anything that changes them; the customer, the receiver,
+            the payment and the ingredients are not kitchen work and came off it.
+            Everything else is one tap away on the order preview. -->
+
+    <record id="sukkar_kitchen_screen_view_kanban" model="ir.ui.view">
+        <field name="name">sukkar.production.kitchen.screen</field>
+        <field name="model">sukkar.production</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile sukkar_kitchen_screen" create="false"
+                    default_order="deadline asc, priority desc" limit="60">
+                <field name="name"/>
+                <field name="line_summary"/>
+                <field name="flavour_summary"/>
+                <field name="countdown"/>
+                <field name="urgency"/>
+                <field name="stage_id"/>
+                <field name="done_label"/>
+                <field name="next_stage_id"/>
+                <field name="clear_to_deliver"/>
+                <field name="kanban_state"/>
+                <field name="is_late"/>
+                <field name="gift_message"/>
+                <field name="special_requests"/>
+                <field name="order_note"/>
+                <field name="has_note_image"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card ks-tile ks-#{record.urgency.raw_value} #{record.kanban_state.raw_value == 'blocked' ? 'ks-blocked' : ''}">
+                            <div class="ks-head">
+                                <span class="ks-no"><field name="name"/></span>
+                                <span class="ks-count"><field name="countdown"/></span>
+                            </div>
+                            <div class="ks-stage"><field name="stage_id"/></div>
+                            <div class="ks-items"><field name="line_summary"/></div>
+                            <!-- The kitchen decorates by flavour, so the flavours sit
+                                 with the items rather than behind a tap. -->
+                            <div class="ks-flavours" t-if="record.flavour_summary.value">
+                                🍰 <t t-esc="record.flavour_summary.value"/>
+                            </div>
+                            <!-- What changes what is made. Loud on purpose, and
+                                 deliberately unlike the gift message below, which
+                                 is only text to copy onto a card. -->
+                            <div class="ks-alert" t-if="record.special_requests.value">
+                                <span class="ks-alert-tag">⚠ SPECIAL</span>
+                                <span class="ks-alert-text"><t t-esc="record.special_requests.value"/></span>
+                            </div>
+                            <!-- The till's internal note (owner, 2 Oct 2026), in red
+                                 like every note on this screen (owner, 10 Oct
+                                 2026). A picture with it waits inside the order. -->
+                            <div class="ks-note" t-if="record.order_note.value or record.has_note_image.raw_value">
+                                <!-- The photo marker sits in the label so a long
+                                     note can never push it out of sight. -->
+                                <span class="ks-note-tag">📝 Note<t t-if="record.has_note_image.raw_value"> · 📷 Photo</t></span>
+                                <span class="ks-note-text" t-if="record.order_note.value"><t t-esc="record.order_note.value"/></span>
+                            </div>
+                            <div class="ks-gift" t-if="record.gift_message.value">
+                                🎁 <t t-esc="record.gift_message.value"/>
+                            </div>
+
+                            <!-- The one action the kitchen needs, at any stage. -->
+                            <button name="action_sukkar_done" type="object"
+                                    class="btn ks-done"
+                                    t-if="record.clear_to_deliver.raw_value">
+                                <span class="ks-done-word">DONE</span>
+                                <span class="ks-done-next">→ <t t-esc="record.done_label.value"/></span>
+                            </button>
+
+                            <!-- Not a button: a ticket that cannot advance says why. -->
+                            <div class="ks-locked" t-if="!record.clear_to_deliver.raw_value">
+                                UNPAID — cannot proceed
+                            </div>
+
+                            <button name="action_sukkar_problem" type="object"
+                                    class="btn ks-problem">
+                                <t t-if="record.kanban_state.raw_value == 'blocked'">Clear problem</t>
+                                <t t-else="">Problem</t>
+                            </button>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- The confirmation page behind every tile: tap → the WHOLE order — what to
+         make (photo per line, flavours), what to write on the card,
+         where it goes and who takes it — then one DONE. The employee previews
+         and confirms; nothing here bypasses the gate — DONE is the same guarded
+         action as on the tile. -->
+    <record id="sukkar_kitchen_preview_form" model="ir.ui.view">
+        <field name="name">sukkar.production.kitchen.preview</field>
+        <field name="model">sukkar.production</field>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <form create="false" delete="false" edit="false">
+                <header>
+                    <button name="action_sukkar_done" type="object" string="DONE ✓"
+                            class="btn-primary btn-lg ks-preview-btn"
+                            invisible="not clear_to_deliver"/>
+                    <button name="action_sukkar_problem" type="object"
+                            string="Problem" class="btn-warning ks-preview-btn"/>
+                    <field name="stage_id" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/> ·
+                            <field name="sale_order_id" readonly="1"/>
+                        </h1>
+                        <h3>
+                            <field name="countdown" readonly="1"/>
+                            <span invisible="clear_to_deliver"
+                                  class="badge text-bg-danger ms-2">UNPAID — cannot proceed</span>
+                        </h3>
+                    </div>
+                    <field name="clear_to_deliver" invisible="1"/>
+                    <field name="order_preview_html" readonly="1" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_kitchen_screen_action" model="ir.actions.act_window">
+        <field name="name">Kitchen Screen</field>
+        <field name="res_model">sukkar.production</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="sukkar_kitchen_screen_view_kanban"/>
+        <!-- Yesterday, today and tomorrow, and nothing already finished or
+             cancelled. A wall board showing next week is a wall board nobody
+             reads — and one with no floor fills its front page with tickets
+             nobody ever closed, because it sorts oldest first. Yesterday is
+             kept so last night's unfinished work is still in front of the
+             kitchen; anything older is a question for the office, not a cake
+             to make this morning. -->
+        <!-- A ticket with no delivery date still has to be made. Filtering on the
+             date alone would hide it from the kitchen entirely. -->
+        <field name="domain">[
+            ('is_done', '=', False),
+            ('sale_order_id', '!=', False),
+            ('order_state', 'not in', ['cancel']),
+            '|', ('delivery_date', '=', False),
+            '&amp;', ('delivery_date', '&gt;=', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')),
+            ('delivery_date', '&lt;=', (context_today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+        ]</field>
+        <field name="context">{'board': 'kitchen'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing to make right now.</p>
+            <p>Tickets appear here as orders are confirmed, sorted by when they must be finished.</p>
+        </field>
+    </record>
+
+    <!-- Pin the preview form to THIS action only — the Orders screen keeps its
+         own full ticket form. -->
+    <record id="sukkar_kitchen_screen_action_kanban" model="ir.actions.act_window.view">
+        <field name="view_mode">kanban</field>
+        <field name="sequence">1</field>
+        <field name="view_id" ref="sukkar_kitchen_screen_view_kanban"/>
+        <field name="act_window_id" ref="sukkar_kitchen_screen_action"/>
+    </record>
+    <record id="sukkar_kitchen_screen_action_form" model="ir.actions.act_window.view">
+        <field name="view_mode">form</field>
+        <field name="sequence">2</field>
+        <field name="view_id" ref="sukkar_kitchen_preview_form"/>
+        <field name="act_window_id" ref="sukkar_kitchen_screen_action"/>
+    </record>
+</odoo>

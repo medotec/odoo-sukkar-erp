@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =============================================================
+         DELIVERY RECEIPT (DRIVER) — one page per driver, orders in run
+         priority (the Dispatch screen's order: delivery window start,
+         unless the supervisor dragged it into a custom order).
+
+         Field list is the owner's spec (29 Aug 2026), Arabic-first:
+         Date · Order no. · Pick up from branch · Order details ·
+         Address · Contact no. · Sender (gift) · Payment ·
+         Cash to collect · Notes
+
+         Money rule: a price appears ONLY when the driver must collect it
+         (cash/COD and still unpaid — `sukkar_cash_due`). A PAID order
+         prints no price anywhere: a gift must not price itself to the
+         receiver. The address always prints.
+
+         Paper (owner, 10 Oct 2026): the shop's Epson receipt printer —
+         80 mm roll, one order per slip so each rides with its bag. Order
+         no., delivery time, address, phone and the money in bold.
+
+         wkhtmltopdf rules honoured: tables not flexbox; basic_layout
+         supplies div.article (one per slip = one page each) and the utf-8
+         meta (without it Arabic is mojibake); Arabic glyphs resolve to
+         Cairo via fontconfig. -->
+
+    <!-- 80 mm roll. Odoo only passes the page size to wkhtmltopdf when width
+         AND height are set, so the length is a real number; a long order
+         simply runs onto a second slip. -->
+    <record id="paperformat_driver_receipt" model="report.paperformat">
+        <field name="name">Sukkar delivery receipt (80 mm)</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_width">80</field>
+        <field name="page_height">200</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_driver_receipt" model="ir.actions.report">
+        <field name="name">Delivery Receipt (Driver)</field>
+        <field name="model">sukkar.production</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sukkar.report_driver_receipt</field>
+        <field name="report_file">sukkar.report_driver_receipt</field>
+        <field name="paperformat_id" ref="paperformat_driver_receipt"/>
+        <field name="binding_model_id" ref="model_sukkar_production"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Driver Receipt'</field>
+    </record>
+
+    <!-- The slip's own look, once, for every page below. -->
+    <template id="driver_receipt_style">
+        <style>
+            .kd { font-size:12px; color:#000; }
+            .kd-c { text-align:center; }
+            .kd-logo { width:56px; }
+            .kd-title { font-size:15px; font-weight:800; margin:2px 0 0; }
+            .kd-sub { font-size:11px; margin:0 0 4px; }
+            .kd-rule { border-top:1px dashed #000; margin:5px 0; }
+            .kd-lbl { font-size:10px; color:#333; margin-top:5px; }
+            .kd-val { font-size:12px; }
+            .kd-b { font-size:14px; font-weight:800; }
+            .kd-no { font-size:18px; font-weight:800; }
+            .kd-money { font-size:16px; font-weight:800; border:2px solid #000;
+                        padding:2px 6px; display:inline-block; }
+            .kd-small { font-size:10px; }
+            /* Times and phone numbers read left to right even on a right-to-left
+               slip: without this 11:00-13:00 printed as 13:00-11:00. */
+            .kd-ltr { direction:ltr; unicode-bidi:embed; }
+        </style>
+    </template>
+
+    <template id="report_driver_receipt">
+        <t t-call="web.html_container">
+            <t t-set="tickets" t-value="docs.filtered(lambda d: d.sale_order_id)"/>
+            <t t-set="drivers" t-value="tickets.mapped('driver_id').sorted(lambda u: u.name or '')"/>
+            <!-- A branch collection is never driven anywhere, so it can never
+                 have a driver — but it sits in the same delivery-window column
+                 on Dispatch and comes along with the selection. Listing it as
+                 "assign a driver first" is a false alarm, and false alarms are
+                 how a real one stops being read. -->
+            <t t-set="collections" t-value="tickets.filtered(lambda d: d.order_type == 'pickup')"/>
+            <t t-set="unassigned" t-value="tickets.filtered(lambda d: not d.driver_id and d.order_type != 'pickup')"/>
+            <t t-foreach="drivers" t-as="drv">
+                <t t-set="run" t-value="tickets.filtered(lambda d: d.driver_id == drv).sorted(key=lambda d: (str(d.delivery_date or '9999-12-31'), d.sequence, str(d.delivery_datetime or ''), d.id))"/>
+                <t t-foreach="run" t-as="tk">
+                  <t t-call="web.basic_layout">
+                    <t t-set="o" t-value="tk.sale_order_id"/>
+                    <t t-set="is_gift" t-value="bool(o.sukkar_gift_from or o.sukkar_gift_to or o.sukkar_gift_message)"/>
+                    <div class="page kd" dir="rtl" style="direction:rtl; text-align:right;">
+                        <t t-call="sukkar.driver_receipt_style"/>
+                        <div class="kd-c">
+                            <img class="kd-logo" t-att-src="'/sukkar/static/img/sukkar-logo-line.png'" alt="Sukkar"/>
+                            <p class="kd-title">Delivery Receipt</p>
+                            <p class="kd-sub">
+                                Driver: <strong t-esc="drv.name"/> ·
+                                Stop <t t-esc="tk_index + 1"/> of <t t-esc="len(run)"/>
+                            </p>
+                        </div>
+                        <div class="kd-rule"/>
+
+                        <div class="kd-lbl">Order No</div>
+                        <div class="kd-no"><span t-field="o.name"/> <span class="kd-small" t-field="tk.name"/></div>
+
+                        <div class="kd-lbl">Delivery time</div>
+                        <div class="kd-b">
+                            <span t-field="tk.delivery_date"/>
+                            <t t-if="tk.delivery_time_range"> · <span class="kd-ltr" t-esc="tk.delivery_time_range"/></t>
+                        </div>
+
+                        <div class="kd-lbl">Address</div>
+                        <div class="kd-b">
+                            <t t-if="o.partner_shipping_id.state_id">
+                                <span t-field="o.partner_shipping_id.state_id.name"/> —
+                            </t>
+                            <span t-field="o.partner_shipping_id"
+                                  t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'/>
+                        </div>
+                        <div t-if="o.sukkar_addr_directions" class="kd-val">
+                            🧭 <span t-field="o.sukkar_addr_directions"/>
+                        </div>
+
+                        <div class="kd-lbl">Contact No</div>
+                        <div>
+                            <span class="kd-b kd-ltr" t-esc="o.sukkar_receiver_phone or o.partner_shipping_id.phone or o.partner_id.phone or ''"/>
+                            <t t-if="o.sukkar_receiver_name"> — <span t-field="o.sukkar_receiver_name"/></t>
+                        </div>
+
+                        <t t-if="is_gift">
+                            <div class="kd-lbl">Sender (gift)</div>
+                            <div class="kd-val"><span class="kd-ltr" t-esc="o.partner_id.phone or ''"/> — <span t-field="o.partner_id.name"/></div>
+                        </t>
+
+                        <div class="kd-rule"/>
+                        <div class="kd-lbl">Order details</div>
+                        <t t-foreach="o.order_line.filtered(lambda l: not l.display_type and not l.is_delivery)" t-as="l">
+                            <!-- Left to right, or "1× 12 Pieces Elegant Box" prints
+                                 as "Pieces Elegant Box 12 ×1" on the RTL slip. -->
+                            <div class="kd-val"><span class="kd-ltr"><t t-esc="int(l.product_uom_qty)"/>× <span t-field="l.product_id"/></span></div>
+                        </t>
+
+                        <div class="kd-lbl">Pick up from branch</div>
+                        <!-- A pickup order has a real collection appointment of its
+                             own; a delivery is picked up when the kitchen must have
+                             it finished. -->
+                        <div class="kd-val" t-if="tk.order_type == 'pickup'">
+                            <span t-field="tk.delivery_datetime"/>
+                            <t t-if="tk.delivery_time_range"> · <span class="kd-ltr" t-esc="tk.delivery_time_range"/></t>
+                        </div>
+                        <div class="kd-val" t-else=""><span t-field="tk.deadline"/></div>
+
+                        <div class="kd-rule"/>
+                        <div class="kd-lbl">Payment</div>
+                        <div class="kd-val">
+                            <strong t-if="o.sukkar_payment_status == 'PAID'">PAID</strong>
+                            <strong t-else="">UNPAID</strong>
+                            · <span t-field="o.sukkar_payment_method"/>
+                        </div>
+                        <!-- The cash to collect, only when the driver
+                             has to collect it. A PAID order prints no price:
+                             a gift must not price itself to the receiver. -->
+                        <t t-if="o.sukkar_cash_due">
+                            <div class="kd-lbl">Collect cash</div>
+                            <div class="kd-money">
+                                <span t-field="o.sukkar_cash_due"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </div>
+                        </t>
+                        <!-- A paid order prints no value at all (owner, 11 Oct
+                             2026 — replaces the 2 Oct "cash order shows its
+                             value"): only an amount the driver must collect. -->
+
+                        <!-- The driver reads the Delivery Note and nothing else:
+                             the General Note is for the kitchen and the invoice,
+                             the Internal Note for the kitchen only (owner,
+                             10 Oct 2026). -->
+                        <t t-if="o.sukkar_delivery_note">
+                            <div class="kd-lbl">Delivery note</div>
+                            <div class="kd-val"><strong t-field="o.sukkar_delivery_note"/></div>
+                        </t>
+                        <div class="kd-rule"/>
+                    </div>
+                  </t>
+                </t>
+            </t>
+            <t t-if="collections">
+                <t t-call="web.basic_layout">
+                    <div class="page kd" dir="rtl" style="direction:rtl; text-align:right;">
+                        <t t-call="sukkar.driver_receipt_style"/>
+                        <p class="kd-title">Collected at the branch</p>
+                        <p class="kd-val">The customer collects these from the shop. No driver needed.</p>
+                        <div class="kd-rule"/>
+                        <div class="kd-val" t-foreach="collections" t-as="tk">
+                            <strong t-esc="tk.sale_order_id.name"/> — <t t-esc="tk.name"/>
+                            <t t-if="tk.delivery_time_range"> · <span class="kd-ltr" t-esc="tk.delivery_time_range"/></t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+            <t t-if="unassigned">
+                <t t-call="web.basic_layout">
+                    <div class="page kd" dir="rtl" style="direction:rtl; text-align:right;">
+                        <t t-call="sukkar.driver_receipt_style"/>
+                        <p class="kd-title">⚠ No driver assigned — assign one first</p>
+                        <p class="kd-val">These orders are in the selection but have no driver, so they appear on no delivery receipt.</p>
+                        <div class="kd-rule"/>
+                        <div class="kd-val" t-foreach="unassigned" t-as="tk">
+                            <strong t-esc="tk.sale_order_id.name"/> — <t t-esc="tk.name"/>
+                            <t t-if="tk.delivery_time_range"> · <span class="kd-ltr" t-esc="tk.delivery_time_range"/></t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

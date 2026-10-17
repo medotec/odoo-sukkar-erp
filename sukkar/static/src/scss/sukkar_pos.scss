@@ -1,0 +1,229 @@
+// ============================================================
+//  Sukkar — POS branding
+//  The POS top-bar logo is a hardcoded <img class="pos-logo"
+//  src="/web/static/img/logo.png"> (Odoo logo). Swap the
+//  rendered image for the Sukkar logo.
+// ============================================================
+.pos-logo {
+    // A new file name on purpose: browsers keep a picture for a week under the
+    // same address, so swapping the file behind the old name left the rose
+    // wordmark on screens that had seen it (owner, 1 Oct 2026).
+    content: url("/sukkar/static/img/sukkar-logo-cupcake.png");
+    height: 42px !important;
+    width: auto;
+    object-fit: contain;
+}
+
+// Every Sukkar control on the register is at least 44px tall: thumbs, at a
+// counter, in a hurry.
+$ks-tap: 44px;
+
+// Per-line remove ✕ (cart only). Bottom-right keeps it clear of the price;
+// 44px hit area for thumbs; goes red only when pressed, so the cart stays calm.
+.orderline {
+    .ks-line-x {
+        position: absolute;
+        bottom: 4px;
+        inset-inline-end: 6px;
+        width: $ks-tap;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: #999;
+        font-size: 16px;
+        font-weight: 600;
+        &:active { background: #FDECEC; color: #C0392B; }
+    }
+
+    // The cake flavours of the line, on the line. Padded clear of the ✕ above,
+    // and loud only when the pieces stopped adding up.
+    .ks-line-flavour {
+        display: block;
+        margin-top: 4px;
+        padding: 6px 8px;
+        padding-inline-end: 52px;
+        min-height: 34px;
+        border-radius: 8px;
+        background: rgba(216, 43, 125, 0.08);
+        color: #8E1650;
+        font-size: 0.85rem;
+
+        &.ks-line-flavour-off {
+            background: #FDECEC;
+            color: #C0392B;
+            font-weight: 600;
+        }
+    }
+}
+
+// Delivery or Pickup: two targets big enough to hit without looking.
+.ks-choice {
+    min-height: 96px;
+    line-height: 1.2;
+}
+
+// Today / Tomorrow, the two days a counter sale is almost always for.
+.ks-day,
+.ks-detail,
+.ks-fee,
+.ks-flavour-name {
+    min-height: $ks-tap;
+}
+
+// The address and the fee open from the Delivery choice they belong to, so
+// they are two-line buttons: what it is, and what is in it so far.
+.ks-detail {
+    line-height: 1.3;
+}
+
+// Who receives the order: a person or an address is a row big enough to hit
+// without looking, and it says enough that the cashier never has to open it to
+// check which one it is (29 Sep 2026).
+.ks-person,
+.ks-address {
+    min-height: 62px;
+    line-height: 1.3;
+    padding: 10px 14px;
+}
+
+// ======================================================= the delivery slip
+// The paper that rides with the order. These rules are deliberately the same
+// as the stylesheet carried into the print window (sukkar_delivery_slip.js),
+// so what the cashier sees before pressing Print is what comes out.
+.ks-slip-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid var(--ks-deep, #8E1650);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+.ks-slip-title { font-size: 1.2rem; font-weight: 600; color: var(--ks-deep, #8E1650); }
+.ks-slip-no { font-size: 1.7rem; font-weight: 600; }
+
+.ks-slip-row {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid #E6E0DA;
+}
+.ks-slip-label {
+    width: 108px;
+    flex: 0 0 108px;
+    padding-top: 2px;
+    color: #6B5E55;
+    text-transform: uppercase;
+    font-size: .68rem;
+    letter-spacing: .06em;
+}
+.ks-slip-value { flex: 1; font-size: .95rem; }
+.ks-slip-big { font-size: 1.1rem; font-weight: 600; }
+
+.ks-slip-items {
+    width: 100%;
+    border-collapse: collapse;
+
+    td { padding: 4px 0; border-bottom: 1px solid #F0EAE4; vertical-align: top; }
+}
+.ks-slip-qty { width: 34px; font-weight: 600; }
+.ks-slip-note { color: #6B5E55; font-size: .82rem; }
+
+// What the driver comes back with, or does not: the one line that stops an
+// awkward conversation at the door.
+.ks-slip-collect {
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    &.ks-slip-cash { background: #FDECEC; color: #B02A1F; border: 1px solid #F3C9C4; }
+    &.ks-slip-paid { background: #EAF6EE; color: #1E7A43; border: 1px solid #C5E6D2; }
+}
+.ks-slip-sign {
+    margin-top: 16px;
+    display: flex;
+    gap: 26px;
+
+    > div {
+        flex: 1;
+        border-top: 1px solid #B9AFA6;
+        padding-top: 4px;
+        color: #6B5E55;
+        font-size: .72rem;
+    }
+}
+
+// What it costs to drive to this address, read off the button before it is
+// picked — so the fee on the ticket is never a surprise.
+.ks-addr-fee {
+    white-space: nowrap;
+    opacity: .8;
+}
+
+// The list of people and addresses can run long on a regular customer; the
+// screen scrolls instead of pushing Save off the bottom.
+.ks-recipient {
+    max-height: 68vh;
+    overflow-y: auto;
+}
+
+.ks-fee-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+// One flavour per row: the name takes the whole bouquet, − and + split it.
+.ks-flavour-row {
+    .ks-step {
+        width: $ks-tap;
+        min-height: $ks-tap;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .ks-flavour-qty {
+        min-width: 32px;
+        font-size: 1.1rem;
+    }
+}
+
+// Sender and receiver, two blocks that cannot be mistaken for one.
+.ks-party-block {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(216, 43, 125, 0.04);
+}
+
+// What is left of the card message, while it is being typed.
+.ks-char-count {
+    font-size: 0.85rem;
+}
+
+
+// The printed slip is Arabic (30 Sep 2026). The loyalty module drops its own
+// English points lines — and a second "Customer NAME" — into the slip after we
+// have built it, so they are hidden here; the Arabic versions are printed
+// higher up, and the coupon-code block (gift cards) is left alone.
+.ks-receipt .before-footer > .loyalty,
+.ks-receipt .before-footer > div:not(.loyalty):not(.pos-coupon-rewards) {
+    display: none;
+}
+
+
+// The receipt window on the orders list: the slip on a sheet of paper, the
+// width of the real thing, so what is shown is what prints.
+.ks-receipt-preview {
+    background: #EFEAE3;
+    padding: 16px;
+    border-radius: 8px;
+    max-height: 70vh;
+    overflow-y: auto;
+    .ks-receipt-paper {
+        width: 320px;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(26, 20, 16, .15);
+    }
+}

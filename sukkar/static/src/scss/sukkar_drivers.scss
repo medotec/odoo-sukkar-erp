@@ -1,0 +1,35 @@
+// Drivers screen, Both view (owner, 11 Oct 2026): a lane per driver inside
+// each delivery-slot column.
+.ks-lanes {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    padding-bottom: 8px;
+}
+.ks-lane {
+    width: 230px;
+    min-height: 140px;
+    flex: 0 0 230px;
+    background: #F7F1F4;
+    border-radius: 8px;
+    padding: 6px;
+}
+.ks-lane-over {
+    outline: 3px dashed #D82B7D;
+    outline-offset: -3px;
+    background: #FCE8F1;
+}
+.ks-lane-title {
+    font-weight: 700;
+    font-size: 14px;
+    padding: 4px 4px 6px;
+    min-height: 32px;
+}
+.ks-lane-count {
+    font-weight: 400;
+    color: #6c757d;
+}
+.ks-lane-card {
+    cursor: grab;
+    margin-bottom: 6px;
+}

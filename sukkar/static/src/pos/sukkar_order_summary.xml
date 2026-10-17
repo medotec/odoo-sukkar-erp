@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The cart line, and the text box that opens from it. -->
+
+    <!-- The ✕ sits on the line itself, bottom-right, clear of the price; a
+         44px touch target for thumbs; .stop so pressing it never selects the
+         line first. Cart only — this template is not used by receipts.
+         The flavours ride under the line for the same reason: the cashier
+         changes them where he can see which bouquet he is changing. -->
+    <t t-inherit="point_of_sale.OrderSummary" t-inherit-mode="extension">
+        <xpath expr="//t[@t-set-slot='product-name']" position="inside">
+            <span class="ks-line-x" role="button" aria-label="Remove line"
+                  t-on-click.stop="() => this.sukkarRemoveLine(line)">✕</span>
+        </xpath>
+        <xpath expr="//Orderline" position="inside">
+            <li t-if="line.sukkar_flavour_summary" class="ks-line-flavour" role="button"
+                aria-label="Cake flavours"
+                t-att-class="{ 'ks-line-flavour-off': sukkarFlavoursOff(line) }"
+                t-on-click.stop="() => this.sukkarEditFlavours(line)">
+                <i class="fa fa-birthday-cake me-1" role="img"/>
+                <t t-esc="line.sukkar_flavour_summary"/>
+                <t t-if="sukkarFlavoursOff(line)"> ⚠</t>
+            </li>
+        </xpath>
+    </t>
+
+    <!-- The card text box: the message is printed on a real card, so it stops
+         at the length Settings → Sukkar allows and counts down while the
+         cashier types. Other text boxes pass no limit and are untouched. -->
+    <t t-inherit="point_of_sale.TextInputPopup" t-inherit-mode="extension">
+        <xpath expr="//textarea" position="attributes">
+            <attribute name="t-att-maxlength">props.sukkarMaxLength</attribute>
+        </xpath>
+        <xpath expr="//textarea" position="after">
+            <div t-if="props.sukkarMaxLength" class="ks-char-count text-end mt-1"
+                 t-att-class="sukkarRemaining ? 'text-muted' : 'text-danger fw-bolder'">
+                <t t-esc="sukkarRemaining"/> characters left
+            </div>
+        </xpath>
+    </t>
+</templates>

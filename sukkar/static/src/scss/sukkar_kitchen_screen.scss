@@ -1,0 +1,322 @@
+// Kitchen wall screen.
+//
+// Built for a 20-inch panel at roughly one to one and a half metres — a station
+// screen, not a distant wall board. Nine tickets at a time in a 3x3 grid: nine is
+// what a numeric keypad addresses with a single press, and it is the most that
+// stays legible at this size.
+//
+// Colour only ever reinforces something the words already say. The screen is read
+// at an angle, through steam, by someone in a hurry.
+.sukkar_kitchen_screen {
+
+    // Odoo's own kanban spacing is built for desks. Override it wholesale.
+    .o_kanban_renderer,
+    .o_kanban_renderer.o_kanban_ungrouped {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: 1fr;
+        gap: 10px;
+        padding: 10px;
+        // The pager is fixed to the bottom of the screen: without this the last
+        // row sits under it and taps meant for DONE land on the strip instead.
+        padding-bottom: 58px;
+        align-content: start;
+    }
+
+    .o_kanban_record { width: auto !important; margin: 0 !important; padding: 0 !important; }
+    // Tiles the pager has moved off the current page.
+    .o_kanban_record.ks-offpage { display: none !important; }
+
+    .ks-tile {
+        padding: 10px 12px;
+        border: 3px solid #111;
+        border-radius: 10px;
+        background: #fff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        // Nothing inside a tile may scroll: the tile itself opens the order on
+        // tap, so a scrolling box swallows the drag and opens the wrong thing.
+        overflow: hidden;
+    }
+
+    .ks-head {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #111;
+        padding-bottom: 5px;
+        gap: 8px;
+    }
+    .ks-no { font-size: 21px; font-weight: 800; letter-spacing: .02em; }
+    .ks-count { font-size: 21px; font-weight: 800; margin-left: auto; }
+
+    .ks-stage {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        margin: 4px 0 2px;
+    }
+    // The items are what the kitchen acts on, so they outrank the customer name,
+    // which only matters at handover.
+    .ks-items {
+        font-size: 16px;
+        font-weight: 700;
+        white-space: pre-line;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    // One button, thumb-sized with gloves on. Still well above the ~44px minimum
+    // touch target even on the smaller panel, because touch is the fallback and
+    // the people using it are not looking closely.
+    .ks-done {
+        width: 100%;
+        min-height: 52px;
+        // A busy ticket must never squeeze the button off the bottom of the tile:
+        // the text above it gives way first.
+        flex-shrink: 0;
+        background: #111;
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: .06em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        &:hover, &:focus { background: #000; color: #fff; }
+    }
+    .ks-done-next { font-size: 11px; font-weight: 600; opacity: .85; }
+
+    // 44px is the floor for anything a wet thumb has to hit — this button used to
+    // be 30px and was missed constantly.
+    .ks-problem {
+        width: 100%;
+        margin-top: 4px;
+        min-height: 46px;
+        flex-shrink: 0;
+        background: #fff;
+        border: 2px solid #111;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .ks-locked {
+        width: 100%;
+        min-height: 52px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px dashed #C0392B;
+        border-radius: 8px;
+        color: #C0392B;
+        font-size: 15px;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    // The keypad number for this tile — the primary input. Touch is the fallback,
+    // not the other way round: gloves and cream defeat a capacitive screen.
+    .ks-key {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 27px;
+        height: 27px;
+        flex: 0 0 27px;
+        border: 2px solid #111;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 800;
+    }
+    .ks-firing { opacity: .45; }
+
+    // Urgency as a traffic light, read from across the kitchen: the WHOLE card
+    // is the colour and everything on it is white (owner, 30 Sep 2026). Green
+    // while there is time, amber in the last half hour, red once it is late.
+    // A ticket with no deadline keeps the plain white card — it is not part of
+    // the light.
+    // .ks-tile is written twice on purpose. Odoo paints every kanban card white
+    // with a heavier selector than ours, so a plain .ks-ok lost the argument and
+    // the card stayed white — with white writing on it. Repeating the class
+    // outweighs Odoo's rule without resorting to !important.
+    .ks-tile.ks-tile.ks-ok   { background: #157F3C; border-color: #0C5228; }
+    .ks-tile.ks-tile.ks-soon { background: #B26A00; border-color: #7A4900; }
+    .ks-tile.ks-tile.ks-late { background: #C0392B; border-color: #86241A; }
+
+    .ks-tile.ks-ok, .ks-tile.ks-soon, .ks-tile.ks-late {
+        color: #fff;
+
+        .ks-head { border-bottom-color: rgba(255, 255, 255, .5); }
+        .ks-no, .ks-count, .ks-stage, .ks-items { color: #fff; }
+        .ks-key { border-color: #fff; color: #fff; }
+
+        // The three inner bands keep their meaning, in white on the colour:
+        // the flavours quiet, the special request loud, the gift quietest.
+        .ks-flavours {
+            background: rgba(255, 255, 255, .18);
+            border-left-color: #fff;
+            color: #fff;
+        }
+        // Notes stay red on the coloured card too (owner, 10 Oct 2026): red on
+        // a white strip, because red writing on a red card would vanish.
+        .ks-alert {
+            background: #fff;
+            border-color: #fff;
+        }
+        .ks-alert-tag { background: #C0392B; color: #fff; }
+        .ks-alert-text { color: #C0392B; }
+        .ks-gift {
+            background: rgba(255, 255, 255, .15);
+            color: #fff;
+        }
+
+        // On a coloured card the button has to invert: white with dark words is
+        // the only thing that still reads as "press this" from four metres.
+        .ks-done {
+            background: #fff;
+            color: #111;
+            &:hover, &:focus { background: #F1F1F1; color: #111; }
+        }
+        .ks-problem {
+            background: transparent;
+            border-color: #fff;
+            color: #fff;
+        }
+        .ks-locked { border-color: #fff; color: #fff; }
+    }
+
+    // A late ticket pulses for thirty seconds and then holds steady. A light
+    // that never stops stops being a warning.
+    .ks-tile.ks-late {
+        animation: ks-flash 1s steps(1, end) 30;
+    }
+    @keyframes ks-flash {
+        0%, 49%   { background: #C0392B; box-shadow: none; }
+        50%, 100% { background: #7F1D14; box-shadow: 0 0 0 7px #FF6F5E; }
+    }
+
+    .ks-blocked { background: #F4F4F4; border-style: dashed; }
+}
+
+// The pager strip. Fixed to the bottom so it is in the same place whatever the
+// queue is doing, and it always states how many tickets are NOT on screen —
+// a board that silently hides work is worse than no board.
+.ks-pager {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    // It is a sign, not a control. Nothing on it is tappable, so it must never
+    // catch a tap that was aimed at the tile behind it.
+    pointer-events: none;
+    background: #111;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    padding: 7px 14px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.ks-pager .ks-pager-more { margin-left: auto; font-weight: 800; }
+.ks-pager .ks-pager-keys { opacity: .8; font-weight: 600; font-size: 13px; }
+
+// What the tile says, loudest first (19 Sep 2026). Three levels, and only three,
+// because a tile where everything shouts says nothing:
+//   1. a red-tagged ALERT for anything that changes what is made,
+//   2. the cake flavours, which decide how it is decorated,
+//   3. the gift message, quiet grey — text to copy onto a card, not an instruction.
+.sukkar_kitchen_screen {
+    .ks-flavours {
+        font-size: 17px;
+        font-weight: 800;
+        color: #111;
+        background: #FFF3F8;
+        border-left: 5px solid #D82B7D;
+        border-radius: 6px;
+        padding: 3px 8px;
+        margin: 4px 0;
+        max-height: 3.6em;
+        overflow: hidden;
+    }
+    .ks-alert {
+        background: #FFECE9;
+        border: 3px solid #C0392B;
+        border-radius: 8px;
+        padding: 4px 8px;
+        margin: 4px 0;
+        max-height: 5.4em;
+        overflow: hidden;
+    }
+    .ks-alert-tag {
+        display: block;
+        width: fit-content;
+        background: #C0392B;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .08em;
+        border-radius: 4px;
+        padding: 1px 6px;
+        margin-bottom: 2px;
+    }
+    .ks-alert-text {
+        display: block;
+        font-size: 15px;
+        font-weight: 800;
+        color: #C0392B;
+        white-space: pre-wrap;
+    }
+    // The till's internal note: always on the card, in red like every note on
+    // this screen (owner, 10 Oct 2026), on a white strip so it reads on any card.
+    .ks-note {
+        background: #fff;
+        border-left: 4px solid #C0392B;
+        border-radius: 6px;
+        padding: 3px 8px;
+        margin: 4px 0;
+        max-height: 5.4em;
+        overflow: hidden;
+    }
+    .ks-note-tag {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .06em;
+        color: #C0392B;
+    }
+    .ks-note-text {
+        display: block;
+        font-size: 14px;
+        font-weight: 800;
+        color: #C0392B;
+        white-space: pre-wrap;
+    }
+    .ks-gift {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        background: #F5F5F5;
+        border-radius: 6px;
+        padding: 2px 6px;
+        margin: 2px 0;
+        max-height: 3.2em;
+        overflow: hidden;
+    }
+}
+
+// The tap-through preview is worked from the same wall screen with the same wet
+// thumb, so its buttons obey the same 44px floor as the tiles.
+.ks-preview-btn {
+    min-height: 48px;
+    min-width: 130px;
+    font-weight: 800;
+}

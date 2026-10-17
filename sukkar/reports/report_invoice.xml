@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inject a Gift & Delivery block into the standard invoice PDF. -->
+    <template id="report_invoice_document_sukkar" inherit_id="account.report_invoice_document">
+        <!-- Hide Due Date (تاريخ الاستحقاق) -->
+        <xpath expr="//div[@name='due_date']" position="replace"/>
+        <xpath expr="//div[@id='informations']" position="after">
+            <t t-set="sukkar_line_flavours"
+               t-value="any(l.sukkar_flavour_summary for l in o.invoice_line_ids)"/>
+            <div t-if="o.sukkar_gift_to or o.sukkar_gift_message or o.sukkar_delivery_datetime
+                       or o.sukkar_address_summary or o.sukkar_driver_id
+                       or o.sukkar_flavour_summary"
+                 class="row mt-3">
+                <div class="col-12">
+                    <div class="border rounded p-2">
+                        <strong>Gift &amp; Delivery</strong>
+                        <div t-if="o.sukkar_order_type">
+                            <strong>Type:</strong> <span t-field="o.sukkar_order_type"/>
+                        </div>
+                        <div t-if="o.sukkar_gift_to">
+                            <strong>To:</strong> <span t-field="o.sukkar_gift_to"/>
+                            <t t-if="o.sukkar_gift_from"> · <strong>From:</strong> <span t-field="o.sukkar_gift_from"/></t>
+                        </div>
+                        <div t-if="o.sukkar_gift_message">
+                            <strong>Message:</strong> <bdi><span t-field="o.sukkar_gift_message"/></bdi>
+                        </div>
+                        <div t-if="o.sukkar_flavour_summary and not sukkar_line_flavours">
+                            <strong>Cake Flavours:</strong>
+                            <bdi><span t-field="o.sukkar_flavour_summary"/></bdi>
+                        </div>
+                        <div t-if="o.sukkar_delivery_datetime">
+                            <strong>Delivery:</strong> <span t-field="o.sukkar_delivery_datetime"/>
+                            <t t-if="o.sukkar_delivery_time_range"> (<span t-field="o.sukkar_delivery_time_range"/>)</t>
+                        </div>
+                        <div t-if="o.sukkar_receiver_name">
+                            <strong>Receiver:</strong> <span t-field="o.sukkar_receiver_name"/>
+                            <t t-if="o.sukkar_receiver_phone"> · <span t-field="o.sukkar_receiver_phone"/></t>
+                        </div>
+                        <div t-if="o.sukkar_address_summary and o.sukkar_order_type != 'pickup'">
+                            <strong>Address:</strong>
+                            <bdi><span t-field="o.sukkar_address_summary"/></bdi>
+                        </div>
+                        <div t-if="o.sukkar_driver_id">
+                            <strong>Driver:</strong> <span t-field="o.sukkar_driver_id.name"/>
+                        </div>
+                        <div t-if="o.sukkar_special_requests">
+                            <strong>Notes:</strong> <bdi><span t-field="o.sukkar_special_requests"/></bdi>
+                        </div>
+                        <div t-if="o.sukkar_payment_method">
+                            <strong>Payment:</strong> <span t-field="o.sukkar_payment_method"/>
+                            <t t-if="o.sukkar_knet_approval"> · <strong>KNET Approval:</strong>
+                                <span t-field="o.sukkar_knet_approval"/></t>
+                            <t t-if="o.sukkar_payment_reference"> · <strong>Payment Ref:</strong>
+                                <span t-field="o.sukkar_payment_reference"/></t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- Kuwait has no VAT: with no real tax on the invoice the Taxes column
+             is an empty column. It comes back by itself the day a tax exists. -->
+        <xpath expr="//t[@t-set='display_discount']" position="after">
+            <!-- A 0% "Kuwait — No VAT" tax is still a tax group, so asking
+                 whether a group exists never suppressed anything. Ask about the
+                 money instead. -->
+            <t t-set="sukkar_has_tax" t-value="o.sukkar_has_real_tax"/>
+        </xpath>
+        <xpath expr="//th[@name='th_taxes']" position="attributes">
+            <attribute name="t-if">sukkar_has_tax</attribute>
+        </xpath>
+        <xpath expr="//td[@name='td_taxes']" position="attributes">
+            <attribute name="t-if">sukkar_has_tax</attribute>
+        </xpath>
+
+        <!-- The cake flavours the customer paid for, on the line they belong to,
+             and a delivery fee that says so whatever the fee product is called. -->
+        <xpath expr="//td[@name='account_invoice_line_name']" position="inside">
+            <div t-if="line.sukkar_flavour_summary" class="small">
+                <span>Cake Flavours:</span>
+                <bdi><span t-field="line.sukkar_flavour_summary"/></bdi>
+            </div>
+            <div t-if="any(line.sale_line_ids.mapped('is_delivery'))
+                       or (line.product_id and line.product_id == o.company_id.sukkar_pos_fee_product_id)"
+                 class="small">
+                Delivery Fee
+            </div>
+        </xpath>
+    </template>
+
+    <!-- With no tax at all, "Untaxed Amount" is the same figure as "Total"
+         printed twice, and a "No VAT (Kuwait) … 0.000" line is a tax line on an
+         invoice from a country that has no tax. Kuwait's 0% tax IS a tax group,
+         so both rows have to ask whether any money was charged. Same rule as the
+         register receipt: no tax, no tax line. -->
+    <template id="document_tax_totals_sukkar" inherit_id="account.document_tax_totals">
+        <xpath expr="//tr[hasclass('o_subtotal')]" position="attributes">
+            <attribute name="t-if">tax_totals.get('tax_amount_currency')</attribute>
+        </xpath>
+        <xpath expr="//tr[hasclass('o_taxes')]" position="attributes">
+            <attribute name="t-if">tax_group['tax_amount_currency']</attribute>
+        </xpath>
+    </template>
+</odoo>

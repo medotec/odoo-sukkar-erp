@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================= -->
+    <!-- DRIVERS (owner, 10 Oct 2026) — one column per driver and one  -->
+    <!-- for Unassigned. Dragging a card to a driver's column assigns   -->
+    <!-- it to him; dragging it on to another driver reassigns it — no  -->
+    <!-- order is opened. The card says where it goes: area and block.  -->
+    <!-- The button bar switches the columns between drivers and        -->
+    <!-- delivery date & time (read-only there: rescheduling is done on -->
+    <!-- Dispatch). Opens on Today; Tomorrow can be ticked alongside.   -->
+    <!-- ============================================================= -->
+
+    <record id="sukkar_drivers_view_kanban" model="ir.ui.view">
+        <field name="name">sukkar.production.drivers.kanban</field>
+        <field name="model">sukkar.production</field>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <kanban js_class="sukkar_drivers_kanban" default_group_by="driver_id"
+                    default_order="delivery_date, sequence" quick_create="false"
+                    create="false" groups_draggable="false" group_create="false"
+                    group_delete="false" group_edit="false" sample="1">
+                <field name="driver_id"/>
+                <field name="delivery_when"/>
+                <field name="sale_order_id"/>
+                <field name="name"/>
+                <field name="addr_area"/>
+                <field name="addr_block"/>
+                <field name="delivery_date"/>
+                <field name="delivery_time_range"/>
+                <field name="receiver_name"/>
+                <field name="partner_id"/>
+                <field name="payment_status"/>
+                <field name="cash_due"/>
+                <field name="currency_id"/>
+                <field name="status"/>
+                <field name="is_late"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click ks-driver-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong class="fs-6"><field name="sale_order_id"/></strong>
+                                <field name="payment_status" widget="badge"
+                                       decoration-success="payment_status == 'PAID'"
+                                       decoration-danger="payment_status == 'UNPAID'"/>
+                            </div>
+                            <!-- Where it goes, big enough to read across the room. -->
+                            <div class="fs-5 fw-bold mt-1">
+                                <t t-if="record.addr_area.value"><t t-esc="record.addr_area.value"/></t>
+                                <t t-else=""><span class="text-muted">No area</span></t>
+                                <t t-if="record.addr_block.value"> · Block <t t-esc="record.addr_block.value"/></t>
+                            </div>
+                            <div class="small">
+                                <t t-if="record.delivery_date.value"><field name="delivery_date"/></t>
+                                <t t-if="record.delivery_time_range.value"> · <span class="fw-bold" t-esc="record.delivery_time_range.value"/></t>
+                                <t t-if="record.is_late.raw_value"> · <span class="text-danger fw-bold">LATE</span></t>
+                            </div>
+                            <div class="small text-muted">
+                                <t t-if="record.receiver_name.value"><t t-esc="record.receiver_name.value"/></t>
+                                <t t-else=""><field name="partner_id"/></t>
+                            </div>
+                            <div t-if="record.cash_due.raw_value" class="small fw-bold text-danger">
+                                Collect: <field name="cash_due" widget="monetary"/>
+                            </div>
+                            <div class="mt-1"><field name="status" widget="badge"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="sukkar_drivers_view_search" model="ir.ui.view">
+        <field name="name">sukkar.production.drivers.search</field>
+        <field name="model">sukkar.production</field>
+        <field name="priority">40</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Ticket / Order"
+                       filter_domain="['|', ('name', 'ilike', self), ('sale_order_id.name', 'ilike', self)]"/>
+                <field name="driver_id"/>
+                <field name="addr_area"/>
+                <!-- One group: tick both and the board shows both days. -->
+                <filter name="f_today" string="Today"
+                        domain="[('delivery_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="f_tomorrow" string="Tomorrow"
+                        domain="[('delivery_date', '=', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="s_kitchen" string="In the Kitchen" domain="[('status', '=', 'in_progress')]"/>
+                <filter name="s_ready" string="Ready for Pickup" domain="[('status', '=', 'ready_for_pickup')]"/>
+                <filter name="s_delivery" string="Out for Delivery" domain="[('status', '=', 'in_delivery')]"/>
+                <filter name="s_delivered" string="Delivered" domain="[('status', 'in', ('delivered', 'closed'))]"/>
+                <separator/>
+                <filter name="no_driver" string="No Driver Yet" domain="[('driver_id', '=', False)]"/>
+                <filter name="unpaid" string="Unpaid" domain="[('payment_status', '=', 'UNPAID')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_driver" string="Driver" context="{'group_by': 'driver_id'}"/>
+                    <filter name="group_when" string="Delivery Date &amp; Time"
+                            context="{'group_by': 'delivery_when'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="sukkar_drivers_action" model="ir.actions.act_window">
+        <field name="name">Drivers</field>
+        <field name="res_model">sukkar.production</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="sukkar_drivers_view_kanban"/>
+        <field name="search_view_id" ref="sukkar_drivers_view_search"/>
+        <!-- Deliveries only: a branch pickup never has a driver. -->
+        <field name="domain">[('sale_order_id', '!=', False), ('order_state', 'not in', ['cancel']),
+                              ('order_type', '=', 'delivery')]</field>
+        <field name="context">{'search_default_f_today': 1, 'search_default_group_driver': 1, 'sukkar_drivers_board': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No deliveries for this day</p>
+            <p>Drag an order onto a driver's column to give it to him, or from one
+               driver to another to swap it. Tick Tomorrow to see both days.</p>
+        </field>
+    </record>
+
+    <record id="sukkar_drivers_action_kanban" model="ir.actions.act_window.view">
+        <field name="view_mode">kanban</field>
+        <field name="sequence">1</field>
+        <field name="view_id" ref="sukkar_drivers_view_kanban"/>
+        <field name="act_window_id" ref="sukkar_drivers_action"/>
+    </record>
+</odoo>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_monthly_close_view_list" model="ir.ui.view">
+        <field name="name">sukkar.monthly.close.list</field>
+        <field name="model">sukkar.monthly.close</field>
+        <field name="arch" type="xml">
+            <list default_order="date_from desc" decoration-success="net_profit &gt; 0"
+                  decoration-danger="net_profit &lt; 0">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="revenue" sum="Revenue"/>
+                <field name="cogs" sum="COGS"/>
+                <field name="gross_profit" sum="Gross"/>
+                <field name="expenses_total" sum="Expenses"/>
+                <field name="net_profit" sum="Net Profit"/>
+                <field name="net_margin" widget="percentage"/>
+                <field name="state" widget="badge" decoration-success="state == 'closed'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_monthly_close_view_form" model="ir.ui.view">
+        <field name="name">sukkar.monthly.close.form</field>
+        <field name="model">sukkar.monthly.close</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_compute" type="object" string="Compute Actuals"
+                            class="oe_highlight"/>
+                    <button name="action_close" type="object" string="Close Month"
+                            invisible="state == 'closed'"
+                            confirm="Closing the month locks it: nothing dated in it can be changed afterwards, and only an accountant can unlock it. Continue?"/>
+                    <button name="action_draft" type="object" string="Reset to Draft"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. June 2026"/></h1>
+                    </div>
+                    <group>
+                        <group string="Period">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group string="Ratio reference (BOM Fixed-Cost tab)">
+                            <field name="var_raw_pct"/>
+                            <field name="var_ads_pct"/>
+                            <field name="est_variable_cost" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="from_books" invisible="1"/>
+                    <div class="alert alert-success" role="alert" invisible="not from_books">
+                        These figures come from the <b>posted accounts</b> — the same
+                        books the accountant works in. The official statements are
+                        Accounting → Reporting → Sukkar — Profit &amp; Loss.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="from_books">
+                        Nothing is posted in the accounts for this period, so these
+                        figures are counted from orders, the till and the expense
+                        list instead. That is normal for months before the books
+                        went live on 1 Oct 2026.
+                    </div>
+                    <group string="Profit &amp; Loss (editable after Compute)">
+                        <group>
+                            <field name="revenue"/>
+                            <field name="cogs"/>
+                            <field name="gross_profit" readonly="1"/>
+                            <field name="gross_margin" widget="percentage" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="expenses_total"/>
+                            <field name="other_income"/>
+                            <field name="other_costs"/>
+                            <field name="net_profit" readonly="1" class="oe_subtotal_footer_separator"/>
+                            <field name="net_margin" widget="percentage" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Cross-check against the shop floor" invisible="not from_books">
+                        <group>
+                            <field name="ops_revenue"/>
+                            <field name="ops_cogs"/>
+                            <field name="ops_expenses_total"/>
+                        </group>
+                        <group>
+                            <field name="variance"/>
+                            <div colspan="2" class="text-muted">
+                                Anything other than zero means a sale or a cost was
+                                recorded in one place and not the other — worth a
+                                look before the month is closed.
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Closing">
+                        <field name="lock_on_close"/>
+                    </group>
+                    <field name="note" placeholder="Adjustments / notes…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_monthly_close_view_graph" model="ir.ui.view">
+        <field name="name">sukkar.monthly.close.graph</field>
+        <field name="model">sukkar.monthly.close</field>
+        <field name="arch" type="xml">
+            <graph string="Net Profit by Month" type="bar">
+                <field name="name"/>
+                <field name="net_profit" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="sukkar_monthly_close_action" model="ir.actions.act_window">
+        <field name="name">Monthly P&amp;L</field>
+        <field name="res_model">sukkar.monthly.close</field>
+        <field name="view_mode">list,form,graph</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Close your first month</p>
+            <p>Set the period, hit <b>Compute Actuals</b>: revenue − COGS − expenses = net profit.</p>
+        </field>
+    </record>
+</odoo>

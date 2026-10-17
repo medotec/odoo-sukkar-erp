@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- The Drivers screen's grouping switch (owner, 10 Oct 2026). -->
+    <t t-name="sukkar.DriversKanban.Buttons">
+        <div class="o_cp_buttons d-flex align-items-baseline gap-1" role="toolbar" aria-label="Group the board">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn"
+                        t-att-class="sukkarMode === 'driver' ? 'btn-primary' : 'btn-secondary'"
+                        t-on-click="() => this.sukkarShow('driver')">By Driver</button>
+                <button type="button" class="btn"
+                        t-att-class="sukkarMode === 'when' ? 'btn-primary' : 'btn-secondary'"
+                        t-on-click="() => this.sukkarShow('when')">By Delivery Date &amp; Time</button>
+                <button type="button" class="btn"
+                        t-att-class="sukkarMode === 'both' ? 'btn-primary' : 'btn-secondary'"
+                        t-on-click="() => this.sukkarShow('both')">Both</button>
+            </div>
+        </div>
+    </t>
+
+    <!-- Both (owner, 11 Oct 2026): each slot column holds a lane per driver. -->
+    <t t-name="sukkar.DriversKanbanRenderer" t-inherit="web.KanbanRenderer" t-inherit-mode="primary">
+        <xpath expr="//div[hasclass('o_kanban_group')]" position="attributes">
+            <attribute name="t-att-style">sukkarLanes ? 'width:auto; max-width:none;' : ''</attribute>
+        </xpath>
+        <xpath expr="//t[@t-foreach='group.list.records']" position="before">
+            <div t-if="sukkarLanes" class="ks-lanes">
+                <t t-foreach="sukkarLanesFor(group)" t-as="lane" t-key="lane.key">
+                    <div class="ks-lane"
+                         t-att-class="{ 'ks-lane-over': sukkarDrag.over === group.id + '-' + lane.key }"
+                         t-on-dragover="(ev) => this.sukkarDragOver(ev, group, lane)"
+                         t-on-drop="(ev) => this.sukkarDrop(ev, group, lane)">
+                        <div class="ks-lane-title">
+                            <t t-esc="lane.name"/> <span class="ks-lane-count">(<t t-esc="lane.records.length"/>)</span>
+                        </div>
+                        <t t-foreach="lane.records" t-as="record" t-key="record.id">
+                            <div class="ks-lane-card" draggable="true"
+                                 t-on-dragstart="(ev) => this.sukkarDragStart(ev, group, record)"
+                                 t-on-dragend="() => this.sukkarDragEnd()">
+                                <KanbanRecord
+                                    archInfo="props.archInfo"
+                                    Compiler="props.Compiler"
+                                    canResequence="false"
+                                    forceGlobalClick="props.forceGlobalClick"
+                                    group="group"
+                                    list="props.list"
+                                    deleteRecord="props.deleteRecord"
+                                    archiveRecord.bind="archiveRecord"
+                                    openRecord="props.openRecord"
+                                    readonly="props.readonly"
+                                    record="record"
+                                    templates="props.archInfo.templateDocs"
+                                    progressBarState="props.progressBarState"
+                                />
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-foreach='group.list.records']" position="attributes">
+            <attribute name="t-if">!sukkarLanes</attribute>
+        </xpath>
+    </t>
+
+    <!-- Print beside each driver's name (owner, 10 Oct 2026). -->
+    <t t-inherit="web.KanbanHeader" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_column_title') and @t-if='!group.isFolded']" position="after">
+            <button t-if="sukkarCanPrintDriver and !group.isFolded" type="button"
+                    class="btn btn-secondary d-print-none ms-1 ks-print-driver"
+                    style="min-height:44px; min-width:44px;"
+                    title="Print delivery receipt" aria-label="Print delivery receipt"
+                    t-on-click.stop="() => this.sukkarPrintDriver()">
+                <i class="fa fa-print me-1"/>Print
+            </button>
+        </xpath>
+    </t>
+</templates>

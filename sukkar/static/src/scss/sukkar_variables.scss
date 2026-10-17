@@ -1,0 +1,41 @@
+// ============================================================
+//  Sukkar — backend brand theme
+//  Uses Odoo's *canonical* SCSS variables, verified against the
+//  Odoo 18 source:
+//    web/static/src/scss/primary_variables.scss
+//    web/static/src/webclient/navbar/navbar.variables.scss
+//  Loaded via `web._assets_primary_variables`, so these override
+//  the framework `!default` values — no `!important` hacks needed.
+// ============================================================
+
+// --- Brand -------------------------------------------------------------
+// $o-brand-odoo and $o-brand-primary both default to $o-community-color.
+// $o-main-link-color = darken($o-brand-primary, 5%)  -> links follow automatically.
+// $o-action, primary buttons and input borders also derive from $o-brand-primary.
+$o-community-color:  #D82B7D;   // base community colour
+$o-brand-primary:    #D82B7D;   // Sukkar pink: action, inputs, accents
+$o-brand-secondary:  #8E1650;
+
+// Bootstrap $primary maps to $o-brand-primary only via `!default`, which the
+// Bootstrap lib re-sets to $blue depending on load order — set it explicitly
+// here (loaded first) so .btn-primary / --bs-primary use the brand pink.
+$primary:            #D82B7D;
+
+// --- Links --------------------------------------------------------------
+// Odoo's $o-main-link-color derives from $o-brand-primary, but the visible
+// link colour is Bootstrap's $link-color (independent) -> set both.
+$o-main-link-color:  #B81E68;
+$link-color:         #B81E68;
+$link-hover-color:   #8E1650;
+
+// --- Main navbar ($o-navbar-* canonical vars) --------------------------
+$o-navbar-background:           #8E1650;             // deep Sukkar pink bar
+$o-navbar-border-bottom:        1px solid #6A1038;
+$o-navbar-entry-color:          #FFF9F0;             // light entry text
+$o-navbar-entry-color--hover:   #FFFFFF;
+$o-navbar-entry-color--active:  #FFFFFF;
+$o-navbar-entry-bg--hover:      #6A1038;             // darker pink hover button
+$o-navbar-entry-bg--active:     #6A1038;             // active sub-menu button
+
+// --- Bootstrap semantic: keep "info" on-brand (was teal #17a2b8) -------
+$info: #A0607A;   // mauve — distinct from primary, still on-brand

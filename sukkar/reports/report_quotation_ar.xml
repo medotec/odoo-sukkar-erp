@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =============================================================
+         QUOTATION — ARABIC, RIGHT TO LEFT (owner, 2 Oct 2026)
+
+         A price offer from the back office, in the invoice's own look:
+         the full-colour logo (owner, 10 Oct 2026), the shop's phone, who it is for, what
+         is in it and what it costs. Once the customer agrees, Confirm on
+         the same order turns it into a real order for the kitchen; the
+         same Print button then prints it as an order.
+
+         Same wkhtmltopdf rules as the invoice: tables, not flexbox. -->
+
+    <template id="report_quotation_sukkar_ar">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+              <t t-call="web.basic_layout">
+                <t t-set="is_quote" t-value="o.state in ('draft', 'sent')"/>
+                <t t-set="fee_product" t-value="o.company_id.sukkar_pos_fee_product_id"/>
+                <t t-set="item_lines"
+                   t-value="o.order_line.filtered(lambda l: not l.display_type and not l.is_delivery and not (fee_product and l.product_id == fee_product))"/>
+                <t t-set="fee_total"
+                   t-value="sum(o.order_line.filtered(lambda l: not l.display_type and (l.is_delivery or (fee_product and l.product_id == fee_product))).mapped('price_subtotal'))"/>
+                <t t-set="items_total" t-value="sum(item_lines.mapped('price_subtotal'))"/>
+                <div class="page" dir="rtl" style="direction:rtl; text-align:right;">
+                    <style>
+                        .ki-wrap { font-size:13px; color:#3B2B33; }
+                        .ki-top { width:100%; border-collapse:collapse; margin:0 0 14px; }
+                        .ki-top td { vertical-align:middle; padding:0; }
+                        .ki-logo { width:120px; }
+                        .ki-logo img { width:110px; height:auto; }
+                        .ki-shop { font-size:20px; font-weight:800; color:#000; margin:0; }
+                        .ki-shop-sub { font-size:11px; color:#555; margin:2px 0 0; }
+                        .ki-title { text-align:left; }
+                        .ki-title .t { font-size:24px; font-weight:800; color:#D82B7D; margin:0; }
+                        .ki-title .n { font-size:15px; font-weight:800; margin:2px 0 0; }
+                        .ki-title .d { font-size:11px; color:#555; margin:2px 0 0; }
+                        .ki-rule { height:3px; background:#D82B7D; border-radius:3px; margin:0 0 12px; }
+                        .ki-box { width:100%; border:1.5px solid #D82B7D; border-radius:8px;
+                                  border-collapse:separate; margin:0 0 10px; page-break-inside:avoid; }
+                        .ki-box td { padding:5px 10px; font-size:12px; vertical-align:top; }
+                        .ki-box .lbl { color:#D82B7D; font-weight:700; white-space:nowrap; width:120px; }
+                        .ki-box .row td { border-top:1px solid #F5DCE9; }
+                        .ki-head { background:#FFF3F8; color:#A01F5C; font-weight:800; font-size:13px; }
+                        .ki-items { width:100%; border-collapse:collapse; margin:0 0 10px; }
+                        .ki-items th { background:#D82B7D; color:#fff; font-weight:700; font-size:12px;
+                                       padding:6px 10px; text-align:right; }
+                        .ki-items td { padding:6px 10px; font-size:12px; border-bottom:1px solid #F0E6DD;
+                                       vertical-align:top; }
+                        .ki-items .num { text-align:center; white-space:nowrap; }
+                        .ki-sub { font-size:10px; color:#7A6470; }
+                        .ki-tot { width:52%; border-collapse:collapse; margin-right:auto; }
+                        .ki-tot td { padding:5px 10px; font-size:13px; }
+                        .ki-tot .lbl { color:#555; }
+                        .ki-tot .grand td { border-top:2px solid #D82B7D; font-size:16px; font-weight:800;
+                                            color:#D82B7D; }
+                        .ki-terms { margin-top:14px; font-size:11px; color:#555; white-space:pre-line; }
+                        .ki-foot { margin-top:18px; border-top:1px solid #F0E6DD; padding-top:8px;
+                                   font-size:11px; color:#7A6470; text-align:center; }
+                    </style>
+
+                    <div class="ki-wrap">
+                        <!-- ── الترويسة ───────────────────────────── -->
+                        <table class="ki-top">
+                            <tr>
+                                <td class="ki-logo">
+                                    <img t-att-src="'/sukkar/static/img/sukkar-logo.png'" alt="Sukkar"/>
+                                </td>
+                                <td>
+                                    <p class="ki-shop">سُكّر</p>
+                                    <p class="ki-shop-sub">
+                                        <span t-field="o.company_id.name"/>
+                                        <t t-if="o.company_id.company_registry"> · س.ت: <span t-field="o.company_id.company_registry"/></t>
+                                        <t t-if="o.company_id.phone"> · هاتف: <span dir="ltr" t-field="o.company_id.phone"/></t>
+                                    </p>
+                                </td>
+                                <td class="ki-title">
+                                    <p class="t">
+                                        <t t-if="is_quote">عرض سعر</t>
+                                        <t t-else="">طلب</t>
+                                    </p>
+                                    <p class="n"><span t-field="o.name"/></p>
+                                    <p class="d">التاريخ: <span t-field="o.date_order" t-options='{"widget": "date"}'/></p>
+                                    <p class="d" t-if="is_quote and o.validity_date">
+                                        صالح حتى: <span t-field="o.validity_date"/>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="ki-rule"/>
+
+                        <!-- ── بيانات العميل ──────────────────────── -->
+                        <table class="ki-box">
+                            <tr><td class="ki-head" colspan="2">بيانات العميل</td></tr>
+                            <tr class="row">
+                                <td class="lbl">العميل</td>
+                                <td><strong t-field="o.partner_id.name"/></td>
+                            </tr>
+                            <tr class="row" t-if="o.partner_id.mobile or o.partner_id.phone">
+                                <td class="lbl">رقم الهاتف</td>
+                                <td><span dir="ltr" t-esc="o.partner_id.mobile or o.partner_id.phone"/></td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_delivery_datetime">
+                                <td class="lbl">
+                                    <t t-if="o.sukkar_order_type == 'pickup'">موعد الاستلام</t>
+                                    <t t-else="">موعد التوصيل</t>
+                                </td>
+                                <td>
+                                    <span t-field="o.sukkar_delivery_date"/>
+                                    <t t-if="o.sukkar_delivery_time_range"> · <span t-field="o.sukkar_delivery_time_range"/></t>
+                                </td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_address_summary and o.sukkar_order_type != 'pickup'">
+                                <td class="lbl">العنوان</td>
+                                <td><span t-field="o.sukkar_address_summary"/></td>
+                            </tr>
+                        </table>
+
+                        <!-- ── الأصناف ────────────────────────────── -->
+                        <table class="ki-items">
+                            <thead>
+                                <tr>
+                                    <th>الصنف</th>
+                                    <th class="num" style="width:70px;">الكمية</th>
+                                    <th class="num" style="width:110px;">السعر</th>
+                                    <th class="num" style="width:120px;">الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="item_lines" t-as="line">
+                                    <td>
+                                        <strong t-esc="line.product_id.sukkar_name_ar or line.product_id.name or line.name"/>
+                                        <t t-if="line.product_id.sukkar_variant_ar">
+                                            — <span t-esc="line.product_id.sukkar_variant_ar"/>
+                                        </t>
+                                        <div t-if="line.sukkar_flavour_summary" class="ki-sub">
+                                            النكهات: <span t-field="line.sukkar_flavour_summary"/>
+                                        </div>
+                                    </td>
+                                    <td class="num"><span t-esc="int(line.product_uom_qty)"/></td>
+                                    <td class="num">
+                                        <span t-field="line.price_unit"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td class="num">
+                                        <span t-field="line.price_subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- ── المبالغ ── -->
+                        <table class="ki-tot">
+                            <tr>
+                                <td class="lbl">المجموع</td>
+                                <td style="text-align:left;">
+                                    <span t-esc="items_total"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr t-if="fee_total">
+                                <td class="lbl">رسوم التوصيل</td>
+                                <td style="text-align:left;">
+                                    <span t-esc="fee_total"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr class="grand">
+                                <td>الإجمالي</td>
+                                <td style="text-align:left;">
+                                    <span t-field="o.amount_total"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div t-if="o.note" class="ki-terms"><span t-field="o.note"/></div>
+
+                        <div class="ki-foot">
+                            شكراً لاختياركم سُكّر · sukkar-demo.com
+                        </div>
+                    </div>
+                </div>
+              </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Odoo's Print → Quotation / Order keeps its place and prints this page. -->
+    <record id="sale.action_report_saleorder" model="ir.actions.report">
+        <field name="report_name">sukkar.report_quotation_sukkar_ar</field>
+        <field name="report_file">sukkar.report_quotation_sukkar_ar</field>
+    </record>
+</odoo>

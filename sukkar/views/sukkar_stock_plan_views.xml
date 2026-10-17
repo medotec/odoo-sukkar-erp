@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_stock_plan_view_form" model="ir.ui.view">
+        <field name="name">sukkar.stock.plan.form</field>
+        <field name="model">sukkar.stock.plan</field>
+        <field name="arch" type="xml">
+            <form string="Daily Stock Plan">
+                <header>
+                    <button name="action_compute" type="object" string="Calculate"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders" type="object" class="oe_stat_button"
+                                icon="fa-shopping-cart" invisible="order_count == 0">
+                            <field name="order_count" widget="statinfo" string="Orders"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="computed_on" readonly="1"/>
+                            <field name="shortage_count" string="Items Short"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="shortage_count == 0">
+                        <b>Buy these before the day starts.</b> The highlighted rows do not
+                        have enough stock to cover the orders due on this date.
+                    </div>
+                    <div class="alert alert-success" role="alert"
+                         invisible="shortage_count != 0 or not computed_on">
+                        Everything needed for this day is already in stock.
+                    </div>
+                    <field name="line_ids" readonly="1">
+                        <list decoration-danger="is_short == True" create="0" delete="0">
+                            <field name="product_id"/>
+                            <field name="categ_id" optional="show"/>
+                            <field name="required_qty" string="Needed"/>
+                            <field name="on_hand_qty" string="In Stock"/>
+                            <field name="shortfall" string="Short By"/>
+                            <field name="uom_name" string="Unit"/>
+                            <field name="is_short" column_invisible="1"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_stock_plan_view_list" model="ir.ui.view">
+        <field name="name">sukkar.stock.plan.list</field>
+        <field name="model">sukkar.stock.plan</field>
+        <field name="arch" type="xml">
+            <list string="Daily Stock Plans" decoration-danger="shortage_count > 0">
+                <field name="date"/>
+                <field name="order_count" string="Orders"/>
+                <field name="shortage_count" string="Items Short"/>
+                <field name="computed_on"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_stock_plan_action" model="ir.actions.act_window">
+        <field name="name">Daily Stock Plan</field>
+        <field name="res_model">sukkar.stock.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Plan a day</p>
+            <p>Pick a date and press Calculate. It adds up every ingredient the
+               confirmed orders for that day need, and flags whatever is short.</p>
+        </field>
+    </record>
+
+    <!-- Low stock: Odoo's reordering rules, surfaced where the shop will look -->
+    <record id="sukkar_low_stock_action" model="ir.actions.act_window">
+        <field name="name">Low Stock Alerts</field>
+        <field name="res_model">stock.warehouse.orderpoint</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_to_reorder': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing is running low</p>
+            <p>Every ingredient and packaging item has a minimum level. Anything
+               that drops below it appears here so it can be re-ordered.</p>
+        </field>
+    </record>
+</odoo>

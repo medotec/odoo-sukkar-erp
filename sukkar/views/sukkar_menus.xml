@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============ Products ============ -->
+    <!-- Products were only reachable inside Sales or Inventory; this puts the
+         catalog at the top level where the shop expects it. -->
+    <menuitem id="menu_sukkar_products_root" name="Products" sequence="43"/>
+    <menuitem id="menu_sukkar_products" name="Products"
+              parent="menu_sukkar_products_root"
+              action="sale.product_template_action" sequence="10"/>
+    <menuitem id="menu_sukkar_product_variants" name="Product Variants"
+              parent="menu_sukkar_products_root"
+              action="product.product_variant_action" sequence="20"/>
+    <menuitem id="menu_sukkar_product_categories" name="Product Categories"
+              parent="menu_sukkar_products_root"
+              action="product.product_category_action_form" sequence="30"
+              groups="base.group_system"/>
+
+    <!-- ============ Orders (command center) ============ -->
+    <menuitem id="menu_sukkar_orders_root" name="Orders" sequence="44"/>
+    <menuitem id="menu_sukkar_orders" name="All Orders"
+              parent="menu_sukkar_orders_root" action="sukkar_orders_action" sequence="10"/>
+    <menuitem id="menu_sukkar_quotations" name="Quotations"
+              parent="menu_sukkar_orders_root" action="sukkar_quotations_action" sequence="20"/>
+
+    <menuitem id="menu_sukkar_root" name="Kitchen" sequence="45"/>
+
+    <menuitem id="menu_sukkar_kitchen_screen" name="Kitchen Screen"
+              parent="menu_sukkar_root" action="sukkar_kitchen_screen_action" sequence="5"/>
+    <menuitem id="menu_sukkar_board" name="Kitchen Board"
+              parent="menu_sukkar_root" action="sukkar_production_action" sequence="10"/>
+    <menuitem id="menu_sukkar_display" name="Daily Display"
+              parent="menu_sukkar_root" action="sukkar_display_production_action" sequence="20"/>
+    <menuitem id="menu_sukkar_stock_plan" name="Daily Stock Plan"
+              parent="menu_sukkar_root" action="sukkar_stock_plan_action" sequence="25"/>
+    <menuitem id="menu_sukkar_low_stock" name="Low Stock Alerts"
+              parent="menu_sukkar_root" action="sukkar_low_stock_action" sequence="28"/>
+    <menuitem id="menu_sukkar_cake_stock" name="Cake Stock"
+              parent="menu_sukkar_root" action="sukkar_cake_batch_action" sequence="26"/>
+    <menuitem id="menu_sukkar_cake_moves" name="Cake Movements"
+              parent="menu_sukkar_root" action="sukkar_cake_move_action" sequence="27"/>
+    <menuitem id="menu_sukkar_step_times" name="Step Times"
+              parent="menu_sukkar_root" action="sukkar_stage_log_action" sequence="30"/>
+
+    <!-- ============ Delivery (separate screen) ============ -->
+    <menuitem id="menu_sukkar_delivery_root" name="Delivery" sequence="46"/>
+    <menuitem id="menu_sukkar_dispatch" name="Dispatch"
+              parent="menu_sukkar_delivery_root" action="sukkar_dispatch_action" sequence="5"/>
+    <menuitem id="menu_sukkar_drivers" name="Drivers"
+              parent="menu_sukkar_delivery_root" action="sukkar_drivers_action" sequence="6"/>
+    <menuitem id="menu_sukkar_delivery_board" name="Delivery Board"
+              parent="menu_sukkar_delivery_root" action="sukkar_delivery_board_action" sequence="10"/>
+    <menuitem id="menu_sukkar_deliveries" name="Delivery Calendar"
+              parent="menu_sukkar_delivery_root" action="sukkar_delivery_action" sequence="20"/>
+
+    <menuitem id="menu_sukkar_config" name="Configuration"
+              parent="menu_sukkar_root" sequence="90" groups="base.group_system"/>
+    <menuitem id="menu_sukkar_stages" name="Stages"
+              parent="menu_sukkar_config" action="sukkar_production_stage_action" sequence="10"/>
+    <menuitem id="menu_sukkar_delivery_slots" name="Delivery Slots"
+              parent="menu_sukkar_config" action="sukkar_delivery_slot_action" sequence="20"/>
+    <menuitem id="menu_sukkar_cake_flavours" name="Cake Flavours"
+              parent="menu_sukkar_config" action="sukkar_cake_flavour_action" sequence="30"/>
+    <menuitem id="menu_sukkar_cake_overrides" name="Stock Overrides"
+              parent="menu_sukkar_config" action="sukkar_cake_override_action" sequence="40"/>
+
+    <!-- ============ Expenses ============ -->
+    <menuitem id="menu_sukkar_expense_root" name="Expenses" sequence="46"/>
+    <menuitem id="menu_sukkar_expense_main" name="Expenses"
+              parent="menu_sukkar_expense_root" action="sukkar_expense_action" sequence="10"/>
+    <menuitem id="menu_sukkar_monthly_close" name="Monthly P&amp;L"
+              parent="menu_sukkar_expense_root" action="sukkar_monthly_close_action" sequence="20"/>
+    <menuitem id="menu_sukkar_expense_config" name="Configuration"
+              parent="menu_sukkar_expense_root" sequence="90" groups="base.group_system"/>
+    <menuitem id="menu_sukkar_expense_categories" name="Categories"
+              parent="menu_sukkar_expense_config" action="sukkar_expense_category_action" sequence="10"/>
+
+    <!-- ============ Attendance ============ -->
+    <menuitem id="menu_sukkar_attendance_root" name="Attendance Machine" sequence="47"/>
+    <menuitem id="menu_sukkar_attendance_punches" name="Punches"
+              parent="menu_sukkar_attendance_root" action="sukkar_attendance_punch_action"
+              sequence="10"/>
+    <menuitem id="menu_sukkar_attendance_devices" name="Devices"
+              parent="menu_sukkar_attendance_root" action="sukkar_attendance_device_action"
+              sequence="20" groups="base.group_system"/>
+</odoo>

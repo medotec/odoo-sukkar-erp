@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_display_production_view_form" model="ir.ui.view">
+        <field name="name">sukkar.display.production.form</field>
+        <field name="model">sukkar.display.production</field>
+        <field name="arch" type="xml">
+            <form string="Daily Display Production">
+                <header>
+                    <button name="action_produce" type="object" string="Produce"
+                            class="btn-primary" invisible="state != 'draft'"
+                            confirm="This will make everything on the list and take the ingredients out of stock. Continue?"/>
+                    <button name="action_copy_yesterday" type="object"
+                            string="Copy Last Batch" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_mrp" type="object" class="oe_stat_button"
+                                icon="fa-industry" invisible="mrp_production_count == 0">
+                            <field name="mrp_production_count" widget="statinfo" string="Mfg Orders"/>
+                        </button>
+                        <button name="action_view_sales" type="object" class="oe_stat_button"
+                                icon="fa-shopping-basket" invisible="state != 'done'">
+                            <field name="sold_qty" widget="statinfo" string="Sold"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date" readonly="state == 'done'"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="total_qty"/>
+                            <field name="total_cost" widget="monetary"/>
+                            <field name="sold_qty" invisible="state != 'done'"/>
+                            <field name="unsold_qty" invisible="state != 'done'"/>
+                            <field name="sold_revenue" widget="monetary"
+                                   invisible="state != 'done'"/>
+                            <field name="margin" widget="monetary"
+                                   invisible="state != 'done'"
+                                   decoration-danger="margin &lt; 0"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Items to Make" name="items">
+                            <field name="line_ids" readonly="state == 'done'">
+                                <list editable="bottom">
+                                    <field name="product_id"
+                                           options="{'no_create': True}"/>
+                                    <field name="qty"/>
+                                    <field name="uom_name" string="Unit"/>
+                                    <field name="on_hand" string="In Stock" readonly="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="cost" widget="monetary" readonly="1"/>
+                                    <field name="sold_qty" readonly="1"
+                                           column_invisible="parent.state != 'done'"/>
+                                    <field name="unsold_qty" readonly="1"
+                                           column_invisible="parent.state != 'done'"
+                                           decoration-warning="unsold_qty &gt; 0"/>
+                                    <field name="sold_revenue" widget="monetary" readonly="1"
+                                           column_invisible="parent.state != 'done'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1"
+                                   placeholder="Anything the kitchen should know about today's counter batch…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_display_production_view_list" model="ir.ui.view">
+        <field name="name">sukkar.display.production.list</field>
+        <field name="model">sukkar.display.production</field>
+        <field name="arch" type="xml">
+            <list string="Daily Display Production"
+                  decoration-muted="state == 'done'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="total_qty"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="total_cost" widget="monetary" sum="Cost"/>
+                <field name="mrp_production_count" string="Mfg Orders"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_display_production_view_search" model="ir.ui.view">
+        <field name="name">sukkar.display.production.search</field>
+        <field name="model">sukkar.display.production</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="date"/>
+                <filter name="todo" string="Still To Make" domain="[('state', '=', 'draft')]"/>
+                <filter name="today" string="Today"
+                        domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="g_date" string="Day" context="{'group_by': 'date'}"/>
+                    <filter name="g_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="sukkar_display_production_action" model="ir.actions.act_window">
+        <field name="name">Daily Display</field>
+        <field name="res_model">sukkar.display.production</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Plan today's counter batch</p>
+            <p>List what to make for the display counter, press Produce, and the
+               ingredients come out of stock automatically.</p>
+        </field>
+    </record>
+</odoo>

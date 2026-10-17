@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The payroll configuration ships WITH the module rather than being created
+         by a script. A module that only works after someone remembers to run a
+         script is a module that silently does nothing when it is installed
+         somewhere else — which is exactly what would have happened on staging.
+
+         noupdate="1" so that a later module upgrade never overwrites rates or
+         hours the shop has since changed in the UI. -->
+    <data noupdate="1">
+
+        <!-- ============================ working schedule ==================
+             Saturday to Thursday, 09:00-13:00 and 14:00-18:00: 8 PAID hours a
+             day with the 60-minute unpaid break sitting in the gap. 8 x 6 = 48,
+             exactly Kuwait's statutory weekly maximum.
+
+             Friday deliberately has NO attendance lines. That absence is what
+             makes Friday work land on the x1.5 rest-day rate instead of being
+             treated as an ordinary day. -->
+        <record id="sukkar_resource_calendar" model="resource.calendar">
+            <field name="name">Sukkar — 48h/week (Sat–Thu)</field>
+            <!-- Odoo fills a NEW calendar with a default Mon-Fri 40-hour week.
+                 Clearing it here is essential: otherwise those defaults survive
+                 underneath the lines below, Friday becomes a working day, and
+                 Friday overtime silently loses its ×1.5 rate. -->
+            <field name="attendance_ids" eval="[(5, 0, 0)]"/>
+            <field name="hours_per_day">8.0</field>
+            <field name="tz">Asia/Kuwait</field>
+        </record>
+
+        <record id="sukkar_att_sat_am" model="resource.calendar.attendance">
+            <field name="name">Saturday Morning</field><field name="dayofweek">5</field>
+            <field name="hour_from">9.0</field><field name="hour_to">13.0</field>
+            <field name="day_period">morning</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_sat_pm" model="resource.calendar.attendance">
+            <field name="name">Saturday Afternoon</field><field name="dayofweek">5</field>
+            <field name="hour_from">14.0</field><field name="hour_to">18.0</field>
+            <field name="day_period">afternoon</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_sun_am" model="resource.calendar.attendance">
+            <field name="name">Sunday Morning</field><field name="dayofweek">6</field>
+            <field name="hour_from">9.0</field><field name="hour_to">13.0</field>
+            <field name="day_period">morning</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_sun_pm" model="resource.calendar.attendance">
+            <field name="name">Sunday Afternoon</field><field name="dayofweek">6</field>
+            <field name="hour_from">14.0</field><field name="hour_to">18.0</field>
+            <field name="day_period">afternoon</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_mon_am" model="resource.calendar.attendance">
+            <field name="name">Monday Morning</field><field name="dayofweek">0</field>
+            <field name="hour_from">9.0</field><field name="hour_to">13.0</field>
+            <field name="day_period">morning</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_mon_pm" model="resource.calendar.attendance">
+            <field name="name">Monday Afternoon</field><field name="dayofweek">0</field>
+            <field name="hour_from">14.0</field><field name="hour_to">18.0</field>
+            <field name="day_period">afternoon</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_tue_am" model="resource.calendar.attendance">
+            <field name="name">Tuesday Morning</field><field name="dayofweek">1</field>
+            <field name="hour_from">9.0</field><field name="hour_to">13.0</field>
+            <field name="day_period">morning</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_tue_pm" model="resource.calendar.attendance">
+            <field name="name">Tuesday Afternoon</field><field name="dayofweek">1</field>
+            <field name="hour_from">14.0</field><field name="hour_to">18.0</field>
+            <field name="day_period">afternoon</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_wed_am" model="resource.calendar.attendance">
+            <field name="name">Wednesday Morning</field><field name="dayofweek">2</field>
+            <field name="hour_from">9.0</field><field name="hour_to">13.0</field>
+            <field name="day_period">morning</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_wed_pm" model="resource.calendar.attendance">
+            <field name="name">Wednesday Afternoon</field><field name="dayofweek">2</field>
+            <field name="hour_from">14.0</field><field name="hour_to">18.0</field>
+            <field name="day_period">afternoon</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_thu_am" model="resource.calendar.attendance">
+            <field name="name">Thursday Morning</field><field name="dayofweek">3</field>
+            <field name="hour_from">9.0</field><field name="hour_to">13.0</field>
+            <field name="day_period">morning</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_thu_pm" model="resource.calendar.attendance">
+            <field name="name">Thursday Afternoon</field><field name="dayofweek">3</field>
+            <field name="hour_from">14.0</field><field name="hour_to">18.0</field>
+            <field name="day_period">afternoon</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+
+        <!-- The unpaid hour, written down. Odoo only takes a break off the
+             hours an attendance machine records when the calendar carries a
+             line marked "lunch"; without these six lines a person who clocks in
+             at 09:00 and out at 18:00 reads as 9 worked hours against 8 paid
+             ones, and every ordinary day pays an hour of overtime nobody
+             worked. These lines are NOT working hours — Odoo excludes them from
+             the work intervals — they only say where the unpaid hour sits. -->
+        <record id="sukkar_att_sat_lunch" model="resource.calendar.attendance">
+            <field name="name">Saturday Break</field><field name="dayofweek">5</field>
+            <field name="hour_from">13.0</field><field name="hour_to">14.0</field>
+            <field name="day_period">lunch</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_sun_lunch" model="resource.calendar.attendance">
+            <field name="name">Sunday Break</field><field name="dayofweek">6</field>
+            <field name="hour_from">13.0</field><field name="hour_to">14.0</field>
+            <field name="day_period">lunch</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_mon_lunch" model="resource.calendar.attendance">
+            <field name="name">Monday Break</field><field name="dayofweek">0</field>
+            <field name="hour_from">13.0</field><field name="hour_to">14.0</field>
+            <field name="day_period">lunch</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_tue_lunch" model="resource.calendar.attendance">
+            <field name="name">Tuesday Break</field><field name="dayofweek">1</field>
+            <field name="hour_from">13.0</field><field name="hour_to">14.0</field>
+            <field name="day_period">lunch</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_wed_lunch" model="resource.calendar.attendance">
+            <field name="name">Wednesday Break</field><field name="dayofweek">2</field>
+            <field name="hour_from">13.0</field><field name="hour_to">14.0</field>
+            <field name="day_period">lunch</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+        <record id="sukkar_att_thu_lunch" model="resource.calendar.attendance">
+            <field name="name">Thursday Break</field><field name="dayofweek">3</field>
+            <field name="hour_from">13.0</field><field name="hour_to">14.0</field>
+            <field name="day_period">lunch</field>
+            <field name="calendar_id" ref="sukkar_resource_calendar"/>
+        </record>
+
+        <!-- ============================ rule categories =================== -->
+        <record id="sukkar_cat_basic" model="hr.salary.rule.category">
+            <field name="name">Basic Salary</field><field name="code">BASIC</field>
+        </record>
+        <record id="sukkar_cat_alw" model="hr.salary.rule.category">
+            <field name="name">Allowances</field><field name="code">ALW</field>
+        </record>
+        <record id="sukkar_cat_ot" model="hr.salary.rule.category">
+            <field name="name">Overtime</field><field name="code">OT</field>
+        </record>
+        <record id="sukkar_cat_ded" model="hr.salary.rule.category">
+            <field name="name">Deductions</field><field name="code">DED</field>
+        </record>
+        <record id="sukkar_cat_gross" model="hr.salary.rule.category">
+            <field name="name">Gross</field><field name="code">GROSS</field>
+        </record>
+        <record id="sukkar_cat_net" model="hr.salary.rule.category">
+            <field name="name">Net</field><field name="code">NET</field>
+        </record>
+
+        <!-- ============================ salary rules ======================
+             One line each. The arithmetic is in models/hr_payslip.py where it can
+             be read, reviewed and tested; `tools.sukkar` is the payslip record,
+             injected through OCA payroll's _get_tools_dict() hook. -->
+        <record id="sukkar_rule_basic" model="hr.salary.rule">
+            <field name="name">Basic Salary</field>
+            <field name="code">BASIC</field>
+            <field name="sequence">1</field>
+            <field name="category_id" ref="sukkar_cat_basic"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = tools.sukkar.sukkar_basic_amount()</field>
+        </record>
+        <record id="sukkar_rule_ot_normal" model="hr.salary.rule">
+            <field name="name">Overtime — Normal Day (×1.25)</field>
+            <field name="code">OT_N</field>
+            <field name="sequence">10</field>
+            <field name="category_id" ref="sukkar_cat_ot"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = tools.sukkar.sukkar_ot_amount('normal') > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = tools.sukkar.sukkar_ot_amount('normal')</field>
+        </record>
+        <record id="sukkar_rule_ot_rest" model="hr.salary.rule">
+            <field name="name">Overtime — Rest Day / Friday (×1.5)</field>
+            <field name="code">OT_R</field>
+            <field name="sequence">11</field>
+            <field name="category_id" ref="sukkar_cat_ot"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = tools.sukkar.sukkar_ot_amount('rest') > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = tools.sukkar.sukkar_ot_amount('rest')</field>
+        </record>
+        <record id="sukkar_rule_ot_holiday" model="hr.salary.rule">
+            <field name="name">Overtime — Public Holiday (×2)</field>
+            <field name="code">OT_H</field>
+            <field name="sequence">12</field>
+            <field name="category_id" ref="sukkar_cat_ot"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">result = tools.sukkar.sukkar_ot_amount('holiday') > 0</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = tools.sukkar.sukkar_ot_amount('holiday')</field>
+        </record>
+
+        <!-- The four boxes the manager fills in. Without these records the
+             payslip's Other Inputs table opens EMPTY and every code has to be
+             typed from memory: one lowercase letter or one trailing space and a
+             month of overtime silently paid nothing, with no line on the slip
+             and no warning. -->
+        <record id="sukkar_input_ot_normal" model="hr.rule.input">
+            <field name="name">Overtime Hours — Normal Day</field>
+            <field name="code">OT_N</field>
+            <field name="input_id" ref="sukkar_rule_ot_normal"/>
+        </record>
+        <record id="sukkar_input_late_min" model="hr.rule.input">
+            <field name="name">Lateness (minutes)</field>
+            <field name="code">LATE_MIN</field>
+            <field name="input_id" ref="sukkar_rule_ot_normal"/>
+        </record>
+        <record id="sukkar_input_ot_rest" model="hr.rule.input">
+            <field name="name">Overtime Hours — Rest Day</field>
+            <field name="code">OT_R</field>
+            <field name="input_id" ref="sukkar_rule_ot_rest"/>
+        </record>
+        <record id="sukkar_input_ot_holiday" model="hr.rule.input">
+            <field name="name">Overtime Hours — Public Holiday</field>
+            <field name="code">OT_H</field>
+            <field name="input_id" ref="sukkar_rule_ot_holiday"/>
+        </record>
+        <record id="sukkar_rule_gross" model="hr.salary.rule">
+            <field name="name">Gross Pay</field>
+            <field name="code">GROSS</field>
+            <field name="sequence">100</field>
+            <field name="category_id" ref="sukkar_cat_gross"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.BASIC + categories.ALW + categories.OT</field>
+        </record>
+        <record id="sukkar_rule_net" model="hr.salary.rule">
+            <field name="name">Net Pay</field>
+            <field name="code">NET</field>
+            <field name="sequence">200</field>
+            <field name="category_id" ref="sukkar_cat_net"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.GROSS + categories.DED</field>
+        </record>
+
+        <!-- How the NET is physically paid (owner, 29 Aug 2026): basic goes by
+             CBK WPS bank transfer on the 1st, overtime is handed over in CASH.
+             These two lines split the NET so the WPS file amount and the cash
+             to prepare are each readable straight off the payslip. They carry
+             NO accounts on purpose — the NET line already posts the full
+             liability; giving these accounts would post the wages twice. -->
+        <record id="sukkar_cat_paysplit" model="hr.salary.rule.category">
+            <field name="name">Payment Split</field><field name="code">PAYSPLIT</field>
+        </record>
+        <record id="sukkar_rule_net_bank" model="hr.salary.rule">
+            <field name="name">Net — Bank (WPS)</field>
+            <field name="code">NET_BANK</field>
+            <field name="sequence">201</field>
+            <field name="category_id" ref="sukkar_cat_paysplit"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.GROSS + categories.DED - categories.OT</field>
+        </record>
+        <record id="sukkar_rule_net_cash" model="hr.salary.rule">
+            <field name="name">Net — Cash (Overtime)</field>
+            <field name="code">NET_CASH</field>
+            <field name="sequence">202</field>
+            <field name="category_id" ref="sukkar_cat_paysplit"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.OT</field>
+        </record>
+
+        <!-- ============================ structure ========================= -->
+        <record id="sukkar_payroll_structure" model="hr.payroll.structure">
+            <field name="name">Sukkar — Monthly (Kuwait)</field>
+            <field name="code">SUKKAR_MONTHLY</field>
+            <field name="rule_ids" eval="[(6, 0, [
+                ref('sukkar_rule_basic'),
+                ref('sukkar_rule_ot_normal'),
+                ref('sukkar_rule_ot_rest'),
+                ref('sukkar_rule_ot_holiday'),
+                ref('sukkar_rule_gross'),
+                ref('sukkar_rule_net'),
+            ])]"/>
+        </record>
+
+    </data>
+</odoo>

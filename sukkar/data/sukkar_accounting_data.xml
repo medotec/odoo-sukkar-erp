@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Runs on every install/upgrade (noupdate=0) and is idempotent: creates
+         the Salaries journal + the two salary accounts if missing, wires them
+         onto the salary rules where empty, and fills blank contract journals.
+         This is what makes "payroll goes live on launch" true on a fresh
+         database — no script to remember. -->
+    <data noupdate="0">
+        <function model="hr.payslip" name="_sukkar_setup_accounting"/>
+        <!-- The salary rules are noupdate="1" so the shop keeps rates it has
+             changed in the UI. That also froze the Basic Salary FORMULA, which
+             is code, not a rate — so it is brought forward here, and only where
+             it still reads exactly as it was shipped. -->
+        <function model="hr.payslip" name="_sukkar_upgrade_salary_rules"/>
+    </data>
+</odoo>

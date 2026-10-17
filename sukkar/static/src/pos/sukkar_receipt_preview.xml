@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="sukkar.ReceiptPreview">
+        <Dialog title="'Receipt'" size="'md'">
+            <div class="ks-receipt-preview d-flex justify-content-center">
+                <div class="ks-receipt-paper">
+                    <OrderReceipt data="receiptData" formatCurrency="env.utils.formatCurrency"/>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg" t-on-click="print">
+                    <i class="fa fa-print me-1"/> Print
+                </button>
+                <button class="btn btn-secondary btn-lg" t-on-click="downloadPdf"
+                        t-att-disabled="!canDownload">
+                    <i class="fa fa-file-pdf-o me-1"/> Download PDF
+                </button>
+                <button class="btn btn-link btn-lg" t-on-click="props.close">Close</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- The orders list: "Print Receipt" becomes "Receipt", which shows the
+         slip first (owner, 30 Sep 2026). -->
+    <t t-inherit="point_of_sale.TicketScreen" t-inherit-mode="extension">
+        <xpath expr="//button[contains(@t-on-click, 'doPrint.call')]" position="replace">
+            <button class="control-button btn btn-light btn-lg lh-lg flex-grow-1 flex-shrink-1"
+                    t-on-click="() => this.sukkarShowReceipt(_selectedSyncedOrder)">
+                <i class="fa fa-file-text-o me-1"/>Receipt
+            </button>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="exp_cat_salaries" model="sukkar.expense.category">
+        <field name="name">Salaries</field><field name="sequence">10</field>
+        <field name="is_salary" eval="True"/>
+    </record>
+    <record id="exp_cat_licenses" model="sukkar.expense.category">
+        <field name="name">Licenses &amp; Permits</field><field name="sequence">20</field>
+    </record>
+    <record id="exp_cat_ads" model="sukkar.expense.category">
+        <field name="name">Advertising &amp; Ad Spend</field><field name="sequence">30</field>
+    </record>
+    <record id="exp_cat_rent" model="sukkar.expense.category">
+        <field name="name">Rent</field><field name="sequence">40</field>
+    </record>
+    <record id="exp_cat_utilities" model="sukkar.expense.category">
+        <field name="name">Utilities</field><field name="sequence">50</field>
+    </record>
+    <record id="exp_cat_packaging" model="sukkar.expense.category">
+        <field name="name">Packaging &amp; Supplies</field><field name="sequence">60</field>
+    </record>
+    <record id="exp_cat_delivery" model="sukkar.expense.category">
+        <field name="name">Delivery &amp; Logistics</field><field name="sequence">70</field>
+    </record>
+    <record id="exp_cat_software" model="sukkar.expense.category">
+        <field name="name">Software &amp; Subscriptions</field><field name="sequence">80</field>
+    </record>
+    <record id="exp_cat_bankfees" model="sukkar.expense.category">
+        <field name="name">Bank &amp; Payment Fees</field><field name="sequence">90</field>
+    </record>
+    <record id="exp_cat_equipment" model="sukkar.expense.category">
+        <field name="name">Equipment &amp; Maintenance</field><field name="sequence">100</field>
+    </record>
+    <record id="exp_cat_govfees" model="sukkar.expense.category">
+        <field name="name">Government &amp; Visa Fees</field><field name="sequence">110</field>
+    </record>
+    <record id="exp_cat_indemnity" model="sukkar.expense.category">
+        <field name="name">End-of-Service Indemnity</field><field name="sequence">120</field>
+    </record>
+    <record id="exp_cat_influencer" model="sukkar.expense.category">
+        <field name="name">Influencer &amp; Gifting Marketing</field><field name="sequence">130</field>
+    </record>
+    <record id="exp_cat_professional" model="sukkar.expense.category">
+        <field name="name">Professional Services</field><field name="sequence">140</field>
+    </record>
+    <record id="exp_cat_misc" model="sukkar.expense.category">
+        <field name="name">Miscellaneous</field><field name="sequence">200</field>
+    </record>
+</odoo>

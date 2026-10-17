@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="sukkar.FlavourPopup">
+        <Dialog title.translate="Cake Flavours">
+            <div class="d-flex flex-column gap-2">
+                <div t-if="state.error" class="alert alert-danger py-1" t-esc="state.error"/>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bolder text-truncate" t-esc="props.line.product_id.display_name"/>
+                    <!-- The running count, always in sight: the split is only
+                         allowed to leave when it adds up. -->
+                    <div t-if="state.pieces" class="ks-pieces-count fw-bolder"
+                         t-att-class="picked === state.pieces ? 'text-success' : 'text-danger'">
+                        <t t-esc="picked"/> / <t t-esc="state.pieces"/>
+                        <span class="ms-1">pieces</span>
+                    </div>
+                </div>
+                <div class="text-muted small">
+                    Tap a flavour for the whole bouquet, or split it with − and +
+                    · tap a flavour for the whole bouquet, or split it with − and +
+                </div>
+                <t t-foreach="flavours" t-as="flavour" t-key="flavour.id">
+                    <div class="ks-flavour-row d-flex align-items-center gap-2">
+                        <button class="ks-flavour-name btn flex-grow-1 text-start"
+                                t-att-class="qtyOf(flavour) ? 'btn-primary' : 'btn-light'"
+                                t-on-click="() => this.only(flavour)">
+                            <span class="fw-bolder" t-esc="flavour.name"/>
+                        </button>
+                        <button class="ks-step btn btn-light" t-on-click="() => this.step(flavour, -1)">−</button>
+                        <span class="ks-flavour-qty fw-bolder text-center" t-esc="qtyOf(flavour)"/>
+                        <button class="ks-step btn btn-light" t-on-click="() => this.step(flavour, 1)">+</button>
+                    </div>
+                </t>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg" t-on-click="() => this.confirm()">
+                    Confirm
+                </button>
+                <button class="btn btn-link btn-lg" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

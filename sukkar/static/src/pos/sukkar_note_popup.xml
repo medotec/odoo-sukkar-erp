@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Odoo's note popup, plus a picture (owner, 10 Oct 2026). English only,
+         like the rest of the register (LOCKED #9). -->
+    <t t-name="sukkar.NotePopup">
+        <Dialog title="props.title">
+            <t t-foreach="props.buttons" t-as="button" t-key="button_index">
+                <button t-on-click="() => this.buttonClick(button)" type="button" t-attf-class="btn btn-lg me-2 mb-2 toggle-button {{button.isSelected? 'btn-primary' : 'btn-secondary'}} lh-lg" >
+                    <t t-esc="button.label"/>
+                </button>
+            </t>
+            <textarea t-att-rows="props.rows" class="form-control form-control-lg mx-auto" type="text" t-model="state.inputValue" t-ref="input" t-att-placeholder="props.placeholder" t-on-keydown="onKeydown" />
+            <div class="ks-note-image d-flex align-items-center gap-3 mt-3">
+                <button type="button" class="btn btn-secondary btn-lg lh-lg" t-on-click="pickImage">
+                    <i class="fa fa-image me-2" role="img" title="Image"/>
+                    <t t-if="image.data">Change image</t>
+                    <t t-else="">Add image</t>
+                </button>
+                <input type="file" accept="image/*" class="d-none" t-ref="file" t-on-change="onFileChosen"/>
+                <t t-if="image.data">
+                    <img t-att-src="imageSrc" alt="Note image" style="height:88px; max-width:160px; object-fit:contain; border-radius:8px; border:1px solid #ddd;"/>
+                    <button type="button" class="btn btn-light btn-lg lh-lg" title="Remove image" aria-label="Remove image" t-on-click="removeImage">✕</button>
+                </t>
+            </div>
+            <div t-if="image.error" class="text-danger mt-2" t-esc="image.error"/>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg lh-lg o-default-button" t-att-disabled="!canApply" t-on-click="confirm">Apply</button>
+                <button class="btn btn-secondary btn-lg lh-lg o-default-button" t-on-click="close">Discard</button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

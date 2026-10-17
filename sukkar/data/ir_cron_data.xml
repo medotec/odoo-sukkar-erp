@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="cron_notify_upcoming_deliveries" model="ir.cron">
+        <field name="name">Sukkar: Notify upcoming deliveries (1 day before)</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_notify_upcoming_deliveries()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall">2026-06-28 06:00:00</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_daily_stock_plan" model="ir.cron">
+        <field name="name">Sukkar: Tomorrow's stock plan (end of day)</field>
+        <field name="model_id" ref="model_sukkar_stock_plan"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_build_tomorrow()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall">2026-09-20 20:00:00</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

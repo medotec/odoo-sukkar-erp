@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The delivery slip, printed from the till beside the customer's receipt
+         (owner's ask, 29 Sep 2026). English, A5, and only what a driver needs:
+         who, their phone, where exactly, when, and what to collect. -->
+    <t t-name="sukkar.DeliverySlip">
+        <Dialog title.translate="Delivery Slip" size="'md'">
+            <div t-ref="sheet">
+                <t t-set="s" t-value="slip"/>
+
+                <div class="ks-slip-head">
+                    <div>
+                        <div class="ks-slip-title">Sukkar — Delivery Slip</div>
+                        <div t-if="s.isGift">Gift</div>
+                    </div>
+                    <div class="text-end">
+                        <div class="ks-slip-no" t-esc="s.orderNumber"/>
+                        <div t-esc="s.date"/>
+                    </div>
+                </div>
+
+                <div class="ks-slip-row">
+                    <div class="ks-slip-label">Deliver to</div>
+                    <div class="ks-slip-value ks-slip-big" t-esc="s.receiverName"/>
+                </div>
+                <div class="ks-slip-row">
+                    <div class="ks-slip-label">Phone</div>
+                    <div class="ks-slip-value ks-slip-big" t-esc="s.receiverPhone"/>
+                </div>
+                <div class="ks-slip-row">
+                    <div class="ks-slip-label">Area</div>
+                    <div class="ks-slip-value ks-slip-big" t-esc="s.area"/>
+                </div>
+                <div t-if="s.addressLines.length" class="ks-slip-row">
+                    <div class="ks-slip-label">Address</div>
+                    <div class="ks-slip-value">
+                        <div t-foreach="s.addressLines" t-as="line" t-key="line_index"
+                             t-esc="line"/>
+                    </div>
+                </div>
+                <div t-if="s.directions" class="ks-slip-row">
+                    <div class="ks-slip-label">Directions</div>
+                    <div class="ks-slip-value" t-esc="s.directions"/>
+                </div>
+                <div t-if="s.deliveryNote" class="ks-slip-row">
+                    <div class="ks-slip-label">Delivery note</div>
+                    <div class="ks-slip-value" t-esc="s.deliveryNote"/>
+                </div>
+                <div t-if="s.window" class="ks-slip-row">
+                    <div class="ks-slip-label">Deliver by</div>
+                    <div class="ks-slip-value ks-slip-big" t-esc="s.window"/>
+                </div>
+                <!-- Who sent it, so the driver can ring the right person when
+                     nobody answers at the door on a gift. -->
+                <div t-if="s.isGift and s.senderName" class="ks-slip-row">
+                    <div class="ks-slip-label">Sent by</div>
+                    <div class="ks-slip-value">
+                        <t t-esc="s.senderName"/>
+                        <t t-if="s.senderPhone"> — <t t-esc="s.senderPhone"/></t>
+                    </div>
+                </div>
+
+                <div t-if="s.driver" class="ks-slip-row">
+                    <div class="ks-slip-label">Driver</div>
+                    <div class="ks-slip-value" t-esc="s.driver"/>
+                </div>
+
+                <div class="ks-slip-row" style="border-bottom: 0;">
+                    <div class="ks-slip-label">Order</div>
+                    <div class="ks-slip-value">
+                        <table class="ks-slip-items">
+                            <tbody>
+                                <tr t-foreach="items" t-as="item" t-key="item_index">
+                                    <td class="ks-slip-qty" t-esc="item.qty"/>
+                                    <td>
+                                        <div t-esc="item.name"/>
+                                        <div t-if="item.note" class="ks-slip-note"
+                                             t-esc="item.note"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div t-if="toCollect" class="ks-slip-collect ks-slip-cash">
+                    COLLECT <t t-esc="format(toCollect)"/> FROM THE CUSTOMER
+                </div>
+                <div t-else="" class="ks-slip-collect ks-slip-paid">
+                    PAID IN FULL — collect nothing
+                    <div t-if="cashValue">Order value <t t-esc="format(cashValue)"/> · paid in cash</div>
+                </div>
+
+                <div class="ks-slip-sign">
+                    <div>Driver's signature</div>
+                    <div>Received by</div>
+                </div>
+            </div>
+
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg" t-on-click="() => this.print()">
+                    <i class="fa fa-print me-2" role="img"/>Print
+                </button>
+                <button class="btn btn-secondary btn-lg"
+                        t-on-click="() => this.props.close()">Close</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- The button, beside the receipt's own print button. A collection never
+         gets one: nobody drives it anywhere. -->
+    <t t-inherit="point_of_sale.ReceiptScreen" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('receipt-options')]/div[hasclass('d-flex')][1]" position="after">
+            <button t-if="sukkarNeedsSlip"
+                    class="button btn btn-lg btn-primary w-100 py-3 ks-slip-btn"
+                    t-on-click="() => this.sukkarOpenSlip()">
+                <i class="fa fa-motorcycle me-2" role="img"/>Delivery Slip
+            </button>
+        </xpath>
+    </t>
+</templates>

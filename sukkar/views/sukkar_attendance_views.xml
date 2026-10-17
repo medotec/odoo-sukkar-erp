@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_attendance_device_view_form" model="ir.ui.view">
+        <field name="name">sukkar.attendance.device.form</field>
+        <field name="model">sukkar.attendance.device</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Device">
+                <header>
+                    <button name="action_test_connection" type="object"
+                            string="Test Connection" invisible="protocol == 'file'"/>
+                    <button name="action_send_all_staff" type="object"
+                            string="Send all staff to the machine" class="btn-primary"
+                            invisible="protocol != 'adms'"/>
+                    <button name="action_sync" type="object" string="Sync Now"
+                            class="btn-primary"
+                            invisible="protocol in ('file', 'adms')"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_punches" type="object"
+                                class="oe_stat_button" icon="fa-clock-o">
+                            <field name="punch_count" widget="statinfo" string="Punches"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Staff Door"/></h1>
+                    </div>
+                    <group>
+                        <group string="How it is read">
+                            <field name="protocol"/>
+                            <field name="serial_number"
+                                   invisible="protocol != 'adms'"
+                                   required="protocol == 'adms'"
+                                   placeholder="JJA1252500307"/>
+                            <field name="host"
+                                   invisible="protocol in ('file', 'adms')"
+                                   required="protocol not in ('file', 'adms')"
+                                   placeholder="192.168.1.50"/>
+                            <field name="port" invisible="protocol in ('file', 'adms')"/>
+                            <field name="username" invisible="protocol != 'hikvision'"/>
+                            <field name="device_password" password="True"
+                                   invisible="protocol in ('file', 'adms')"/>
+                            <field name="timeout" invisible="protocol in ('file', 'adms')"/>
+                        </group>
+                        <group string="Status">
+                            <field name="last_seen" readonly="1"
+                                   invisible="protocol != 'adms'"/>
+                            <field name="last_sync" readonly="1"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <!-- The three settings to type into the machine itself. -->
+                    <div class="alert alert-info" role="status"
+                         invisible="protocol != 'adms'">
+                        The machine calls this server by itself — nothing has to be
+                        opened on the shop's router. On the machine:
+                        <b>Menu → Comm → Cloud Server Setting</b>, then Server Address
+                        = this ERP's address, Server Port = 80, and switch it on.
+                        Its serial number above must match the one printed on it.
+                        A machine that has never called in is switched off,
+                        on another network, or pointed somewhere else.
+                    </div>
+                    <div class="alert alert-info" role="status"
+                         invisible="protocol != 'file'">
+                        No device is being polled. Punches come in through an export
+                        file from the machine's own PC software — which is how this
+                        can be proven against real attendance data before any
+                        hardware is bought.
+                    </div>
+                    <group string="Sent to the machine" invisible="protocol != 'adms'">
+                        <field name="command_ids" nolabel="1" colspan="2" readonly="1">
+                            <list limit="15" decoration-danger="state == 'failed'"
+                                  decoration-muted="state == 'done'">
+                                <field name="create_date" string="Queued"/>
+                                <field name="name"/>
+                                <field name="state"/>
+                                <field name="result" optional="hide"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group string="Last Error" invisible="not last_error">
+                        <field name="last_error" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_attendance_device_view_list" model="ir.ui.view">
+        <field name="name">sukkar.attendance.device.list</field>
+        <field name="model">sukkar.attendance.device</field>
+        <field name="arch" type="xml">
+            <list string="Attendance Devices">
+                <field name="name"/>
+                <field name="protocol"/>
+                <field name="host"/>
+                <field name="last_sync"/>
+                <field name="punch_count"/>
+                <field name="last_error" optional="show"
+                       decoration-danger="last_error != False"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_attendance_punch_view_list" model="ir.ui.view">
+        <field name="name">sukkar.attendance.punch.list</field>
+        <field name="model">sukkar.attendance.punch</field>
+        <field name="arch" type="xml">
+            <list string="Punches" create="false">
+                <field name="punched_at"/>
+                <field name="employee_id"/>
+                <field name="device_user_id"/>
+                <field name="device_id"/>
+                <field name="raw_status" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'unmatched'"
+                       decoration-warning="state == 'missing_out'"
+                       decoration-success="state == 'paired'"/>
+                <field name="occurrence_this_month" string="This Month"
+                       decoration-danger="occurrence_this_month &gt; 2"
+                       decoration-warning="occurrence_this_month == 2"
+                       invisible="state != 'missing_out'"/>
+                <field name="resolution" widget="badge"
+                       decoration-danger="resolution == 'pending'"
+                       invisible="state != 'missing_out'"/>
+                <button name="action_resolve" type="object" string="Decide"
+                        class="btn-primary" icon="fa-gavel"
+                        invisible="state != 'missing_out' or resolution != 'pending'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_attendance_punch_view_search" model="ir.ui.view">
+        <field name="name">sukkar.attendance.punch.search</field>
+        <field name="model">sukkar.attendance.punch</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="device_user_id"/>
+                <filter name="unmatched" string="No matching employee"
+                        domain="[('state', '=', 'unmatched')]"/>
+                <!-- The queue a manager has to clear before payroll runs: days that
+                     ended on an odd punch, where no hours were counted because
+                     nobody knows when the person left. -->
+                <filter name="missing_out" string="Missing clock-out"
+                        domain="[('state', '=', 'missing_out')]"/>
+                <filter name="needs_decision" string="Awaiting a decision"
+                        domain="[('state', '=', 'missing_out'), ('resolution', '=', 'pending')]"/>
+                <filter name="today" string="Today"
+                        domain="[('punched_at', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="by_employee" string="Employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="by_device" string="Device"
+                            context="{'group_by': 'device_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="sukkar_attendance_device_action" model="ir.actions.act_window">
+        <field name="name">Attendance Devices</field>
+        <field name="res_model">sukkar.attendance.device</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="sukkar_attendance_punch_action" model="ir.actions.act_window">
+        <field name="name">Punches</field>
+        <field name="res_model">sukkar.attendance.punch</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Where the machine and its punches live. There were no menus for these
+         at all — the punches were stored but nobody could find them. -->
+    <menuitem id="menu_sukkar_attendance_punches" name="Machine Punches"
+              parent="hr_attendance.menu_hr_attendance_root"
+              action="sukkar_attendance_punch_action" sequence="7"/>
+    <menuitem id="menu_sukkar_attendance_devices" name="Attendance Machines"
+              parent="hr_attendance.menu_hr_attendance_root"
+              action="sukkar_attendance_device_action" sequence="8"
+              groups="hr_attendance.group_hr_attendance_manager"/>
+
+    <!-- The Attendance ID the machine knows this person by. -->
+    <record id="view_hr_employee_form_sukkar" model="ir.ui.view">
+        <field name="name">hr.employee.form.sukkar</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_sukkar_send_to_machine" type="object"
+                        string="Send to attendance machine"
+                        help="Puts this person on the fingerprint machine with their Attendance ID. Give them a number first, or one is given automatically."/>
+                <button name="action_sukkar_enroll_on_machine" type="object"
+                        string="Enrol finger on machine"
+                        help="Sends this person to the machine and makes it ask for their finger straight away."/>
+            </xpath>
+            <field name="barcode" position="after">
+                <field name="sukkar_device_user_id"/>
+                <field name="sukkar_machine_status" readonly="1"/>
+                <field name="sukkar_missing_out_count"
+                       invisible="sukkar_missing_out_count == 0"
+                       decoration-danger="sukkar_missing_out_count &gt; 2"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Read the month's hours straight off the machine, onto the payslip. -->
+    <record id="view_hr_payslip_form_sukkar_attendance" model="ir.ui.view">
+        <field name="name">hr.payslip.form.sukkar.attendance</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="payroll.hr_payslip_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_sukkar_fill_from_attendance" type="object"
+                        string="Read Attendance"
+                        help="Fill the overtime and lateness inputs from the attendance machine for this period. Safe to repeat — it replaces those inputs rather than adding to them."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

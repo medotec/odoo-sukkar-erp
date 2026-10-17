@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_oversell_wizard_view_form" model="ir.ui.view">
+        <field name="name">sukkar.oversell.wizard.form</field>
+        <field name="model">sukkar.oversell.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Not Enough Cake Pieces">
+                <group>
+                    <field name="sale_order_id" invisible="1"/>
+                    <field name="pos_order_id" invisible="1"/>
+                    <field name="qty_available"/>
+                    <field name="qty_needed"/>
+                </group>
+                <group>
+                    <field name="manager_id"/>
+                    <field name="reason" placeholder="Why this order goes ahead anyway"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Approve and Confirm"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Reached from the blocked order itself: Actions ▸ Cake Stock Override.
+         Binding it to the order means no second screen to go looking for. -->
+    <record id="sukkar_oversell_wizard_action" model="ir.actions.act_window">
+        <field name="name">Cake Stock Override</field>
+        <field name="res_model">sukkar.oversell.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="sukkar_oversell_wizard_view_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_view_types">form</field>
+    </record>
+</odoo>

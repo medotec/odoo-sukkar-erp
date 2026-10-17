@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Sukkar till receipt — ARABIC, RIGHT TO LEFT (owner, 30 Sep 2026).
+
+         The whole slip is Arabic and reads right to left: the shop, then who
+         it is for and where it goes, then what is in it, then the money. The
+         products are named from the Arabic catalogue.
+
+         The slip always carries the money (owner, 30 Sep 2026): every line
+         priced, the delivery fee with them, the total and what was paid. The
+         only document that leaves the prices off is the driver's delivery
+         receipt printed from the back office.
+
+         The register SCREEN is untouched by this: it stays English, left to
+         right (LOCKED #9). Only the printed slip is Arabic.
+
+         Odoo's own receipt is replaced outright rather than patched line by
+         line — half-translated labels ("TOTAL", "x 1.000 / Units") were the
+         reason this was reopened. -->
+    <t t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos-receipt')]" position="replace">
+            <div class="pos-receipt p-2 ks-receipt" style="direction: rtl; text-align: right;">
+                <t t-set="ks" t-value="props.data.sukkar or {}"/>
+                <t t-set="owed" t-value="(ks.owed or 0) &gt; 0.0001"/>
+                <t t-set="head" t-value="props.data.headerData or {}"/>
+
+                <!-- الترويسة -->
+                <div class="pos-receipt-center-align" style="text-align: center;">
+                    <!-- Black and white on the slip: a thermal printer has no
+                         colour anyway, and the owner wants the printed mark to
+                         match the invoice (30 Sep 2026). -->
+                    <img class="pos-receipt-logo" alt="Sukkar"
+                         src="/sukkar/static/img/sukkar-logo-line.png"/>
+                    <div class="fw-bolder" style="font-size: 1.2em;">سُكّر SUKKAR</div>
+                    <!-- The order number reads like every other line (owner, 2 Oct
+                         2026): the 72px figure Odoo prints was too loud. -->
+                    <div t-if="head.trackingNumber" class="mt-1">
+                        رقم الطلب: <t t-esc="head.trackingNumber"/>
+                    </div>
+                    <div class="mt-1">إيصال الطلب · <t t-esc="props.data.name"/></div>
+                    <!-- Odoo hands the cashier over as "Served by NAME"; the slip
+                         says it in Arabic, so the English half comes off. -->
+                    <div t-if="head.cashier">
+                        البائع: <t t-esc="(head.cashier or '').replace('Served by ', '')"/>
+                    </div>
+                    <div t-esc="props.data.date"/>
+                </div>
+
+                <!-- العميل والتوصيل -->
+                <div t-if="ks.customerName or ks.receiverName or ks.deliveryDate or ks.address"
+                     class="mt-1" style="border-top: 1px dashed #000; padding-top: 4px;">
+                    <div t-if="ks.customerName">
+                        العميل: <t t-esc="ks.customerName"/>
+                        <t t-if="ks.customerPhone"> — <t t-esc="ks.customerPhone"/></t>
+                    </div>
+                    <!-- Only when the one who paid is not the one on the account. -->
+                    <div t-if="ks.senderName and ks.senderName !== ks.customerName">
+                        المرسل: <t t-esc="ks.senderName"/>
+                        <t t-if="ks.senderPhone"> — <t t-esc="ks.senderPhone"/></t>
+                    </div>
+                    <div t-if="ks.receiverName">
+                        المستلم: <t t-esc="ks.receiverName"/>
+                        <t t-if="ks.receiverPhone"> — <t t-esc="ks.receiverPhone"/></t>
+                    </div>
+                    <!-- A collection is an appointment too: the slip has to say
+                         which of the two this order is. -->
+                    <div t-if="ks.deliveryDate">
+                        <t t-if="ks.orderType === 'pickup'">الاستلام: </t>
+                        <t t-else="">التوصيل: </t>
+                        <t t-esc="ks.deliveryDate"/>
+                    </div>
+                    <div t-if="ks.address">العنوان: <t t-esc="ks.address"/></div>
+                </div>
+
+                <!-- الأصناف -->
+                <div class="text-center">--------------------------------</div>
+                <div t-foreach="ks.lines or []" t-as="line" t-key="line_index" class="mb-1">
+                    <div class="d-flex">
+                        <span class="fw-bolder">
+                            <t t-esc="line.name"/>
+                            <t t-if="line.variant"> — <t t-esc="line.variant"/></t>
+                        </span>
+                        <span class="ms-auto fw-bolder"
+                              t-esc="props.formatCurrency(line.total)"/>
+                    </div>
+                    <div>
+                        <span t-esc="line.qty"/> × <t t-esc="props.formatCurrency(line.unitPrice)"/>
+                    </div>
+                    <div t-if="line.flavours">النكهات: <t t-esc="line.flavours"/></div>
+                    <div t-if="line.note">الملاحظة: <t t-esc="line.note"/></div>
+                </div>
+
+                <!-- The till's General Note (owner, 2 Oct 2026). -->
+                <div t-if="props.data.generalNote" class="mt-1" style="white-space: pre-line;">
+                    <span class="fw-bolder">ملاحظة عامة: </span><t t-esc="props.data.generalNote"/>
+                </div>
+
+                <!-- المبالغ -->
+                <div class="text-center">--------------------------------</div>
+                <div class="pos-receipt-amount receipt-total d-flex fw-bolder">
+                    <span>الإجمالي</span>
+                    <span class="ms-auto"
+                          t-esc="props.formatCurrency(props.data.taxTotals.order_sign * props.data.taxTotals.order_total)"/>
+                </div>
+                <div class="d-flex" t-foreach="props.data.paymentlines" t-as="pay" t-key="pay_index">
+                    <span t-esc="pay.name"/>
+                    <span class="ms-auto" t-esc="props.formatCurrency(pay.amount)"/>
+                </div>
+                <div t-if="props.data.show_change" class="d-flex">
+                    <span>الباقي</span>
+                    <span class="ms-auto" t-esc="props.formatCurrency(props.data.order_change)"/>
+                </div>
+                <!-- Anything still to pay is said out loud. A settled slip
+                     says nothing: the payment line above already shows it was
+                     paid, and the owner had no use for a second announcement
+                     (30 Sep 2026). -->
+                <div t-if="owed" class="d-flex fw-bolder">
+                    <span>المبلغ المستحق</span>
+                    <span class="ms-auto" t-esc="props.formatCurrency(ks.owed)"/>
+                </div>
+
+                <!-- نقاط الولاء — said here in Arabic. The loyalty module writes
+                     the same three lines in English into the before-footer below;
+                     they are hidden by the stylesheet rather than deleted, because
+                     its own code puts them there after this slip is built. -->
+                <div t-if="props.data.loyaltyStats and props.data.loyaltyStats.length"
+                     class="mt-1" style="border-top: 1px dashed #000; padding-top: 4px;">
+                    <t t-foreach="props.data.loyaltyStats" t-as="stat" t-key="stat.couponId">
+                        <t t-if="stat.program.portal_visible">
+                            <div t-if="stat.points.won" class="d-flex">
+                                <span>النقاط المكتسبة</span>
+                                <span class="ms-auto" t-esc="stat.points.won"/>
+                            </div>
+                            <div t-if="stat.points.spent" class="d-flex">
+                                <span>النقاط المستبدلة</span>
+                                <span class="ms-auto" t-esc="stat.points.spent"/>
+                            </div>
+                            <div t-if="stat.points.balance" class="d-flex fw-bolder">
+                                <span>رصيد النقاط</span>
+                                <span class="ms-auto" t-esc="stat.points.balance"/>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+                <div t-elif="ks.loyaltyPoints !== null and ks.loyaltyPoints !== undefined"
+                     class="mt-1" style="border-top: 1px dashed #000; padding-top: 4px;">
+                    رصيد النقاط: <t t-esc="ks.loyaltyPoints"/>
+                </div>
+
+                <!-- Kept from Odoo's own slip: a card terminal prints its
+                     confirmation through here, and other modules hang their
+                     own lines on these two empty boxes. -->
+                <div class="before-footer"/>
+                <div class="pos-receipt-order-data"/>
+                <div class="after-footer">
+                    <t t-foreach="props.data.paymentlines" t-as="line" t-key="line_index">
+                        <t t-if="line.ticket">
+                            <br/>
+                            <div class="pos-payment-terminal-receipt">
+                                <pre t-esc="line.ticket"/>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+
+                <div class="pos-receipt-center-align mt-2" style="text-align: center;">
+                    <!-- The foot, in the owner's order (2 Oct 2026): CR, then phone |
+                         website, then the thank-you, then Powered by. The right-to-left
+                         marks keep the number and the website from swapping places. -->
+                    <div>س.ت: ٢٠٢٥/٦٤٤٦</div>
+                    <div>
+                        <t t-if="head.company and head.company.phone">هاتف: <span dir="ltr" t-esc="head.company.phone"/>&#x200F; | &#x200F;</t><span dir="ltr">sukkar-demo.com</span>
+                    </div>
+                    <div class="mt-1">شكراً لاختياركم سُكّر</div>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

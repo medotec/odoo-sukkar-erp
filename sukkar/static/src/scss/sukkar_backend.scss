@@ -1,0 +1,12 @@
+// ============================================================
+//  Sukkar — backend theme (rules layer)
+//
+//  The brand colours are driven entirely by the canonical SCSS
+//  variables in `sukkar_variables.scss` (navbar, buttons, links,
+//  active states, accents) — so no `!important` overrides are
+//  needed here. This file is intentionally minimal.
+//
+//  (The Dashboards app renders on a spreadsheet canvas; its teal
+//   accents are stored as data and were recoloured directly in
+//   each dashboard record, not via CSS.)
+// ============================================================

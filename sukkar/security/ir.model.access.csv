@@ -1,0 +1,35 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sukkar_production_user,sukkar.production.user,model_sukkar_production,base.group_user,1,1,1,1
+access_sukkar_production_stage_user,sukkar.production.stage.user,model_sukkar_production_stage,base.group_user,1,0,0,0
+access_sukkar_production_stage_manager,sukkar.production.stage.manager,model_sukkar_production_stage,base.group_system,1,1,1,1
+access_sukkar_production_stage_log_user,sukkar.production.stage.log.user,model_sukkar_production_stage_log,base.group_user,1,1,1,1
+access_sukkar_expense_user,sukkar.expense.user,model_sukkar_expense,base.group_user,1,1,1,1
+access_sukkar_expense_cat_user,sukkar.expense.category.user,model_sukkar_expense_category,base.group_user,1,0,0,0
+access_sukkar_expense_cat_manager,sukkar.expense.category.manager,model_sukkar_expense_category,base.group_system,1,1,1,1
+access_sukkar_monthly_close_user,sukkar.monthly.close.user,model_sukkar_monthly_close,base.group_user,1,1,1,1
+access_sukkar_mark_paid_wizard_user,sukkar.mark.paid.wizard.user,model_sukkar_mark_paid_wizard,base.group_user,1,1,1,1
+access_sukkar_delivery_slot_user,sukkar.delivery.slot.user,model_sukkar_delivery_slot,base.group_user,1,0,0,0
+access_sukkar_delivery_slot_manager,sukkar.delivery.slot.manager,model_sukkar_delivery_slot,base.group_system,1,1,1,1
+access_sukkar_display_prod_user,sukkar.display.production.user,model_sukkar_display_production,base.group_user,1,1,1,1
+access_sukkar_display_prod_line_user,sukkar.display.production.line.user,model_sukkar_display_production_line,base.group_user,1,1,1,1
+access_sukkar_stock_plan_user,sukkar.stock.plan.user,model_sukkar_stock_plan,base.group_user,1,1,1,1
+access_sukkar_stock_plan_line_user,sukkar.stock.plan.line.user,model_sukkar_stock_plan_line,base.group_user,1,1,1,1
+access_sukkar_attendance_device_user,attendance device user,model_sukkar_attendance_device,base.group_user,1,1,1,1
+access_sukkar_attendance_punch_user,attendance punch user,model_sukkar_attendance_punch,base.group_user,1,1,1,1
+access_sukkar_missing_punch_wizard,missing punch wizard,model_sukkar_missing_punch_wizard,base.group_user,1,1,1,1
+access_sukkar_cake_flavour_user,sukkar.cake.flavour.user,model_sukkar_cake_flavour,base.group_user,1,0,0,0
+access_sukkar_cake_flavour_manager,sukkar.cake.flavour.manager,model_sukkar_cake_flavour,base.group_system,1,1,1,1
+access_sukkar_flavour_line_user,sukkar.flavour.line.user,model_sukkar_flavour_line,base.group_user,1,1,1,1
+access_sukkar_cake_batch_user,sukkar.cake.batch.user,model_sukkar_cake_batch,base.group_user,1,1,1,1
+access_sukkar_cake_move_user,sukkar.cake.move.user,model_sukkar_cake_move,base.group_user,1,1,1,1
+access_sukkar_cake_override_user,sukkar.cake.override.user,model_sukkar_cake_override,base.group_user,1,0,1,0
+access_sukkar_cake_override_manager,sukkar.cake.override.manager,model_sukkar_cake_override,base.group_system,1,1,1,1
+access_sukkar_oversell_wizard_user,sukkar.oversell.wizard.user,model_sukkar_oversell_wizard,base.group_user,1,1,1,1
+access_sukkar_area_user,sukkar.area user,model_sukkar_area,base.group_user,1,0,0,0
+access_sukkar_area_manager,sukkar.area manager,model_sukkar_area,base.group_system,1,1,1,1
+access_sukkar_driver_cashup_user,sukkar.driver.cashup user,model_sukkar_driver_cashup,base.group_user,1,1,1,0
+access_sukkar_driver_cashup_manager,sukkar.driver.cashup manager,model_sukkar_driver_cashup,base.group_system,1,1,1,1
+access_sukkar_attendance_command_user,sukkar.attendance.command user,model_sukkar_attendance_command,base.group_user,1,1,1,0
+access_sukkar_attendance_command_manager,sukkar.attendance.command manager,model_sukkar_attendance_command,base.group_system,1,1,1,1
+access_sukkar_driver_receipt_wizard_user,sukkar.driver.receipt.wizard user,model_sukkar_driver_receipt_wizard,base.group_user,1,1,1,1
+access_sukkar_driver_receipt_wizard_line_user,sukkar.driver.receipt.wizard.line user,model_sukkar_driver_receipt_wizard_line,base.group_user,1,1,1,1

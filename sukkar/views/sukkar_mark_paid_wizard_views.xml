@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_mark_paid_wizard_form" model="ir.ui.view">
+        <field name="name">sukkar.mark.paid.wizard.form</field>
+        <field name="model">sukkar.mark.paid.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Payment">
+                <group>
+                    <field name="order_summary" readonly="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="amount_total" readonly="1"/>
+                    <field name="payment_method" widget="radio"/>
+                    <field name="payment_reference"
+                           invisible="payment_method != 'link'"
+                           required="payment_method == 'link'"
+                           placeholder="Reference from the payment link"/>
+                    <field name="knet_approval"
+                           invisible="payment_method != 'knet'"
+                           required="payment_method == 'knet'"
+                           placeholder="Enter the KNET approval / reference number"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm Payment"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,992 @@
+[
+ {
+  "en": "Abu Halifa",
+  "ar": "أبو حليفة",
+  "fee": 2.5
+ },
+ {
+  "en": "Ahmadi Governorate Desert",
+  "ar": "بر محافظة الأحمدي",
+  "fee": null
+ },
+ {
+  "en": "Al-Fintas",
+  "ar": "الفنطاس",
+  "fee": 2.5
+ },
+ {
+  "en": "Ali Subah Al-Salem",
+  "ar": "علي صباح السالم",
+  "fee": 4.0
+ },
+ {
+  "en": "Al-Nuwaiseeb",
+  "ar": "النويصيب",
+  "fee": 7.0
+ },
+ {
+  "en": "Al shadadyia Industrial",
+  "ar": "الشدادية الصناعية",
+  "fee": 2.5
+ },
+ {
+  "en": "Dhaher",
+  "ar": "الظهر",
+  "fee": 2.5
+ },
+ {
+  "en": "East Ahmadi",
+  "ar": "شرق الأحمدي",
+  "fee": 2.5
+ },
+ {
+  "en": "Egaila",
+  "ar": "العقيلة",
+  "fee": 2.5
+ },
+ {
+  "en": "Fahad Al-Ahmad",
+  "ar": "فهد الأحمد",
+  "fee": 2.5
+ },
+ {
+  "en": "Fahaheel",
+  "ar": "الفحيحيل",
+  "fee": 2.5
+ },
+ {
+  "en": "Hadiya",
+  "ar": "هدية",
+  "fee": 2.5
+ },
+ {
+  "en": "Jaber Al-Ali",
+  "ar": "ضاحية جابر العلي",
+  "fee": 2.5
+ },
+ {
+  "en": "Janobyia Aljawakheer",
+  "ar": "الجنوبية الجواخير",
+  "fee": null
+ },
+ {
+  "en": "kabd Agricultural",
+  "ar": "كبد الزراعية",
+  "fee": null
+ },
+ {
+  "en": "Khiran City",
+  "ar": "الخيران السكنية",
+  "fee": 7.0
+ },
+ {
+  "en": "Magwa",
+  "ar": "المقوع",
+  "fee": null
+ },
+ {
+  "en": "Mahboula",
+  "ar": "المهبولة",
+  "fee": 2.5
+ },
+ {
+  "en": "Mangaf",
+  "ar": "المنقف",
+  "fee": 2.5
+ },
+ {
+  "en": "Middle of Ahmadi",
+  "ar": "وسط الأحمدي",
+  "fee": 2.5
+ },
+ {
+  "en": "Mina Abdulla",
+  "ar": "ميناء عبدالله",
+  "fee": null
+ },
+ {
+  "en": "Mina Abdullah Refinery",
+  "ar": "مصفاة ميناء عبدالله",
+  "fee": null
+ },
+ {
+  "en": "Mina Al-Ahmadi Refinery",
+  "ar": "مصفاة ميناء الأحمدي",
+  "fee": null
+ },
+ {
+  "en": "New Wafra",
+  "ar": "الوفرة الجديدة",
+  "fee": 7.0
+ },
+ {
+  "en": "North Ahmadi",
+  "ar": "شمال الأحمدي",
+  "fee": 2.5
+ },
+ {
+  "en": "Rajim Khashman",
+  "ar": "رجم خشمان",
+  "fee": null
+ },
+ {
+  "en": "Riqqa",
+  "ar": "الرقة",
+  "fee": 2.5
+ },
+ {
+  "en": "Sabah Al-Ahmad 1",
+  "ar": "صباح الأحمد 1",
+  "fee": 5.0
+ },
+ {
+  "en": "Sabah Al-Ahmad 2",
+  "ar": "صباح الأحمد 2",
+  "fee": 5.0
+ },
+ {
+  "en": "Sabah Al-Ahmad 3",
+  "ar": "صباح الأحمد 3",
+  "fee": 5.0
+ },
+ {
+  "en": "Sabah Al-Ahmad 4",
+  "ar": "صباح الأحمد 4",
+  "fee": 5.0
+ },
+ {
+  "en": "Sabah Al-Ahmad 5",
+  "ar": "صباح الأحمد 5",
+  "fee": 5.0
+ },
+ {
+  "en": "Sabah Al-Ahmad 6",
+  "ar": "صباح الأحمد 6",
+  "fee": 5.0
+ },
+ {
+  "en": "Sabah Al-Ahmad Al-marine",
+  "ar": "صباح الاحمد البحرية",
+  "fee": 7.0
+ },
+ {
+  "en": "Sabah Al-Ahmad Investment",
+  "ar": "صباح الأحمد استثمارية",
+  "fee": null
+ },
+ {
+  "en": "Sabah Al-Ahmad Services",
+  "ar": "صباح الأحمد الخدمية",
+  "fee": null
+ },
+ {
+  "en": "Sabahiya",
+  "ar": "الصباحية",
+  "fee": 2.5
+ },
+ {
+  "en": "Shalehat Al-Khiran",
+  "ar": "شاليهات الخيران",
+  "fee": 7.0
+ },
+ {
+  "en": "Shalehat Al-Nuwaiseeb",
+  "ar": "شاليهات النويصيب",
+  "fee": 7.0
+ },
+ {
+  "en": "Shalehat Bneder",
+  "ar": "شاليهات بنيدر",
+  "fee": 7.0
+ },
+ {
+  "en": "Shalehat Dba'ayeh",
+  "ar": "شاليهات الضباعية",
+  "fee": null
+ },
+ {
+  "en": "Shalehat Jlea'a",
+  "ar": "شاليهات الجليعة",
+  "fee": null
+ },
+ {
+  "en": "Shalehat Mina Abdullah",
+  "ar": "شاليهات ميناء عبدالله",
+  "fee": null
+ },
+ {
+  "en": "Shalehat Zoor",
+  "ar": "شاليهات الزور",
+  "fee": null
+ },
+ {
+  "en": "Shuaiba Industrial esterly",
+  "ar": "الشعيبة الصناعية الشرقية",
+  "fee": null
+ },
+ {
+  "en": "Shuaiba Industrial Western",
+  "ar": "الشعيبه الصناعيه الغربيه",
+  "fee": null
+ },
+ {
+  "en": "South Abdullah Al-Mubarak",
+  "ar": "جنوب عبدالله المبارك",
+  "fee": 2.25
+ },
+ {
+  "en": "South Ahmadi",
+  "ar": "جنوب الأحمدي",
+  "fee": 2.5
+ },
+ {
+  "en": "South-Sabahiya",
+  "ar": "جنوب الصباحية",
+  "fee": 2.5
+ },
+ {
+  "en": "Sulaibyia Industrial 3",
+  "ar": "الصليبية الصناعية 3",
+  "fee": null
+ },
+ {
+  "en": "Wafra",
+  "ar": "الوفرة",
+  "fee": 7.0
+ },
+ {
+  "en": "Wafra Farms",
+  "ar": "مزارع الوفرة",
+  "fee": null
+ },
+ {
+  "en": "Zoor",
+  "ar": "الزور",
+  "fee": 7.0
+ },
+ {
+  "en": "Abdullah Mubarak Al-Sabah",
+  "ar": "عبدالله مبارك الصباح",
+  "fee": 2.0
+ },
+ {
+  "en": "Andalus",
+  "ar": "الأندلس",
+  "fee": 2.0
+ },
+ {
+  "en": "Ardhiya",
+  "ar": "العارضية",
+  "fee": 2.0
+ },
+ {
+  "en": "Ardhiya 4",
+  "ar": "العارضية 4",
+  "fee": 2.0
+ },
+ {
+  "en": "Ardhiya 6",
+  "ar": "العارضية 6",
+  "fee": 2.0
+ },
+ {
+  "en": "Ardhiya Herafiya",
+  "ar": "العارضية الحرفية",
+  "fee": 2.0
+ },
+ {
+  "en": "Ashbeliah",
+  "ar": "أشبيلية",
+  "fee": 2.0
+ },
+ {
+  "en": "Dajeej",
+  "ar": "ضجيج الطائرات",
+  "fee": 2.0
+ },
+ {
+  "en": "Farwaniya",
+  "ar": "الفروانية",
+  "fee": 2.0
+ },
+ {
+  "en": "Ferdous",
+  "ar": "الفردوس",
+  "fee": 2.25
+ },
+ {
+  "en": "International Airport",
+  "ar": "المطار الدولي",
+  "fee": 2.0
+ },
+ {
+  "en": "Jleeb Al-Shiyoukh",
+  "ar": "جليب الشيوخ",
+  "fee": 2.0
+ },
+ {
+  "en": "Khaitan",
+  "ar": "خيطان",
+  "fee": 2.0
+ },
+ {
+  "en": "Omariya",
+  "ar": "العمرية",
+  "fee": 2.0
+ },
+ {
+  "en": "Rabiya",
+  "ar": "الرابية",
+  "fee": 2.0
+ },
+ {
+  "en": "Rai",
+  "ar": "الري",
+  "fee": 2.0
+ },
+ {
+  "en": "Rehab",
+  "ar": "الرحاب",
+  "fee": 2.0
+ },
+ {
+  "en": "Riggai",
+  "ar": "الرقعي",
+  "fee": 2.0
+ },
+ {
+  "en": "Sabah Al-Nasser",
+  "ar": "صباح الناصر",
+  "fee": 2.25
+ },
+ {
+  "en": "Sabah Al-Salem University City",
+  "ar": "مدينة صباح السالم الجامعية",
+  "fee": 2.25
+ },
+ {
+  "en": "West Abdullah Al-Mubarak",
+  "ar": "غرب عبدالله المبارك",
+  "fee": 2.25
+ },
+ {
+  "en": "Al Bida'a",
+  "ar": "البدع",
+  "fee": 1.0
+ },
+ {
+  "en": "Al-Siddiq",
+  "ar": "الصديق",
+  "fee": 1.5
+ },
+ {
+  "en": "Anjafa",
+  "ar": "أنجفة",
+  "fee": 1.5
+ },
+ {
+  "en": "Bayan",
+  "ar": "بيان",
+  "fee": 1.5
+ },
+ {
+  "en": "Hawalli",
+  "ar": "حولي",
+  "fee": 1.5
+ },
+ {
+  "en": "Hitteen",
+  "ar": "حطين",
+  "fee": 1.5
+ },
+ {
+  "en": "Jabriya",
+  "ar": "الجابرية",
+  "fee": 1.5
+ },
+ {
+  "en": "Ministries Area",
+  "ar": "منطقة الوزارات",
+  "fee": 1.5
+ },
+ {
+  "en": "Mishrif",
+  "ar": "مشرف",
+  "fee": 1.5
+ },
+ {
+  "en": "Mubarak Al-Abdullah",
+  "ar": "مبارك العبدالله",
+  "fee": 1.5
+ },
+ {
+  "en": "Mubarakyia",
+  "ar": "المباركية",
+  "fee": 1.5
+ },
+ {
+  "en": "Rumaithiya",
+  "ar": "الرميثية",
+  "fee": 1.5
+ },
+ {
+  "en": "Salam",
+  "ar": "السلام",
+  "fee": 1.5
+ },
+ {
+  "en": "Salmiya",
+  "ar": "السالمية",
+  "fee": 1.0
+ },
+ {
+  "en": "Salwa",
+  "ar": "سلوى",
+  "fee": 1.5
+ },
+ {
+  "en": "Shaab",
+  "ar": "الشعب",
+  "fee": 1.5
+ },
+ {
+  "en": "Shuhada",
+  "ar": "الشهداء",
+  "fee": 1.5
+ },
+ {
+  "en": "Zahra",
+  "ar": "الزهراء",
+  "fee": 1.5
+ },
+ {
+  "en": "Abdally",
+  "ar": "العبدلي",
+  "fee": 7.0
+ },
+ {
+  "en": "Al Mutlaa",
+  "ar": "المطلاع",
+  "fee": 5.0
+ },
+ {
+  "en": "Al Naayem",
+  "ar": "النعايم",
+  "fee": 2.5
+ },
+ {
+  "en": "Al Sheqaya",
+  "ar": "الشقايا",
+  "fee": null
+ },
+ {
+  "en": "Amghara Industrial",
+  "ar": "أمغرة الصناعية",
+  "fee": null
+ },
+ {
+  "en": "Bar Al-Jahra Governorate",
+  "ar": "بر محافظة الجهراء",
+  "fee": null
+ },
+ {
+  "en": "Bhaith",
+  "ar": "البحيث",
+  "fee": 7.0
+ },
+ {
+  "en": "Bubyan Island",
+  "ar": "جزيرة بوبيان",
+  "fee": null
+ },
+ {
+  "en": "Jahra",
+  "ar": "الجهراء",
+  "fee": 2.5
+ },
+ {
+  "en": "Jahra Camps",
+  "ar": "معسكرات الجهراء",
+  "fee": 2.5
+ },
+ {
+  "en": "Jahra-Industrial",
+  "ar": "الجهراء الصناعية",
+  "fee": 2.5
+ },
+ {
+  "en": "Jawakher Al Jahra",
+  "ar": "جواخير الجهراء",
+  "fee": null
+ },
+ {
+  "en": "Kabd",
+  "ar": "كبد",
+  "fee": 3.0
+ },
+ {
+  "en": "Kaerawan",
+  "ar": "القيروان",
+  "fee": 2.25
+ },
+ {
+  "en": "Kazima",
+  "ar": "كاظمة",
+  "fee": null
+ },
+ {
+  "en": "Naeem",
+  "ar": "النعيم",
+  "fee": 2.5
+ },
+ {
+  "en": "Nahda",
+  "ar": "النهضة",
+  "fee": 2.25
+ },
+ {
+  "en": "Nasseem",
+  "ar": "النسيم",
+  "fee": 2.5
+ },
+ {
+  "en": "North West Jahra",
+  "ar": "شمال غرب الجهراء",
+  "fee": null
+ },
+ {
+  "en": "Oyoun",
+  "ar": "العيون",
+  "fee": 2.5
+ },
+ {
+  "en": "Qasr",
+  "ar": "القصر",
+  "fee": 2.5
+ },
+ {
+  "en": "Rawdatain",
+  "ar": "الروضتين",
+  "fee": 7.0
+ },
+ {
+  "en": "Saad Al-Abdulla City",
+  "ar": "مدينة سعد العبدالله",
+  "fee": 2.5
+ },
+ {
+  "en": "Salmy",
+  "ar": "السالمي",
+  "fee": 7.0
+ },
+ {
+  "en": "Shalehat Kazima",
+  "ar": "شاليهات كاظمة",
+  "fee": null
+ },
+ {
+  "en": "Shalehat Subiya",
+  "ar": "شاليهات الصبية",
+  "fee": null
+ },
+ {
+  "en": "South Al Mutlaa",
+  "ar": "جنوب المطلاع",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 1",
+  "ar": "جنوب المطلاع 1",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 10",
+  "ar": "جنوب المطلاع 10",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 11",
+  "ar": "جنوب المطلاع 11",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 12",
+  "ar": "جنوب المطلاع 12",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 2",
+  "ar": "جنوب المطلاع 2",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 3",
+  "ar": "جنوب المطلاع 3",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 4",
+  "ar": "جنوب المطلاع 4",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 5",
+  "ar": "جنوب المطلاع 5",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 6",
+  "ar": "جنوب المطلاع 6",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 7",
+  "ar": "جنوب المطلاع 7",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 8",
+  "ar": "جنوب المطلاع 8",
+  "fee": 5.0
+ },
+ {
+  "en": "South Al Mutlaa 9",
+  "ar": "جنوب المطلاع 9",
+  "fee": 5.0
+ },
+ {
+  "en": "South Amghara",
+  "ar": "جنوب أمغره",
+  "fee": null
+ },
+ {
+  "en": "Subiya",
+  "ar": "الصبية",
+  "fee": 7.0
+ },
+ {
+  "en": "Sulaibiya",
+  "ar": "الصليبية الشعبية",
+  "fee": 2.25
+ },
+ {
+  "en": "Sulaibiya Agricultural",
+  "ar": "الصليبية الزراعية",
+  "fee": 2.25
+ },
+ {
+  "en": "Sulaibiya Industrial 1",
+  "ar": "الصليبية الصناعية 1",
+  "fee": 2.25
+ },
+ {
+  "en": "Sulaibiya Industrial 2",
+  "ar": "الصليبية الصناعية 2",
+  "fee": 2.25
+ },
+ {
+  "en": "Taima",
+  "ar": "تيماء",
+  "fee": 2.5
+ },
+ {
+  "en": "Umm Al-Aish",
+  "ar": "ام العيش",
+  "fee": null
+ },
+ {
+  "en": "Waha",
+  "ar": "الواحة",
+  "fee": 2.5
+ },
+ {
+  "en": "Warba Island",
+  "ar": "جزيرة وربة",
+  "fee": null
+ },
+ {
+  "en": "Abdulla Al-Salem",
+  "ar": "ضاحية عبدالله السالم",
+  "fee": 1.5
+ },
+ {
+  "en": "Adailiya",
+  "ar": "العديلية",
+  "fee": 1.5
+ },
+ {
+  "en": "Al Sour Gardens",
+  "ar": "حدائق السور",
+  "fee": null
+ },
+ {
+  "en": "Auha Island",
+  "ar": "جزيرة عوهة",
+  "fee": null
+ },
+ {
+  "en": "Bnaid Al-Qar",
+  "ar": "بنيد القار",
+  "fee": 1.5
+ },
+ {
+  "en": "Daiya",
+  "ar": "الدعية",
+  "fee": 1.5
+ },
+ {
+  "en": "Dasma",
+  "ar": "الدسمة",
+  "fee": 1.5
+ },
+ {
+  "en": "Dasman",
+  "ar": "دسمان",
+  "fee": 1.5
+ },
+ {
+  "en": "Doha",
+  "ar": "الدوحة",
+  "fee": 2.25
+ },
+ {
+  "en": "Faiha",
+  "ar": "الفيحاء",
+  "fee": 1.5
+ },
+ {
+  "en": "Failaka Island",
+  "ar": "جزيرة فيلكا",
+  "fee": null
+ },
+ {
+  "en": "Ghornata",
+  "ar": "غرناطة",
+  "fee": 2.0
+ },
+ {
+  "en": "Health Area",
+  "ar": "المنطقة الصحية",
+  "fee": 2.0
+ },
+ {
+  "en": "Jaber Al-Ahmad",
+  "ar": "جابر الأحمد",
+  "fee": 2.25
+ },
+ {
+  "en": "Khaldiya",
+  "ar": "الخالدية",
+  "fee": 1.5
+ },
+ {
+  "en": "Kifan",
+  "ar": "كيفان",
+  "fee": 1.5
+ },
+ {
+  "en": "Kubbar Island",
+  "ar": "جزيرة كبر",
+  "fee": null
+ },
+ {
+  "en": "Mansouriya",
+  "ar": "المنصورية",
+  "fee": 1.5
+ },
+ {
+  "en": "Mina Doha",
+  "ar": "ميناء الدوحة",
+  "fee": null
+ },
+ {
+  "en": "Mirqab",
+  "ar": "المرقاب",
+  "fee": 1.5
+ },
+ {
+  "en": "Mischan Island",
+  "ar": "جزيرة مسكان",
+  "fee": null
+ },
+ {
+  "en": "Mubarakiya Camps",
+  "ar": "معسكرات المباركية",
+  "fee": null
+ },
+ {
+  "en": "Northwest Sulaibikhat",
+  "ar": "شمال غرب الصليبيخات",
+  "fee": 2.25
+ },
+ {
+  "en": "Nuzha",
+  "ar": "النزهة",
+  "fee": 1.5
+ },
+ {
+  "en": "Qadsiya",
+  "ar": "القادسية",
+  "fee": 1.5
+ },
+ {
+  "en": "Qaruh Island",
+  "ar": "جزيرة قاروه",
+  "fee": null
+ },
+ {
+  "en": "Qibla",
+  "ar": "القبلة",
+  "fee": 1.5
+ },
+ {
+  "en": "Qortuba",
+  "ar": "قرطبة",
+  "fee": 1.5
+ },
+ {
+  "en": "Rawda",
+  "ar": "الروضة",
+  "fee": 1.5
+ },
+ {
+  "en": "Shalehat Doha",
+  "ar": "شاليهات الدوحة",
+  "fee": null
+ },
+ {
+  "en": "Shamiya",
+  "ar": "الشامية",
+  "fee": 1.5
+ },
+ {
+  "en": "Sharq",
+  "ar": "شرق",
+  "fee": 1.5
+ },
+ {
+  "en": "Shuwaikh",
+  "ar": "الشويخ",
+  "fee": 2.0
+ },
+ {
+  "en": "Shuwaikh Industrial-1",
+  "ar": "الشويخ الصناعية 1",
+  "fee": 2.0
+ },
+ {
+  "en": "Shuwaikh Industrial-2",
+  "ar": "الشويخ الصناعية 2",
+  "fee": 2.0
+ },
+ {
+  "en": "Shuwaikh Industrial-3",
+  "ar": "الشويخ الصناعية 3",
+  "fee": 2.0
+ },
+ {
+  "en": "Shuwaikh Port",
+  "ar": "المنطقة الحرة",
+  "fee": 2.0
+ },
+ {
+  "en": "Sulaibikhat",
+  "ar": "الصليبيخات",
+  "fee": 2.25
+ },
+ {
+  "en": "Sulaibikhat Cemetery",
+  "ar": "مقبرة الصليبيخات",
+  "fee": null
+ },
+ {
+  "en": "Surra",
+  "ar": "السرة",
+  "fee": 1.5
+ },
+ {
+  "en": "The Sea Front",
+  "ar": "الواجهة البحرية",
+  "fee": 1.5
+ },
+ {
+  "en": "Umm Al-Maradim Island",
+  "ar": "جزيرة أم المرادم",
+  "fee": null
+ },
+ {
+  "en": "Umm Al-Namel Island",
+  "ar": "جزيرة أم النمل",
+  "fee": null
+ },
+ {
+  "en": "Yarmouk",
+  "ar": "اليرموك",
+  "fee": 1.5
+ },
+ {
+  "en": "Abu Ftaira",
+  "ar": "ضاحية أبو فطيرة",
+  "fee": 2.0
+ },
+ {
+  "en": "Abu Hassaniah",
+  "ar": "أبو الحصانية",
+  "fee": 2.0
+ },
+ {
+  "en": "Al-Adan",
+  "ar": "العدان",
+  "fee": 2.0
+ },
+ {
+  "en": "Al-Fnaitees",
+  "ar": "ضاحية الفنيطيس",
+  "fee": 2.0
+ },
+ {
+  "en": "Al Masayel",
+  "ar": "المسايل",
+  "fee": 2.0
+ },
+ {
+  "en": "Al-Qurain",
+  "ar": "القرين",
+  "fee": 2.0
+ },
+ {
+  "en": "Al-Qusour",
+  "ar": "القصور",
+  "fee": 2.0
+ },
+ {
+  "en": "Messila",
+  "ar": "المسيلة",
+  "fee": 2.0
+ },
+ {
+  "en": "Mubarak Al-Kabeer",
+  "ar": "مبارك الكبير",
+  "fee": 2.0
+ },
+ {
+  "en": "Sabah Al-Salem",
+  "ar": "صباح السالم",
+  "fee": 2.0
+ },
+ {
+  "en": "Subhan Industrial",
+  "ar": "صبحان الصناعية",
+  "fee": 2.0
+ },
+ {
+  "en": "West Abu Ftirah Hirafyia",
+  "ar": "غرب أبو فطيرة الحرفية",
+  "fee": 2.0
+ },
+ {
+  "en": "Wista",
+  "ar": "المنطقة الوسطى",
+  "fee": 2.0
+ }
+]

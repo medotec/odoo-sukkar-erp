@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_sukkar_cake_batch" model="ir.sequence">
+        <field name="name">Sukkar Cake Batch</field>
+        <field name="code">sukkar.cake.batch</field>
+        <field name="prefix">CB</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_sukkar_cake_move" model="ir.sequence">
+        <field name="name">Sukkar Cake Movement</field>
+        <field name="code">sukkar.cake.move</field>
+        <field name="prefix">CM</field>
+        <field name="padding">6</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_sukkar_cake_override" model="ir.sequence">
+        <field name="name">Sukkar Cake Stock Override</field>
+        <field name="code">sukkar.cake.override</field>
+        <field name="prefix">OVR</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

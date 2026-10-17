@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Polls every configured device. Devices set to file import are skipped,
+             so this is harmless until real hardware exists. -->
+        <record id="sukkar_cron_sync_attendance" model="ir.cron">
+            <field name="name">Sukkar: Read attendance machines</field>
+            <field name="model_id" ref="model_sukkar_attendance_device"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_sync_attendance()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="False"/>
+        </record>
+    </data>
+</odoo>

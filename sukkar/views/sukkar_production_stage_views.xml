@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_production_stage_view_list" model="ir.ui.view">
+        <field name="name">sukkar.production.stage.list</field>
+        <field name="model">sukkar.production.stage</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="status"/>
+                <field name="default_duration"/>
+                <field name="is_done"/>
+                <field name="is_closed"/>
+                <field name="fold"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_production_stage_action" model="ir.actions.act_window">
+        <field name="name">Kitchen Stages</field>
+        <field name="res_model">sukkar.production.stage</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

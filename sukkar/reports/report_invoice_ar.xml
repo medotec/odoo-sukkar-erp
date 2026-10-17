@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =============================================================
+         INVOICE — ARABIC, RIGHT TO LEFT (owner's order, 30 Sep 2026)
+
+         The whole page is Arabic and reads right to left: the shop's
+         own header with the black-and-white logo, then who it is for,
+         then how it travels, then what is in it.
+
+         The invoice always carries the money (owner, 30 Sep 2026): every
+         line priced, the delivery fee with them, the total and what is
+         still due. The only document printed without prices is the
+         driver's delivery receipt from the back office.
+
+         Product names are the Arabic ones the catalogue carries
+         (sukkar_name_ar), falling back to the catalogue name when a
+         product has no Arabic name yet.
+
+         wkhtmltopdf rules honoured: tables not flexbox; the utf-8 meta
+         comes from web.html_container; Arabic glyphs resolve to Cairo
+         through fontconfig. -->
+
+    <template id="report_invoice_sukkar_ar">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+              <!-- basic_layout gives the page the .article wrapper Odoo splits the
+                   PDF on — without it the Arabic comes out as mojibake. It brings
+                   no company header, so the black-and-white logo below is the only
+                   mark on the page. -->
+              <t t-call="web.basic_layout">
+                <t t-set="owed" t-value="o.move_type != 'entry' and o.amount_residual &gt; 0.0001"/>
+                <t t-set="fee_product" t-value="o.company_id.sukkar_pos_fee_product_id"/>
+                <t t-set="item_lines"
+                   t-value="o.invoice_line_ids.filtered(lambda l: l.display_type in (False, 'product') and not (fee_product and l.product_id == fee_product) and not any(l.sale_line_ids.mapped('is_delivery')))"/>
+                <t t-set="fee_lines"
+                   t-value="o.invoice_line_ids.filtered(lambda l: l.display_type in (False, 'product') and ((fee_product and l.product_id == fee_product) or any(l.sale_line_ids.mapped('is_delivery'))))"/>
+                <t t-set="fee_total" t-value="sum(fee_lines.mapped('price_subtotal'))"/>
+                <t t-set="items_total" t-value="sum(item_lines.mapped('price_subtotal'))"/>
+                <!-- The till's General Note (owner, 2 Oct 2026). Odoo files it as a
+                     note line, which the item table above leaves out. -->
+                <t t-set="general_note" t-value="'\n'.join(n for n in o.pos_order_ids.mapped('general_note') if n)"/>
+                <div class="page" dir="rtl" style="direction:rtl; text-align:right;">
+                    <style>
+                        .ki-wrap { font-size:13px; color:#3B2B33; }
+                        .ki-top { width:100%; border-collapse:collapse; margin:0 0 14px; }
+                        .ki-top td { vertical-align:middle; padding:0; }
+                        .ki-logo { width:120px; }
+                        .ki-logo img { width:110px; height:auto; }
+                        .ki-shop { font-size:20px; font-weight:800; color:#000; margin:0; }
+                        .ki-shop-sub { font-size:11px; color:#555; margin:2px 0 0; }
+                        .ki-title { text-align:left; }
+                        .ki-title .t { font-size:24px; font-weight:800; color:#D82B7D; margin:0; }
+                        .ki-title .n { font-size:15px; font-weight:800; margin:2px 0 0; }
+                        .ki-title .d { font-size:11px; color:#555; margin:2px 0 0; }
+                        .ki-rule { height:3px; background:#D82B7D; border-radius:3px; margin:0 0 12px; }
+                        .ki-box { width:100%; border:1.5px solid #D82B7D; border-radius:8px;
+                                  border-collapse:separate; margin:0 0 10px; page-break-inside:avoid; }
+                        .ki-box td { padding:5px 10px; font-size:12px; vertical-align:top; }
+                        .ki-box .lbl { color:#D82B7D; font-weight:700; white-space:nowrap; width:120px; }
+                        .ki-box .row td { border-top:1px solid #F5DCE9; }
+                        .ki-head { background:#FFF3F8; color:#A01F5C; font-weight:800; font-size:13px; }
+                        .ki-items { width:100%; border-collapse:collapse; margin:0 0 10px; }
+                        .ki-items th { background:#D82B7D; color:#fff; font-weight:700; font-size:12px;
+                                       padding:6px 10px; text-align:right; }
+                        .ki-items td { padding:6px 10px; font-size:12px; border-bottom:1px solid #F0E6DD;
+                                       vertical-align:top; }
+                        .ki-items .num { text-align:center; white-space:nowrap; }
+                        .ki-sub { font-size:10px; color:#7A6470; }
+                        .ki-tot { width:52%; border-collapse:collapse; margin-right:auto; }
+                        .ki-tot td { padding:5px 10px; font-size:13px; }
+                        .ki-tot .lbl { color:#555; }
+                        .ki-tot .grand td { border-top:2px solid #D82B7D; font-size:16px; font-weight:800;
+                                            color:#D82B7D; }
+                        .ki-tot .due td { background:#FFF3F8; font-weight:800; }
+                        .ki-paid { border:3px solid #1FA752; color:#1FA752; font-weight:800; font-size:18px;
+                                   padding:6px 20px; border-radius:100px; display:inline-block; }
+                        .ki-foot { margin-top:18px; border-top:1px solid #F0E6DD; padding-top:8px;
+                                   font-size:11px; color:#7A6470; text-align:center; }
+                    </style>
+
+                    <div class="ki-wrap">
+                        <!-- ── الترويسة ───────────────────────────── -->
+                        <table class="ki-top">
+                            <tr>
+                                <td class="ki-logo">
+                                    <img t-att-src="'/sukkar/static/img/sukkar-logo-bw.png'" alt="Sukkar"/>
+                                </td>
+                                <td>
+                                    <p class="ki-shop">سُكّر</p>
+                                    <p class="ki-shop-sub">
+                                        <span t-field="o.company_id.name"/>
+                                        <t t-if="o.company_id.company_registry"> · س.ت: <span t-field="o.company_id.company_registry"/></t>
+                                        <t t-if="o.company_id.phone"> · هاتف: <span dir="ltr" t-field="o.company_id.phone"/></t>
+                                    </p>
+                                </td>
+                                <td class="ki-title">
+                                    <p class="t">
+                                        <t t-if="o.move_type == 'out_refund'">إشعار دائن</t>
+                                        <t t-elif="o.state == 'draft'">فاتورة مبدئية</t>
+                                        <t t-else="">فاتورة</t>
+                                    </p>
+                                    <p class="n"><span t-field="o.name"/></p>
+                                    <p class="d">
+                                        التاريخ: <span t-field="o.invoice_date"/>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="ki-rule"/>
+
+                        <!-- ── بيانات العميل ──────────────────────── -->
+                        <table class="ki-box">
+                            <tr><td class="ki-head" colspan="2">بيانات العميل</td></tr>
+                            <tr class="row">
+                                <td class="lbl">العميل</td>
+                                <td><strong t-field="o.partner_id.name"/></td>
+                            </tr>
+                            <tr class="row" t-if="o.partner_id.mobile or o.partner_id.phone">
+                                <td class="lbl">رقم الهاتف</td>
+                                <td><span t-esc="o.partner_id.mobile or o.partner_id.phone"/></td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_receiver_name">
+                                <td class="lbl">المستلم</td>
+                                <td>
+                                    <span t-field="o.sukkar_receiver_name"/>
+                                    <t t-if="o.sukkar_receiver_phone"> · <span t-field="o.sukkar_receiver_phone"/></t>
+                                </td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_address_summary and o.sukkar_order_type != 'pickup'">
+                                <td class="lbl">العنوان</td>
+                                <td><span t-field="o.sukkar_address_summary"/></td>
+                            </tr>
+                        </table>
+
+                        <!-- ── الطلب والتوصيل ─────────────────────── -->
+                        <table class="ki-box"
+                               t-if="o.sukkar_order_type or o.sukkar_delivery_datetime or o.sukkar_gift_to
+                                     or o.sukkar_gift_message or o.sukkar_flavour_summary
+                                     or o.sukkar_special_requests or o.sukkar_driver_id or general_note">
+                            <tr><td class="ki-head" colspan="2">الطلب والتوصيل</td></tr>
+                            <tr class="row" t-if="o.sukkar_order_type">
+                                <td class="lbl">نوع الطلب</td>
+                                <td>
+                                    <t t-if="o.sukkar_order_type == 'pickup'">استلام من الفرع</t>
+                                    <t t-else="">توصيل</t>
+                                </td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_delivery_datetime">
+                                <td class="lbl">موعد التوصيل</td>
+                                <td>
+                                    <span t-field="o.sukkar_delivery_datetime"/>
+                                    <t t-if="o.sukkar_delivery_time_range"> · <span t-field="o.sukkar_delivery_time_range"/></t>
+                                </td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_gift_to">
+                                <td class="lbl">إلى</td>
+                                <td>
+                                    <span t-field="o.sukkar_gift_to"/>
+                                    <t t-if="o.sukkar_gift_from"> · من: <span t-field="o.sukkar_gift_from"/></t>
+                                </td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_gift_message">
+                                <td class="lbl">الرسالة</td>
+                                <td><span t-field="o.sukkar_gift_message"/></td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_flavour_summary">
+                                <td class="lbl">نكهات الكيك</td>
+                                <td><span t-field="o.sukkar_flavour_summary"/></td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_special_requests">
+                                <td class="lbl">ملاحظات</td>
+                                <td><span t-field="o.sukkar_special_requests"/></td>
+                            </tr>
+                            <tr class="row" t-if="general_note">
+                                <td class="lbl">ملاحظة عامة</td>
+                                <td style="white-space:pre-line;"><t t-esc="general_note"/></td>
+                            </tr>
+                            <tr class="row" t-if="o.sukkar_driver_id">
+                                <td class="lbl">السائق</td>
+                                <td><span t-field="o.sukkar_driver_id.name"/></td>
+                            </tr>
+                        </table>
+
+                        <!-- ── الأصناف ────────────────────────────── -->
+                        <table class="ki-items">
+                            <thead>
+                                <tr>
+                                    <th>الصنف</th>
+                                    <th class="num" style="width:70px;">الكمية</th>
+                                    <th class="num" style="width:110px;">السعر</th>
+                                    <th class="num" style="width:120px;">الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="item_lines" t-as="line">
+                                    <td>
+                                        <strong t-esc="line.product_id.sukkar_name_ar or line.product_id.name or line.name"/>
+                                        <t t-if="line.product_id.sukkar_variant_ar">
+                                            — <span t-esc="line.product_id.sukkar_variant_ar"/>
+                                        </t>
+                                        <div t-if="line.sukkar_flavour_summary" class="ki-sub">
+                                            النكهات: <span t-field="line.sukkar_flavour_summary"/>
+                                        </div>
+                                    </td>
+                                    <td class="num"><span t-esc="int(line.quantity)"/></td>
+                                    <td class="num">
+                                        <span t-field="line.price_unit"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td class="num">
+                                        <span t-field="line.price_subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- ── المبالغ: تُطبع فقط ما دام هناك مبلغ مستحق ── -->
+                        <table class="ki-tot">
+                            <tr>
+                                <td class="lbl">المجموع</td>
+                                <td class="num" style="text-align:left;">
+                                    <span t-esc="items_total"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr t-if="fee_total">
+                                <td class="lbl">رسوم التوصيل</td>
+                                <td class="num" style="text-align:left;">
+                                    <span t-esc="fee_total"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr class="grand">
+                                <td>الإجمالي</td>
+                                <td style="text-align:left;">
+                                    <span t-field="o.amount_total"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr t-if="o.amount_total != o.amount_residual">
+                                <td class="lbl">المدفوع</td>
+                                <td style="text-align:left;">
+                                    <span t-esc="o.amount_total - o.amount_residual"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr class="due" t-if="owed">
+                                <td>المبلغ المستحق</td>
+                                <td style="text-align:left;">
+                                    <span t-field="o.amount_residual"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr t-if="o.sukkar_payment_method">
+                                <td class="lbl">طريقة الدفع</td>
+                                <td style="text-align:left;">
+                                    <span t-field="o.sukkar_payment_method"/>
+                                    <t t-if="o.sukkar_knet_approval"> · موافقة كي نت: <span t-field="o.sukkar_knet_approval"/></t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ── مدفوعة بالكامل ── -->
+                        <div t-if="not owed" style="text-align:center; margin-top:14px;">
+                            <span class="ki-paid">مدفوعة بالكامل</span>
+                        </div>
+
+                        <div class="ki-foot">
+                            شكراً لاختياركم سُكّر · sukkar-demo.com
+                        </div>
+                    </div>
+                </div>
+              </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- The Print button keeps its place; it now prints the Arabic page. -->
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="report_name">sukkar.report_invoice_sukkar_ar</field>
+        <field name="report_file">sukkar.report_invoice_sukkar_ar</field>
+    </record>
+    <record id="account.account_invoices_without_payment" model="ir.actions.report">
+        <field name="report_name">sukkar.report_invoice_sukkar_ar</field>
+        <field name="report_file">sukkar.report_invoice_sukkar_ar</field>
+    </record>
+</odoo>

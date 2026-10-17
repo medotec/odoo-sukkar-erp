@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_cake_move_view_list" model="ir.ui.view">
+        <field name="name">sukkar.cake.move.list</field>
+        <field name="model">sukkar.cake.move</field>
+        <field name="arch" type="xml">
+            <list string="Cake Movements">
+                <field name="date"/>
+                <field name="batch_id"/>
+                <field name="move_type"/>
+                <field name="qty" sum="Pieces"/>
+                <field name="state_from"/>
+                <field name="state_to"/>
+                <field name="sale_order_id" optional="show"/>
+                <field name="pos_order_id" optional="hide"/>
+                <field name="user_id"/>
+                <field name="reason" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_cake_move_view_form" model="ir.ui.view">
+        <field name="name">sukkar.cake.move.form</field>
+        <field name="model">sukkar.cake.move</field>
+        <field name="arch" type="xml">
+            <form string="Cake Movement">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="batch_id"/>
+                            <field name="move_type"/>
+                            <field name="qty"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="state_from"/>
+                            <field name="state_to"/>
+                            <field name="user_id"/>
+                            <field name="reason"/>
+                        </group>
+                    </group>
+                    <group string="Where it came from">
+                        <field name="sale_order_id"/>
+                        <field name="pos_order_id"/>
+                        <field name="production_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_cake_move_action" model="ir.actions.act_window">
+        <field name="name">Cake Movements</field>
+        <field name="res_model">sukkar.cake.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No movements yet</p>
+            <p>Every piece that is decorated, reserved, sold or wasted leaves a row here.</p>
+        </field>
+    </record>
+</odoo>

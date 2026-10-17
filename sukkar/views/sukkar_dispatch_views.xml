@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================= -->
+    <!-- DISPATCH — the Cashier/supervisor screen.                     -->
+    <!--                                                               -->
+    <!-- Orders in the same delivery window sit together in one        -->
+    <!-- column. Dragging a card WITHIN a column reorders the run      -->
+    <!-- (writes `sequence`, which is also the print order of the      -->
+    <!-- driver receipt). Dragging a card to ANOTHER column moves the  -->
+    <!-- order to that delivery window — it writes through to the sale -->
+    <!-- order, so the kitchen deadline, the calendars and the reports -->
+    <!-- all follow. Assign the driver right on the card.              -->
+    <!-- ============================================================= -->
+
+    <record id="sukkar_dispatch_view_kanban" model="ir.ui.view">
+        <field name="name">sukkar.production.dispatch.kanban</field>
+        <field name="model">sukkar.production</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="delivery_slot_id" default_order="sequence"
+                    quick_create="false" create="false" groups_draggable="false"
+                    sample="1">
+                <field name="sequence"/>
+                <field name="delivery_slot_id"/>
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="partner_id"/>
+                <field name="receiver_name"/>
+                <field name="ship_state_id"/>
+                <field name="delivery_date"/>
+                <field name="payment_status"/>
+                <field name="cash_due"/>
+                <field name="currency_id"/>
+                <field name="is_late"/>
+                <field name="status"/>
+                <field name="driver_id"/>
+                <field name="cod_overdue"/>
+                <field name="cod_days_outstanding"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="d-flex justify-content-between">
+                                <strong><field name="sale_order_id"/></strong>
+                                <field name="payment_status" widget="badge"
+                                       decoration-success="payment_status == 'PAID'"
+                                       decoration-danger="payment_status == 'UNPAID'"/>
+                            </div>
+                            <div class="text-muted small">
+                                <field name="name"/>
+                                <t t-if="record.is_late.raw_value"> · <span class="text-danger fw-bold">LATE</span></t>
+                            </div>
+                            <div>
+                                <field name="partner_id"/>
+                                <t t-if="record.receiver_name.value"> → <field name="receiver_name"/></t>
+                            </div>
+                            <div class="small">
+                                <field name="ship_state_id"/>
+                                <t t-if="record.delivery_date.value"> · <field name="delivery_date"/></t>
+                            </div>
+                            <div t-if="record.cash_due.raw_value" class="small fw-bold">
+                                Collect: <field name="cash_due" widget="monetary"/>
+                            </div>
+                            <div t-if="record.cod_overdue.raw_value" class="small fw-bold text-danger">
+                                Cash overdue · <t t-esc="record.cod_days_outstanding.value"/> days unpaid
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <field name="status" widget="badge"/>
+                                <div class="d-flex align-items-center gap-1">
+                                    <small t-if="record.driver_id.raw_value" class="fw-bold">
+                                        <t t-esc="record.driver_id.value"/>
+                                    </small>
+                                    <small t-else="" class="text-muted">No driver yet</small>
+                                    <field name="driver_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- The same run as a list: who is driving it, what is still owed, and how
+         long a cash order has gone unpaid — all editable in place. -->
+    <record id="sukkar_dispatch_view_list" model="ir.ui.view">
+        <field name="name">sukkar.production.dispatch.list</field>
+        <field name="model">sukkar.production</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <list string="Dispatch" editable="bottom" create="0" delete="0"
+                  default_order="delivery_date asc, sequence asc"
+                  decoration-danger="is_late == True"
+                  decoration-muted="status == 'closed'">
+                <field name="sale_order_id" string="Order"/>
+                <field name="name" string="Ticket" optional="hide"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="receiver_name" string="Receiver" optional="show"/>
+                <field name="ship_state_id" string="Area" optional="show"/>
+                <field name="delivery_date" string="Delivery Day"/>
+                <field name="delivery_slot_id" string="Window"/>
+                <field name="driver_id" string="Driver"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="cash_due" string="Collect (Cash)" optional="show"/>
+                <field name="payment_status" string="Payment" widget="badge"
+                       decoration-success="payment_status == 'PAID'"
+                       decoration-danger="payment_status == 'UNPAID'"/>
+                <field name="cod_overdue" column_invisible="1"/>
+                <field name="cod_days_outstanding" string="Days Unpaid" optional="show"
+                       widget="badge" invisible="cod_days_outstanding == 0"
+                       decoration-danger="cod_overdue == True"
+                       decoration-warning="cod_overdue == False"/>
+                <field name="status" string="Status" widget="badge"
+                       decoration-info="status == 'in_progress'"
+                       decoration-warning="status == 'ready_for_pickup'"
+                       decoration-primary="status == 'in_delivery'"
+                       decoration-success="status in ('delivered', 'closed')"/>
+                <field name="is_late" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_dispatch_view_search" model="ir.ui.view">
+        <field name="name">sukkar.production.dispatch.search</field>
+        <field name="model">sukkar.production</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Ticket / Order"
+                       filter_domain="['|', ('name', 'ilike', self), ('sale_order_id.name', 'ilike', self)]"/>
+                <field name="driver_id"/>
+                <field name="partner_id"/>
+                <separator/>
+                <!-- The Drivers screen's filters (owner, 10 Oct 2026): Today and
+                     Tomorrow in one group, so ticking both shows both days. -->
+                <filter name="f_today" string="Today"
+                        domain="[('delivery_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="f_tomorrow" string="Tomorrow"
+                        domain="[('delivery_date', '=', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="s_kitchen" string="In the Kitchen" domain="[('status', '=', 'in_progress')]"/>
+                <filter name="s_ready" string="Ready for Pickup" domain="[('status', '=', 'ready_for_pickup')]"/>
+                <filter name="s_delivery" string="Out for Delivery" domain="[('status', '=', 'in_delivery')]"/>
+                <filter name="s_delivered" string="Delivered" domain="[('status', 'in', ('delivered', 'closed'))]"/>
+                <separator/>
+                <filter name="not_done" string="To Dispatch"
+                        domain="[('status', 'in', ('in_progress', 'ready_for_pickup', 'in_delivery'))]"/>
+                <filter name="no_driver" string="No Driver Yet" domain="[('driver_id', '=', False)]"/>
+                <filter name="unpaid" string="Unpaid" domain="[('payment_status', '=', 'UNPAID')]"/>
+                <filter name="cod_overdue" string="Cash Overdue"
+                        domain="[('sale_order_id.sukkar_cod_overdue', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_slot" string="Delivery Window"
+                            context="{'group_by': 'delivery_slot_id'}"/>
+                    <filter name="group_driver" string="Driver" context="{'group_by': 'driver_id'}"/>
+                    <filter name="group_date" string="Delivery Date"
+                            context="{'group_by': 'delivery_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="sukkar_dispatch_action" model="ir.actions.act_window">
+        <field name="name">Dispatch</field>
+        <field name="res_model">sukkar.production</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="sukkar_dispatch_view_kanban"/>
+        <field name="search_view_id" ref="sukkar_dispatch_view_search"/>
+        <!-- A cancelled order is not delivered: its ticket leaves the board. -->
+        <field name="domain">[('sale_order_id', '!=', False), ('order_state', 'not in', ['cancel'])]</field>
+        <!-- Opens on Today (owner, 10 Oct 2026); Today & Tomorrow is one click away. -->
+        <field name="context">{'search_default_f_today': 1, 'search_default_not_done': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing to dispatch</p>
+            <p>Confirmed orders group by delivery window. Drag within a column to
+               set the driver's run order, drag to another column to move the
+               order to that window, and assign the driver on the card. Then
+               select the tickets and print the <b>Delivery Receipt (Driver)</b>.</p>
+        </field>
+    </record>
+
+    <!-- Pin both boards to THIS action: the board opens on the kanban, and the
+         list stays the dispatch list, not the plain kitchen one. -->
+    <record id="sukkar_dispatch_action_kanban" model="ir.actions.act_window.view">
+        <field name="view_mode">kanban</field>
+        <field name="sequence">1</field>
+        <field name="view_id" ref="sukkar_dispatch_view_kanban"/>
+        <field name="act_window_id" ref="sukkar_dispatch_action"/>
+    </record>
+    <record id="sukkar_dispatch_action_list" model="ir.actions.act_window.view">
+        <field name="view_mode">list</field>
+        <field name="sequence">2</field>
+        <field name="view_id" ref="sukkar_dispatch_view_list"/>
+        <field name="act_window_id" ref="sukkar_dispatch_action"/>
+    </record>
+</odoo>

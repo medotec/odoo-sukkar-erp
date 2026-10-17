@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 80 mm thermal roll (the same width as the POS receipt printer), 200 mm long.
+         Odoo only passes the page-width/page-height flags to wkhtmltopdf when BOTH are
+         non-zero, so the length has to be a real number, not 0 for "continuous".
+         For an A5 or A4 slip instead, change format/page_width/page_height here. -->
+    <record id="paperformat_order_receipt" model="report.paperformat">
+        <field name="name">Sukkar Order Receipt (80mm)</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_height">200</field>
+        <field name="page_width">80</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_order_receipt" model="ir.actions.report">
+        <field name="name">Order Receipt</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sukkar.report_order_receipt</field>
+        <field name="report_file">sukkar.report_order_receipt</field>
+        <field name="paperformat_id" ref="paperformat_order_receipt"/>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Receipt - %s' % (object.name)</field>
+    </record>
+
+    <template id="report_order_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!-- basic_layout supplies the div.article wrapper. Without it Odoo skips
+                     web.report_layout, which is what carries the utf-8 charset meta —
+                     and every Arabic string comes out of wkhtmltopdf as mojibake. -->
+                <t t-call="web.basic_layout">
+                    <!-- Arabic-first slip: the shop reads it in Arabic, the small grey
+                         word beside each label is the English for anyone who does not.
+                         Layout is tables, not flexbox — wkhtmltopdf's WebKit is too old
+                         for flex and silently collapses it. -->
+                    <div class="page" dir="rtl">
+                        <!-- Designed for an 80 mm THERMAL printer: one bit per dot, black or
+                             nothing. Three rules follow from that:
+
+                             1. No colour and no grey. A mid-tone does not print as a mid-tone —
+                                it dithers into speckle, and the brand pink lands at roughly 45%
+                                grey, which turns every label into mush. Everything below is pure
+                                black on white, and a test asserts no brand colour creeps back in.
+                             2. No tinted panels. Emphasis comes from rules, weight and
+                                reversed-out bars instead.
+                             3. Nothing that relied on colour alone may carry meaning — see the
+                                payment badge, solid black for UNPAID, outlined for PAID.
+
+                             Type: Inter for Latin, Cairo for Arabic. The order of the stack
+                             does the work — Inter carries no Arabic glyphs, so Arabic falls
+                             through to Cairo while Latin stays in Inter. Both are installed in
+                             the image (see the Dockerfile); naming a font in CSS alone silently
+                             falls back to DejaVu, which is what every Arabic document here was
+                             quietly using before. Cairo ships only as a variable font, so the
+                             image carries static 400/700/800 cuts — otherwise wkhtmltopdf fakes
+                             every bold from Regular. -->
+                        <style>
+
+                            .kr { font-family: 'Inter', 'Cairo', 'Noto Sans Arabic', 'DejaVu Sans', sans-serif;
+                                  font-size: 13px; color: #000; line-height: 1.5; }
+                            .kr-mark { text-align:center; font-weight:800; font-size:23px;
+                                letter-spacing:.16em; margin:0; }
+                            .kr-mark-ar { text-align:center; font-weight:700; font-size:15px;
+                                letter-spacing:.04em; margin:1px 0 0; }
+                            .kr-title { text-align:center; font-size:12px; margin:2px 0 6px;
+                                letter-spacing:.03em; }
+                            .kr-cr { text-align:center; font-size:11px; margin:1px 0 0; }
+                            /* Solid, not dashed: at 203 dpi a dashed hairline drops out. */
+                            .kr-rule { border:0; border-top:1px solid #000; margin:6px 0; }
+                            .kr-rule-b { border:0; border-top:3px solid #000; margin:6px 0; }
+                            .kr-row { overflow:hidden; margin:3px 0; }
+                            .kr-row .k { font-weight:700; font-size:12px; }
+                            .kr-row .v { float:left; text-align:left; font-size:14px; font-weight:700; }
+                            .kr-en { font-weight:400; font-size:10px; }
+                            .kr-lbl { font-weight:700; font-size:12px; }
+                            .kr-blk { margin:5px 0; }
+                            /* The promised time is the most-read line on the slip. */
+                            .kr-when { font-size:17px; font-weight:800; letter-spacing:.01em; }
+                            .kr-when-sub { font-size:12px; font-weight:700; }
+                            .kr-frame { border:2px solid #000; padding:6px 8px; margin:5px 0; }
+                            .kr-item { font-size:13px; font-weight:700; }
+                            .kr-qty { font-weight:800; }
+                            /* Reversed-out bar: prints as a solid block, unmissable. */
+                            .kr-badge-solid { display:inline-block; background:#000; color:#fff; white-space:nowrap;
+                                padding:3px 10px; font-weight:800; font-size:12px; letter-spacing:.05em; }
+                            .kr-badge-open { display:inline-block; border:2px solid #000; white-space:nowrap;
+                                padding:1px 8px; font-weight:800; font-size:12px; letter-spacing:.05em; }
+                            .kr-total { font-size:24px; font-weight:800; letter-spacing:.01em; }
+                            .kr-note { white-space:pre-line; font-size:13px; }
+                            .kr-foot { text-align:center; font-size:11px; margin-top:8px; }
+                        </style>
+
+                        <div class="kr">
+                            <!-- A typographic wordmark, not the logo bitmap. The logo is a
+                                 colour illustration; thresholded to 1 bit it dithers into an
+                                 unreadable smudge and takes the words "Sukkar" with it.
+                                 Type reproduces perfectly at any dpi. The bitmap logo still
+                                 heads the A4 documents, which print on a normal printer. -->
+                            <p class="kr-mark">SUKKAR</p>
+                            <p class="kr-mark-ar">سُكّر</p>
+                            <p class="kr-cr" t-if="o.company_id.company_registry">
+                                س.ت <span class="kr-en">C.R.</span>
+                                <span dir="ltr" t-field="o.company_id.company_registry"/>
+                            </p>
+                            <p class="kr-title">إيصال الطلب · Order Receipt</p>
+                            <hr class="kr-rule-b"/>
+
+                            <!-- 1 · التاريخ   2 · رقم الطلب -->
+                            <div class="kr-row">
+                                    <span class="v"><span t-field="o.date_order" t-options='{"widget": "date"}'/></span>
+                                    <span class="k">التاريخ <span class="kr-en">Date</span></span>
+                                </div>
+                                <div class="kr-row">
+                                    <span class="v" dir="ltr"><span t-field="o.name"/></span>
+                                    <span class="k">رقم الطلب <span class="kr-en">Order No.</span></span>
+                                </div>
+                            <hr class="kr-rule"/>
+
+                            <!-- 3 · موعد استلامه من الفرع — the date and window the order is
+                                 promised for, with a line saying whether the customer collects
+                                 it or a driver takes it out, so the slip is never ambiguous. -->
+                            <t t-set="is_pickup"
+                               t-value="o.sukkar_order_type == 'pickup' or o.carrier_id.sukkar_is_pickup"/>
+                            <div class="kr-blk">
+                                <div class="kr-lbl">موعد استلامه من الفرع <span class="kr-en">Collection / delivery time</span></div>
+                                <div class="kr-frame">
+                                    <t t-if="o.sukkar_delivery_date">
+                                        <div class="kr-when"><span t-field="o.sukkar_delivery_date"/></div>
+                                        <div class="kr-when" t-if="o.sukkar_delivery_time_range">
+                                            <bdi><span t-field="o.sukkar_delivery_time_range"/></bdi>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="kr-when">— لم يُحدَّد بعد —</div>
+                                    </t>
+                                    <div class="kr-when-sub">
+                                        <t t-if="is_pickup">استلام من الفرع · Pickup from branch</t>
+                                        <t t-elif="o.carrier_id"><span t-field="o.carrier_id.name"/></t>
+                                        <t t-else="">توصيل · Delivery</t>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="kr-rule"/>
+
+                            <!-- 4 · تفاصيل الطلب (delivery-fee lines excluded) -->
+                            <div class="kr-blk">
+                                <div class="kr-lbl">تفاصيل الطلب <span class="kr-en">Order details</span></div>
+                                <div class="kr-row" t-foreach="o.order_line.filtered(lambda l: not l.display_type and not l.is_delivery)" t-as="l">
+                                    <span class="v" style="white-space:nowrap;"><span class="kr-qty" dir="ltr"><t t-esc="int(l.product_uom_qty)"/> ×</span></span>
+                                    <span class="k" style="white-space:normal;  font-size:12px;"><bdi><span t-field="l.product_id"/></bdi></span>
+                                </div>
+                                <div t-if="o.sukkar_flavour_summary" style="font-size:11px;  margin-top:3px;">
+                                    النكهات <span class="kr-en">Flavours</span>:
+                                    <bdi><span t-field="o.sukkar_flavour_summary"/></bdi>
+                                </div>
+                                <div t-if="o.sukkar_gift_message" style="font-size:11px;  margin-top:3px;">
+                                    بطاقة الإهداء: <bdi><span t-field="o.sukkar_gift_message"/></bdi>
+                                </div>
+                            </div>
+                            <hr class="kr-rule"/>
+
+                            <!-- 5 · العنوان — nothing to print when the customer collects it -->
+                            <t t-if="not is_pickup">
+                                <div class="kr-blk">
+                                    <div class="kr-lbl">العنوان <span class="kr-en">Address</span></div>
+                                    <div style="font-size:12px;">
+                                        <bdi><span t-field="o.partner_shipping_id"
+                                              t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'/></bdi>
+                                    </div>
+                                    <div t-if="o.sukkar_addr_floor or o.sukkar_addr_apartment" style="font-size:11px;">
+                                        <t t-if="o.sukkar_addr_floor">الدور: <bdi><span t-field="o.sukkar_addr_floor"/></bdi></t>
+                                        <t t-if="o.sukkar_addr_floor and o.sukkar_addr_apartment"> · </t>
+                                        <t t-if="o.sukkar_addr_apartment">الشقة: <bdi><span t-field="o.sukkar_addr_apartment"/></bdi></t>
+                                    </div>
+                                    <div t-if="o.sukkar_addr_directions" style="font-size:11px;">
+                                        <span t-field="o.sukkar_addr_directions"/>
+                                    </div>
+                                </div>
+                                <hr class="kr-rule"/>
+                            </t>
+
+                            <!-- 6 · رقم التواصل   7 · رقم المرسل (gift orders only) -->
+                            <t t-set="contact_phone"
+                               t-value="o.sukkar_receiver_phone or o.partner_shipping_id.mobile or o.partner_shipping_id.phone or o.partner_id.mobile or o.partner_id.phone"/>
+                            <t t-set="is_gift"
+                               t-value="o.sukkar_gift_from or o.sukkar_gift_to or o.sukkar_gift_message or o.sukkar_deliver_to == 'other'"/>
+                            <div class="kr-row">
+                                    <span class="v" dir="ltr"><t t-esc="contact_phone or '—'"/></span>
+                                    <span class="k">رقم التواصل <span class="kr-en">Contact no.</span></span>
+                                </div>
+                                <div class="kr-row" t-if="is_gift">
+                                    <span class="v" dir="ltr"><t t-esc="o.sukkar_sender_phone or o.partner_id.mobile or o.partner_id.phone or '—'"/></span>
+                                    <span class="k">رقم المرسل <span class="kr-en">Sender no. (gift)</span></span>
+                                </div>
+                            <hr class="kr-rule"/>
+
+                            <!-- 8 · حالة الدفع -->
+                            <div class="kr-row">
+                                    <span class="v"><t t-if="o.sukkar_payment_status == 'PAID'">
+                                            <span class="kr-badge-open">مدفوع · PAID</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="kr-badge-solid">غير مدفوع · UNPAID</span>
+                                        </t></span>
+                                    <span class="k">حالة الدفع <span class="kr-en">Payment status</span></span>
+                                </div>
+                                <div class="kr-row" t-if="o.sukkar_payment_method">
+                                    <span class="v" style="font-size:12px;"><t t-esc="{'cod': 'كاش عند الاستلام (COD)',
+                                                   'cash': 'كاش (Cash)',
+                                                   'knet': 'كي نت (KNET)',
+                                                   'link': 'رابط دفع (Link)',
+                                                   'bank_link': 'رابط بنكي (Bank Link)'}.get(o.sukkar_payment_method, o.sukkar_payment_method)"/></span>
+                                    <span class="k">طريقة الدفع <span class="kr-en">Method</span></span>
+                                </div>
+                                <div class="kr-row" t-if="o.sukkar_knet_approval">
+                                    <span class="v" dir="ltr"><t t-esc="o.sukkar_knet_approval"/></span>
+                                    <span class="k">رقم الموافقة <span class="kr-en">KNET appr.</span></span>
+                                </div>
+                                <div class="kr-row" t-if="o.sukkar_payment_reference">
+                                    <span class="v" dir="ltr"><t t-esc="o.sukkar_payment_reference"/></span>
+                                    <span class="k">مرجع الدفع <span class="kr-en">Payment ref.</span></span>
+                                </div>
+
+                            <!-- 9 · في حال الدفع كاش: إظهار قيمة الطلب.
+                                 Printed ONLY for cash and cash-on-delivery — a gift slip
+                                 travelling with the order must not show the receiver a price. -->
+                            <t t-if="o.sukkar_payment_method in ('cash', 'cod')">
+                                <div class="kr-frame" style="text-align:center;">
+                                    <div class="kr-lbl">قيمة الطلب <span class="kr-en">Amount due</span></div>
+                                    <div class="kr-total" dir="ltr">
+                                        <span t-field="o.amount_total"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </div>
+                                    <div t-if="o.sukkar_delivery_fee" style="font-size:11px;">
+                                        منها رسوم التوصيل <span class="kr-en">Delivery fee (included)</span>:
+                                        <bdi><span t-field="o.sukkar_delivery_fee"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></bdi>
+                                    </div>
+                                </div>
+                            </t>
+                            <hr class="kr-rule"/>
+
+                            <!-- 10 · ملاحظات — blank ruled lines when there is nothing to print,
+                                 so the counter can write on it. -->
+                            <div class="kr-blk">
+                                <div class="kr-lbl">ملاحظات <span class="kr-en">Notes</span></div>
+                                <div class="kr-note">
+                                    <t t-if="o.sukkar_special_requests"><span t-field="o.sukkar_special_requests"/></t>
+                                    <t t-else="">.....................................<br/>.....................................</t>
+                                </div>
+                            </div>
+
+                            <hr class="kr-rule-b"/>
+                            <div class="kr-foot">
+                                شكراً لاختياركم سُكّر<br/>
+                                When taste becomes memory · sukkar-demo.com
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,232 @@
+// The register is set in one face at one weight: Roboto 600, the owner's
+// choice on 29 Sep 2026 — the counter is read standing up, at an angle, in a
+// hurry, and everything on it has to hold at that distance. Size, colour and
+// the pink tint carry the hierarchy. Every figure keeps tabular
+// spacing so amounts line up in a column and a 0 is never an O. Roboto is
+// served by Odoo itself, so the counter never waits on Google and works with
+// no internet. Cairo stays vendored for the Arabic PDFs.
+@font-face {
+    // One variable file covers every weight the register asks for.
+    font-family: 'Roboto';
+    font-style: normal; font-weight: 100 900; font-display: swap;
+    src: url('/sukkar/static/fonts/Roboto-latin.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal; font-weight: 400; font-display: swap;
+    src: url('/sukkar/static/fonts/Cairo-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Cairo';
+    font-style: normal; font-weight: 700; font-display: swap;
+    src: url('/sukkar/static/fonts/Cairo-Bold.ttf') format('truetype');
+}
+
+// ============================================================================
+//  The register, dressed as the shop (owner's choice, 27 Sep 2026: "bakery
+//  boutique"). Appearance only — not one selector changes what a button does.
+//
+//  The idea: a patisserie menu, not software. Cream paper with a faint grain,
+//  Roboto 600 for everything on it, every bouquet photo in a printed frame,
+//  and the order written on a paper ticket with a torn edge.
+//
+//  Loaded after sukkar_pos.scss so it wins on the few properties both set.
+//  Everything is scoped under .pos so the back office is untouched.
+// ============================================================================
+
+.pos {
+    --ks-cream:  #FFF9F0;   // the page, the colour of the shop's paper
+    --ks-card:   #FFFDFB;   // anything raised off it
+    --ks-beige:  #F0E6DD;   // hairlines and the dashes on the ticket
+    --ks-ink:    #1A1410;
+    --ks-soft:   #8C7C6F;   // captions and second lines
+    --ks-pink:   #D82B7D;
+    --ks-deep:   #8E1650;   // headings and the Pay button
+    --ks-tint:   #FDEEF4;
+    // One face for the whole register: words and figures alike.
+    --ks-serif:  'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --ks-arabic: 'Cairo', 'Noto Sans Arabic', system-ui, sans-serif;
+    // Every figure on the register. Kept apart from the serif on purpose: a
+    // price has to be read across the counter in one glance, at an angle.
+    --ks-num:    'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    background: var(--ks-cream);
+    color: var(--ks-ink);
+
+    // The grain. Fixed, behind everything, and it never eats a click.
+    &::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: .45;
+        background-image: radial-gradient(circle at 1px 1px,
+                          rgba(140, 124, 111, .10) 1px, transparent 0);
+        background-size: 14px 14px;
+    }
+    > * { position: relative; z-index: 1; }
+
+    // The grey Odoo puts behind the cards is the one thing that most says
+    // "software". Every background shade becomes the shop's paper.
+    .bg-view, .bg-100, .bg-200, .bg-white, .bg-light, .pos-content {
+        background: var(--ks-cream) !important;
+    }
+    // The order is written on the ticket, not on the page behind it.
+    .order-container { background: var(--ks-card) !important; }
+
+    // ---------------------------------------------------------------- panes
+    .leftpane, .rightpane { background: transparent; }
+    .rightpane { border-inline-start: 1px solid var(--ks-beige); }
+    .switchpane { background: var(--ks-card) !important; border-top: 1px solid var(--ks-beige); }
+
+    // ------------------------------------------------------- the categories
+    // Odoo paints each category its own colour (pink, tan, teal…). On a menu
+    // every section is the same paper; only the one you are on is marked. The
+    // colours stay in the category settings untouched — this only stops the
+    // register from showing them, so removing this file brings them back.
+    .category-button,
+    .category-button[class*="o_colorlist_item_color_"] {
+        background: var(--ks-card) !important;
+        border: 1px solid var(--ks-beige) !important;
+        border-radius: 999px !important;
+        font-family: var(--ks-serif);
+        font-weight: 600;
+        color: var(--ks-ink) !important;
+
+        &.active, &:active, &.btn-primary, &[aria-pressed="true"] {
+            background: var(--ks-deep) !important;
+            border-color: var(--ks-deep) !important;
+            color: #fff !important;
+        }
+    }
+
+    // --------------------------------------------------- a bouquet on a card
+    // The photo sits inside a printed frame: a hairline, a little white margin,
+    // the way a menu shows a picture.
+    .product-card, article.product, .product,
+    .product[class*="o_colorlist_item_color_"] {
+        background: var(--ks-card) !important;
+        box-shadow: inset 0 0 0 1px var(--ks-beige), 0 1px 0 rgba(140, 124, 111, .10);
+        transition: box-shadow .25s ease;
+
+        &:hover { box-shadow: inset 0 0 0 1px var(--ks-beige), 0 10px 26px rgba(142, 22, 80, .12); }
+
+        // The frame is drawn with a shadow, never with margin, padding or a
+        // border: Odoo sizes this card by flex, and any box-model change here
+        // collapses the photo to a strip. (Learned the hard way, 27 Sep 2026.)
+        .product-img {
+            background: #fff;
+            box-shadow: inset 0 0 0 1px var(--ks-beige);
+        }
+
+        .product-content { background: transparent; }
+
+        .product-name {
+            font-family: var(--ks-serif);
+            font-size: 1.08rem;
+            font-weight: 600;
+            color: var(--ks-ink);
+            text-align: center;
+        }
+
+        .price-extra, .product-price {
+            font-family: var(--ks-serif);
+            font-size: 1.02rem;
+            font-weight: 600;
+            color: var(--ks-deep);
+        }
+    }
+
+    // ------------------------------------------------- the order, as a ticket
+    .order-container, .order-summary { background: transparent; }
+
+    .orderline {
+        border-bottom: 1px dashed var(--ks-beige);
+
+        &.selected, &:hover { background: var(--ks-tint); }
+
+        .product-name {
+            font-family: var(--ks-serif);
+            font-weight: 600;
+            color: var(--ks-ink);
+        }
+        .price, .product-price {
+            font-family: var(--ks-num);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+        .info-list { font-family: var(--ks-serif); font-weight: 600; color: var(--ks-soft); }
+
+        img { background: #fff; box-shadow: inset 0 0 0 1px var(--ks-beige); }
+    }
+
+    // The totals read like a bill.
+    .order-summary .total, .subtotal, .total {
+        font-family: var(--ks-num);
+        font-variant-numeric: tabular-nums;
+    }
+
+    // -------------------------------------------------------------- the pay
+    .pay-button, .button.pay, .btn-switchpane.pay-button, .pay-order-button {
+        background: var(--ks-deep) !important;
+        border-color: var(--ks-deep) !important;
+        color: #fff !important;
+        border-radius: 4px;
+        font-family: var(--ks-serif);
+        font-weight: 600;
+        letter-spacing: .3px;
+
+        &:hover { background: var(--ks-pink) !important; }
+    }
+
+    .btn-switchpane {
+        background: var(--ks-card);
+        border: 1px solid var(--ks-beige);
+        color: var(--ks-ink);
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    // ---------------------------------------------------------- the numpad
+    .numpad-button,
+    .numpad-button[class*="o_colorlist_item_color_"] {
+        background: var(--ks-card) !important;
+        border: 1px solid var(--ks-beige) !important;
+        color: var(--ks-ink) !important;
+        font-family: var(--ks-serif);
+        font-weight: 600;
+
+        &.active {
+            background: var(--ks-tint) !important;
+            border-color: var(--ks-deep) !important;
+            color: var(--ks-deep) !important;
+        }
+    }
+
+    // ------------------------------------------------- everything else quiet
+    .control-buttons .btn {
+        background: var(--ks-card);
+        border: 1px solid var(--ks-beige);
+        color: var(--ks-ink);
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    .modal-content, .popup {
+        background: var(--ks-card);
+        border: 1px solid var(--ks-beige);
+        border-radius: 6px;
+    }
+    .modal-title { font-family: var(--ks-serif); font-size: 1.35rem; font-weight: 600; }
+
+    .form-control, .form-select {
+        background: #fff;
+        border: 1px solid var(--ks-beige);
+        border-radius: 4px;
+        &:focus { border-color: var(--ks-pink); box-shadow: 0 0 0 .15rem rgba(216, 43, 125, .12); }
+    }
+
+    input.form-control::placeholder { color: #BBB0A6; }
+}

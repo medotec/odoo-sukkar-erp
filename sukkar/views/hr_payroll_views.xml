@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The per-person monthly overtime cap, on the contract. -->
+    <record id="view_hr_contract_form_sukkar" model="ir.ui.view">
+        <field name="name">hr.contract.form.sukkar</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <field name="wage" position="after">
+                <field name="sukkar_ot_cap_hours"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Overtime actually paid vs overtime worked, on the payslip. The gap between
+         the two is the whole point: hours lost to lateness, to the minimum block or
+         to the monthly cap must be visible, not silently dropped. -->
+    <record id="view_hr_payslip_form_sukkar" model="ir.ui.view">
+        <field name="name">hr.payslip.form.sukkar</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="payroll.hr_payslip_view_form"/>
+        <field name="arch" type="xml">
+            <field name="contract_id" position="after">
+                <field name="sukkar_ot_hours_paid"/>
+                <field name="sukkar_ot_hours_dropped"/>
+            </field>
+        </field>
+    </record>
+</odoo>

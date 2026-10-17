@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- The Delivery / Pickup button, in the always-visible strip and in the
+         "Actions" dialog, matching how the stock buttons live in both. It
+         carries the answer once it has one, so a glance at the strip says
+         whether this order is being driven out or collected.
+
+         On the ticket (layout 2, 29 Sep 2026) the strip is a row of big tiles,
+         English only since 29 Sep. -->
+    <t t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <!-- Customer, then Delivery, then Note: the order the mock reads in. -->
+        <xpath expr="//OrderlineNoteButton[1]" position="before">
+            <button t-if="!props.showRemainingButtons"
+                    t-attf-class="{{ buttonClass }} ks-tile"
+                    t-att-class="{ 'ks-set': sukkarOrderType() }"
+                    t-on-click="() => this.sukkarOpenOrderType()">
+                <span class="ks-tile-name" t-esc="sukkarOrderTypeLabel()"/>
+            </button>
+        </xpath>
+        <!-- General Note, after Note (owner, 2 Oct 2026 — LOCKED #8 updated). -->
+        <xpath expr="//OrderlineNoteButton[1]" position="after">
+            <button t-if="!props.showRemainingButtons"
+                    t-attf-class="{{ buttonClass }} ks-tile"
+                    t-att-class="{ 'ks-set': sukkarGeneralNote() }"
+                    t-on-click="() => this.sukkarEditGeneralNote()">
+                <span class="ks-tile-name">General Note</span>
+            </button>
+        </xpath>
+        <xpath expr="//button[hasclass('more-btn')]" position="inside">
+            <span class="ks-tile-name">More</span>
+        </xpath>
+        <xpath expr="//div[hasclass('control-buttons-modal')]" position="inside">
+            <button class="btn btn-secondary btn-lg py-5"
+                    t-on-click="() => this.sukkarOpenOrderType()">
+                <i t-attf-class="{{ sukkarOrderTypeIcon() }} me-2" role="img" title="Delivery or Pickup"/>
+                Delivery or Pickup
+            </button>
+            <button class="btn btn-secondary btn-lg py-5"
+                    t-on-click="() => this.sukkarOpenNumpad()">
+                <i class="fa fa-calculator me-2" role="img" title="Price or discount"/>
+                Price / Discount
+            </button>
+        </xpath>
+    </t>
+
+    <!-- The note tile keeps Odoo's own label, because the button reads that
+         label to know which note it edits. -->
+    <t t-inherit="point_of_sale.OrderlineNoteButton" t-inherit-mode="extension">
+        <xpath expr="//span[@t-esc='this.props.label']" position="attributes">
+            <attribute name="class">ks-tile-name</attribute>
+        </xpath>
+    </t>
+
+    <!-- The customer tile: the customer's name once chosen, "Customer" until then. -->
+    <t t-inherit="point_of_sale.SelectPartnerButton" t-inherit-mode="extension">
+        <xpath expr="//button" position="attributes">
+            <attribute name="t-att-class">{ 'ks-set': props.partner }</attribute>
+        </xpath>
+        <xpath expr="//div[@t-esc='props.partner.name']" position="replace">
+            <span t-if="props.partner" class="ks-tile-name text-truncate" t-esc="props.partner.name"/>
+        </xpath>
+        <xpath expr="//t[@t-else='']" position="replace">
+            <span t-else="" class="ks-tile-name">Customer</span>
+        </xpath>
+    </t>
+</templates>

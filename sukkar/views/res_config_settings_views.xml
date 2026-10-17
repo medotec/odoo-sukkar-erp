@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_sukkar" model="ir.ui.view">
+        <field name="name">res.config.settings.form.sukkar</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Sukkar" name="sukkar" logo="/sukkar/static/img/sukkar-logo-cupcake.png">
+                    <block title="Kitchen" name="sukkar_kitchen_block">
+                        <setting string="Finish Before Delivery"
+                                 help="How long before the delivery time the kitchen must have the order ready. This is the Finish-By time on every kitchen ticket.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="sukkar_finish_before_min" class="col-lg-3"/>
+                                    <span class="col">minutes</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Cake Stock" name="sukkar_cake_stock_block">
+                        <setting string="Cake Flavours"
+                                 help="The flavours staff can put on a bouquet. Vanilla, Chocolate, Red Velvet and Mixed come as standard; add or rename them here.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <span class="col-lg-4">Default flavour</span>
+                                    <field name="sukkar_default_flavour_id" class="col"/>
+                                </div>
+                            </div>
+                            <button name="%(sukkar.sukkar_cake_flavour_action)d"
+                                    icon="oi-arrow-right" type="action"
+                                    string="Manage Cake Flavours" class="btn-link"/>
+                        </setting>
+                        <setting string="Cake Piece Product"
+                                 help="The recipe component that counts as one cake piece. Every bouquet's piece count is read from its recipe against this item, so a 7-piece bouquet takes 7.">
+                            <field name="sukkar_cake_piece_product_id"/>
+                        </setting>
+                        <setting string="Block Orders Beyond Available Pieces"
+                                 help="Off (normal): the order is always taken, and whatever has to be bought or made shows up on that night's stock plan. On: confirming an order short of pieces is refused, naming both numbers, and only a manager override lets it through.">
+                            <field name="sukkar_block_oversell"/>
+                        </setting>
+                        <setting string="Write Tomorrow's Stock Plan At"
+                                 help="Every evening at this hour the system reads tomorrow's confirmed orders, works out every ingredient and packaging item they need, compares it against what is on the shelf, and leaves the list at Kitchen → Daily Stock Plan.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="sukkar_stock_plan_hour" class="col-lg-3"/>
+                                    <span class="col">:00, shop time</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Reserve Pieces Ahead"
+                                 help="A confirmed order due within this many days holds its pieces as Reserved for Tomorrow, so they are no longer counted as available.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="sukkar_reserve_horizon_days" class="col-lg-3"/>
+                                    <span class="col">days ahead</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Register" name="sukkar_pos_block">
+                        <setting string="Card Message Limit"
+                                 help="Longest greeting-card message the register accepts. The card is a physical card — past this many characters the text stops fitting on it.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="sukkar_card_message_max" class="col-lg-3"/>
+                                    <span class="col">characters</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Delivery Fee at the Register"
+                                 help="The register fills the fee in from the area the address is in. These are the amounts a cashier may pick instead, when the fee has to be changed by hand. The fee is charged on its own product line, so it shows separately on the receipt and the invoice. Area prices are edited under Kitchen → Configuration → Areas.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <span class="col-lg-4">Amounts (KWD)</span>
+                                    <field name="sukkar_pos_fee_amounts" class="col"/>
+                                </div>
+                                <div class="row">
+                                    <span class="col-lg-4">Charged on</span>
+                                    <field name="sukkar_pos_fee_product_id" class="col"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Delivery" name="sukkar_delivery_block">
+                        <setting string="Operating Timezone"
+                                 help="Timezone the shop books deliveries in. Delivery slots are wall-clock times in this zone.">
+                            <field name="sukkar_tz"/>
+                        </setting>
+                        <setting string="Delivery Slots"
+                                 help="The delivery windows offered to customers, e.g. 18:00-20:00.">
+                            <button name="%(sukkar.sukkar_delivery_slot_action)d"
+                                    icon="oi-arrow-right" type="action"
+                                    string="Manage Delivery Slots" class="btn-link"/>
+                        </setting>
+                        <setting string="Cash on Delivery — Overdue After"
+                                 help="How many days an unpaid cash-on-delivery order may age before it is flagged overdue, so the owner can chase the driver for the money.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="sukkar_cod_overdue_days" class="col-lg-3"/>
+                                    <span class="col">days</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Books" name="sukkar_books_block">
+                        <setting string="Post Expenses to the Books"
+                                 help="On, confirming an expense writes it into the accounts, so rent, advertising and packaging show up in the Profit &amp; Loss. Off, the Expenses screen is a private list the accountant never sees. Salaries are never written from here — Payroll posts those.">
+                            <field name="sukkar_post_expenses"/>
+                            <div class="content-group" invisible="not sukkar_post_expenses">
+                                <div class="row">
+                                    <span class="col-lg-4">Written in the book</span>
+                                    <field name="sukkar_expense_journal_id" class="col"/>
+                                </div>
+                                <div class="row">
+                                    <span class="col-lg-4">Paid in cash → credit</span>
+                                    <field name="sukkar_expense_cash_account_id" class="col"/>
+                                </div>
+                                <div class="row">
+                                    <span class="col-lg-4">Paid by bank / KNET / link → credit</span>
+                                    <field name="sukkar_expense_bank_account_id" class="col"/>
+                                </div>
+                                <div class="row">
+                                    <span class="col-lg-4">Not paid yet → credit</span>
+                                    <field name="sukkar_expense_unpaid_account_id" class="col"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Create This Month's Fixed Costs Automatically"
+                                 help="Each month the recurring costs (rent, subscriptions, licences) are copied into DRAFT expenses for that month. Nothing reaches the books until somebody confirms them.">
+                            <field name="sukkar_generate_recurring"/>
+                            <div class="content-group" invisible="not sukkar_generate_recurring">
+                                <div class="row">
+                                    <span class="col-lg-4">On day</span>
+                                    <field name="sukkar_generate_recurring_day" class="col-lg-2"/>
+                                    <span class="col">of the month</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Payroll" name="sukkar_payroll_block">
+                        <setting string="Hourly Rate Formula"
+                                 help="The hourly rate every overtime figure is built on: basic salary divided by these two numbers. Confirmed with the owner: 26 days x 8 hours = basic / 208. Overtime is paid on BASIC only, never on allowances.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <span class="col-lg-2">basic ÷</span>
+                                    <field name="sukkar_payroll_divisor_days" class="col-lg-2"/>
+                                    <span class="col-lg-2">days ÷</span>
+                                    <field name="sukkar_payroll_divisor_hours" class="col-lg-2"/>
+                                    <span class="col">hours</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Overtime Rates"
+                                 help="Multipliers applied to the hourly rate. Friday is the weekly rest day for everyone.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <span class="col-lg-4">Normal day ×</span>
+                                    <field name="sukkar_ot_rate_normal" class="col"/>
+                                </div>
+                                <div class="row">
+                                    <span class="col-lg-4">Rest day (Friday) ×</span>
+                                    <field name="sukkar_ot_rate_rest" class="col"/>
+                                </div>
+                                <div class="row">
+                                    <span class="col-lg-4">Public holiday ×</span>
+                                    <field name="sukkar_ot_rate_holiday" class="col"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Minimum Overtime Block"
+                                 help="Overtime is paid in whole blocks of this size, in HOURS — 15 minutes is 0.25. At 0.25, 1h50m of overtime pays 1h45m and 10 minutes pays nothing. Set to 0 to pay to the exact minute.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="sukkar_ot_min_block_hours" class="col-lg-3"/>
+                                    <span class="col">hours</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Monthly Overtime Cap"
+                                 help="Ceiling on PAID overtime hours per person per month, applied to everyone from here. 0 = no cap. A contract can carry its own cap to override this for one person. When the cap bites, the most valuable hours are paid first (holiday → rest day → normal) and dropped hours stay visible on the payslip.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="sukkar_ot_cap_default_hours" class="col-lg-3"/>
+                                    <span class="col">hours / month (0 = no cap)</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Part Months"
+                                 help="Somebody who joins on the 25th, or leaves on the 10th, is paid for the days his contract actually covers instead of the whole month. The basis is what a part month is divided by: 0 uses the real length of that month, 26 or 30 use a fixed month.">
+                            <field name="sukkar_prorate_basic"/>
+                            <div class="content-group" invisible="not sukkar_prorate_basic">
+                                <div class="row mt8">
+                                    <field name="sukkar_prorate_basis_days" class="col-lg-3"/>
+                                    <span class="col">days (0 = the month's own length)</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kuwait's 198 areas, loaded from data/kuwait_areas.json on install and on
+         every upgrade. The loader only adds what is missing, so an area the shop
+         has renamed or retired is never overwritten. -->
+    <data noupdate="0">
+        <function model="sukkar.area" name="_sukkar_load_areas"/>
+    </data>
+</odoo>

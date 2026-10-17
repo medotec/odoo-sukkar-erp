@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A quick note beside Wait / To Serve / Emergency / No Dressing in the
+         till's note boxes (owner, 10 Oct 2026): asks the shop to photograph
+         the order. noupdate, so a rename in Point of Sale → Configuration →
+         Note Models survives an upgrade. -->
+    <data noupdate="1">
+        <record id="pos_note_add_photo" model="pos.note">
+            <field name="name">Add Photo</field>
+            <field name="sequence">5</field>
+        </record>
+    </data>
+</odoo>

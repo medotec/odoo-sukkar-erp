@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="sukkar.FeePopup">
+        <Dialog title.translate="Delivery Fee">
+            <div class="d-flex flex-column gap-2">
+                <div t-if="state.error" class="alert alert-danger py-1" t-esc="state.error"/>
+                <!-- One tap is the whole job: the amount pressed becomes the
+                     fee line. The amounts come from Settings → Sukkar. -->
+                <div class="ks-fee-grid">
+                    <t t-foreach="amounts" t-as="amount" t-key="amount">
+                        <button class="ks-fee btn btn-lg"
+                                t-att-class="amount === current ? 'btn-primary' : 'btn-light'"
+                                t-on-click="() => this.pick(amount)"
+                                t-esc="format(amount)"/>
+                    </t>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary btn-lg" t-on-click="() => this.remove()">
+                    No Fee
+                </button>
+                <button class="btn btn-link btn-lg" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

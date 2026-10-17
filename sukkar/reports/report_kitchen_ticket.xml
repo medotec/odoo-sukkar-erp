@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_kitchen_ticket" model="ir.actions.report">
+        <field name="name">Kitchen Ticket</field>
+        <field name="model">sukkar.production</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sukkar.report_kitchen_ticket</field>
+        <field name="report_file">sukkar.report_kitchen_ticket</field>
+        <field name="binding_model_id" ref="model_sukkar_production"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_kitchen_ticket">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .kt-top { display:flex; justify-content:space-between; align-items:flex-start;
+                                border-bottom:3px solid #D82B7D; padding-bottom:8px; margin-bottom:12px; }
+                            .kt-no { font-weight:700; font-size:30px; color:#8E1650; line-height:1; }
+                            .kt-sub { color:#A0607A; font-size:12px; }
+                            .kt-stage { background:#D82B7D; color:#fff; padding:6px 14px; border-radius:100px;
+                                font-weight:700; font-size:14px; }
+                            .kt-row { margin:6px 0; font-size:13px; }
+                            .kt-lbl { color:#A0607A; font-weight:700; font-size:11px; text-transform:uppercase;
+                                letter-spacing:.05em; }
+                            .kt-items { background:#FFF9F0; border:1px solid #F0E6DD; border-radius:8px;
+                                padding:10px 14px; font-size:16px; font-weight:700; white-space:pre-line; margin:8px 0; }
+                            .kt-deadline { background:#FBD9E8; border:2px solid #D82B7D; border-radius:8px;
+                                padding:8px 14px; color:#8E1650; font-weight:700; font-size:15px; margin:8px 0; }
+                            .kt-notes { border:1px dashed #C0392B; border-radius:8px; padding:8px 14px;
+                                color:#8B0000; font-size:13px; margin:8px 0; }
+                            .kt-gift { color:#574A40; font-size:12px; margin-top:8px; }
+                        </style>
+
+                        <div class="kt-top">
+                            <div>
+                                <div class="kt-sub">Kitchen Ticket · بطاقة المطبخ</div>
+                                <div class="kt-no"><span t-field="o.name"/></div>
+                            </div>
+                            <span class="kt-stage"><span t-field="o.stage_id"/></span>
+                        </div>
+
+                        <div class="kt-row">
+                            <span class="kt-lbl">Order</span> <span t-field="o.sale_order_id.name"/>
+                            <span style="color:#A0607A;"> · </span>
+                            <span class="kt-lbl">Customer</span> <span t-field="o.partner_id.name"/>
+                        </div>
+
+                        <div class="kt-lbl">Items to make</div>
+                        <div class="kt-items"><span t-field="o.line_summary"/></div>
+
+                        <div class="kt-items" t-if="o.flavour_summary">
+                            <span class="kt-lbl">Cake flavours · نكهات الكيك</span><br/>
+                            <span t-field="o.flavour_summary"/>
+                        </div>
+
+                        <div class="kt-row" t-if="o.delivery_datetime">
+                            <span class="kt-lbl" t-if="o.order_type == 'pickup'">Pickup</span>
+                            <span class="kt-lbl" t-else="">Delivery</span>
+                            <span t-field="o.delivery_datetime"/>
+                            <t t-if="o.delivery_time_range"> (<span t-field="o.delivery_time_range"/>)</t>
+                        </div>
+                        <div class="kt-row" t-if="o.address_summary">
+                            <span class="kt-lbl">Address · العنوان</span>
+                            <span t-field="o.address_summary"/>
+                        </div>
+                        <div class="kt-deadline" t-if="o.deadline">
+                            FINISH BY: <span t-field="o.deadline"/>
+                        </div>
+
+
+                        <div class="kt-notes" t-if="o.special_requests">
+                            <span class="kt-lbl">Special requests</span><br/>
+                            <span t-field="o.special_requests"/>
+                        </div>
+
+                        <div class="kt-notes" t-if="o.order_note">
+                            <span class="kt-lbl">Internal note</span><br/>
+                            <span t-field="o.order_note"/>
+                        </div>
+
+                        <div class="kt-gift" t-if="o.sale_order_id.sukkar_gift_to or o.sale_order_id.sukkar_gift_message">
+                            <span class="kt-lbl">Gift</span>
+                            <t t-if="o.sale_order_id.sukkar_gift_to">To <span t-field="o.sale_order_id.sukkar_gift_to"/></t>
+                            <t t-if="o.sale_order_id.sukkar_gift_from"> · From <span t-field="o.sale_order_id.sukkar_gift_from"/></t>
+                            <t t-if="o.sale_order_id.sukkar_gift_message"> — <span t-field="o.sale_order_id.sukkar_gift_message"/></t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

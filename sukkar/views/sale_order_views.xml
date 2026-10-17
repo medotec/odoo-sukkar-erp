@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_sukkar" model="ir.ui.view">
+        <field name="name">sale.order.form.sukkar.gifting</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_sukkar_production" type="object"
+                        class="oe_stat_button" icon="fa-birthday-cake"
+                        invisible="sukkar_production_count == 0">
+                    <field name="sukkar_production_count" widget="statinfo" string="Kitchen"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Gifting &amp; Delivery" name="sukkar_gifting">
+                    <group>
+                        <group string="Delivery">
+                            <field name="sukkar_delivery_date"/>
+                            <field name="sukkar_delivery_slot_id"
+                                   options="{'no_create_edit': True}"/>
+                            <field name="sukkar_delivery_datetime" readonly="1"
+                                   string="Scheduled For"
+                                   invisible="not sukkar_delivery_datetime"/>
+                            <field name="sukkar_receiver_name"/>
+                            <field name="sukkar_receiver_phone"/>
+                            <field name="sukkar_sender_phone"/>
+                            <!-- Delivery fee: carrier is picked with 'Add shipping' on the
+                                 order lines; shown here so the team sees the area + fee. -->
+                            <field name="carrier_id" readonly="1"
+                                   options="{'no_open': True}"/>
+                            <field name="sukkar_delivery_fee" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group string="Gift Card">
+                            <field name="sukkar_gift_from"/>
+                            <field name="sukkar_gift_to"/>
+                            <field name="sukkar_gift_message"
+                                   placeholder="Message printed on the card (max 100 chars)"/>
+                        </group>
+                        <group string="Payment">
+                            <field name="sukkar_payment_method"/>
+                            <!-- Link Payment: the reference is typed in by hand —
+                                 there is no gateway integration to generate it. -->
+                            <field name="sukkar_payment_reference"
+                                   invisible="sukkar_payment_method != 'link'"
+                                   required="sukkar_payment_method == 'link' and sukkar_paid"
+                                   placeholder="Reference from the payment link"/>
+                            <field name="sukkar_knet_approval"
+                                   invisible="sukkar_payment_method != 'knet'"/>
+                            <field name="sukkar_paid"
+                                   invisible="sukkar_payment_method not in ('bank_link', 'link')"/>
+                            <field name="sukkar_clear_to_deliver" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Delivery Address">
+                        <group>
+                            <field name="sukkar_deliver_to" widget="radio"
+                                   options="{'horizontal': True}"/>
+                            <field name="partner_shipping_id" readonly="1"
+                                   string="Priced Against" options="{'no_open': True}"
+                                   help="The address Odoo prices the delivery fee against."/>
+                        </group>
+                        <group/>
+                        <group string="Address" invisible="sukkar_deliver_to == 'sender'">
+                            <field name="sukkar_addr_governorate_id"
+                                   options="{'no_create': True}"
+                                   required="sukkar_deliver_to == 'other'"/>
+                            <field name="sukkar_addr_area" placeholder="e.g. Salmiya"/>
+                            <field name="sukkar_addr_block" placeholder="e.g. 4"/>
+                            <field name="sukkar_addr_street" placeholder="e.g. 12"/>
+                        </group>
+                        <group string=" " invisible="sukkar_deliver_to == 'sender'">
+                            <field name="sukkar_addr_avenue" placeholder="e.g. 3"/>
+                            <field name="sukkar_addr_building" placeholder="House / Building no."/>
+                            <field name="sukkar_addr_floor" placeholder="Floor / Apartment"/>
+                        </group>
+                        <group colspan="2" invisible="sukkar_deliver_to == 'sender'">
+                            <field name="sukkar_addr_directions" nolabel="1"
+                                   placeholder="Landmark, gate colour, which entrance…"/>
+                        </group>
+                    </group>
+                    <group string="Special Requests">
+                        <field name="sukkar_special_requests" nolabel="1"
+                               placeholder="Allergies, presentation notes, etc."/>
+                    </group>
+                    <group string="Delivery Note">
+                        <field name="sukkar_delivery_note" nolabel="1"
+                               placeholder="What the driver should know about this delivery"/>
+                    </group>
+                    <group string="Internal Note">
+                        <field name="sukkar_order_note" nolabel="1"
+                               placeholder="For the shop and the kitchen, never the customer"/>
+                        <field name="sukkar_note_image" widget="image" nolabel="1"
+                               options="{'size': [0, 240]}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

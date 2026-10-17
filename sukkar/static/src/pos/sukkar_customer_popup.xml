@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="sukkar.CustomerPopup">
+        <Dialog title="title">
+            <div class="d-flex flex-column gap-2">
+                <div t-if="state.error" class="alert alert-danger py-1" t-esc="state.error"/>
+
+                <!-- Step 1 · who they are -->
+                <t t-if="state.step === 1">
+                    <div>
+                        <label class="form-label fw-bolder">Name*</label>
+                        <input type="text" class="form-control form-control-lg"
+                               t-model="state.name" placeholder="Customer name" autofocus="autofocus"/>
+                    </div>
+                    <div>
+                        <label class="form-label fw-bolder">Phone*</label>
+                        <input type="tel" class="form-control form-control-lg"
+                               t-model="state.phone" placeholder="9XXX XXXX"/>
+                    </div>
+                    <div>
+                        <label class="form-label">E-mail</label>
+                        <input type="email" class="form-control form-control-lg"
+                               t-model="state.email" placeholder="optional"/>
+                    </div>
+                </t>
+
+                <!-- Editing · the customer's saved addresses (owner, 2 Oct 2026) -->
+                <t t-if="state.step === 'list'">
+                    <div class="fw-bolder" t-esc="state.name"/>
+                    <div class="d-grid gap-2">
+                        <button t-foreach="state.addresses" t-as="addr" t-key="addr.id"
+                                class="ks-address btn btn-light text-start"
+                                t-on-click="() => this.editAddress(addr)">
+                            <span class="fw-bolder d-block">
+                                <t t-esc="addr.label or 'Address'"/>
+                                <small t-if="addr.is_primary" class="ms-2">· primary</small>
+                                <i class="fa fa-pencil float-end" role="img" title="Edit"/>
+                            </span>
+                            <small class="d-block" t-esc="addr.where"/>
+                        </button>
+                        <div t-if="!state.addresses.length" class="text-muted">
+                            No address saved for this customer yet.
+                        </div>
+                        <button class="btn btn-secondary text-start"
+                                t-on-click="() => this.goToAddress()">
+                            <i class="fa fa-plus me-2" role="img"/>New address
+                        </button>
+                    </div>
+                </t>
+
+                <!-- Step 2 · where it goes -->
+                <t t-if="state.step === 2">
+                    <div>
+                        <label class="form-label fw-bolder">Address name</label>
+                        <input type="text" class="form-control"
+                               t-model="state.address.label"
+                               placeholder="Home, Office, Mum's house"/>
+                    </div>
+
+                    <!-- Filled in from step 1, and editable: whoever receives at
+                         this address may not be the one who pays. -->
+                    <div class="ks-party-block p-2 rounded">
+                        <div class="fw-bolder mb-2">Contact at this address</div>
+                        <div class="row g-2">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control"
+                                       t-model="state.address.contact_name"/>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" class="form-control"
+                                       t-model="state.address.contact_phone"/>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">E-mail</label>
+                                <input type="email" class="form-control"
+                                       t-model="state.address.contact_email"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chosen, not typed: the area list is whatever the chosen
+                         governorate actually contains. -->
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label fw-bolder">Governorate*</label>
+                            <select class="form-select" t-model="state.address.state_id"
+                                    t-on-change="() => this.onGovernorateChange()">
+                                <option value="0">—</option>
+                                <t t-foreach="state.states" t-as="gov" t-key="gov.id">
+                                    <option t-att-value="gov.id" t-esc="gov.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bolder">Area*</label>
+                            <select class="form-select" t-model="state.address.area_id"
+                                    t-att-disabled="!state.areas.length">
+                                <option value="0" t-esc="state.areas.length ? '—' : 'Choose a governorate first'"/>
+                                <t t-foreach="state.areas" t-as="area" t-key="area.id">
+                                    <option t-att-value="area.id" t-esc="area.display_name"/>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <label class="form-label">Block</label>
+                            <input type="text" class="form-control" t-model="state.address.block"/>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">Street</label>
+                            <input type="text" class="form-control" t-model="state.address.street"/>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">Avenue</label>
+                            <input type="text" class="form-control" t-model="state.address.avenue"/>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <label class="form-label">House</label>
+                            <input type="text" class="form-control" t-model="state.address.building"/>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">Floor</label>
+                            <input type="text" class="form-control" t-model="state.address.floor"/>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">Apartment</label>
+                            <input type="text" class="form-control" t-model="state.address.apartment"/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Directions for the driver</label>
+                        <textarea class="form-control" rows="2" t-model="state.address.directions"
+                                  placeholder="Landmark, gate colour, which entrance"/>
+                    </div>
+                </t>
+            </div>
+
+            <t t-set-slot="footer">
+                <t t-if="state.step === 1 and isEdit">
+                    <button class="btn btn-primary btn-lg" t-att-disabled="state.saving"
+                            t-on-click="() => this.saveEdit()">
+                        Save
+                    </button>
+                    <button class="btn btn-secondary btn-lg"
+                            t-on-click="() => this.goToList()">
+                        Addresses
+                    </button>
+                </t>
+                <t t-elif="state.step === 'list'">
+                    <button class="btn btn-primary btn-lg" t-att-disabled="state.saving"
+                            t-on-click="() => this.saveEdit()">
+                        Save
+                    </button>
+                    <button class="btn btn-secondary btn-lg" t-on-click="() => this.back()">
+                        Back
+                    </button>
+                </t>
+                <t t-elif="state.step === 2 and isEdit">
+                    <button class="btn btn-primary btn-lg" t-att-disabled="state.saving"
+                            t-on-click="() => this.saveAddress()">
+                        Save address
+                    </button>
+                    <button class="btn btn-secondary btn-lg" t-on-click="() => this.back()">
+                        Back
+                    </button>
+                </t>
+                <t t-elif="state.step === 1">
+                    <button class="btn btn-primary btn-lg"
+                            t-on-click="() => this.goToAddress()">
+                        Add address
+                    </button>
+                    <button class="btn btn-secondary btn-lg" t-att-disabled="state.saving"
+                            t-on-click="() => this.save()">
+                        Save without address
+                    </button>
+                </t>
+                <t t-else="">
+                    <button class="btn btn-primary btn-lg" t-att-disabled="state.saving"
+                            t-on-click="() => this.save()">
+                        Save
+                    </button>
+                    <button class="btn btn-secondary btn-lg" t-on-click="() => this.back()">
+                        Back
+                    </button>
+                </t>
+                <button class="btn btn-link btn-lg" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

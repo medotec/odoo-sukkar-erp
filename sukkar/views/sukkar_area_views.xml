@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kuwait's areas: configuration, so the shop can correct a name or retire
+         an area without a developer. -->
+    <record id="sukkar_area_view_list" model="ir.ui.view">
+        <field name="name">sukkar.area.list</field>
+        <field name="model">sukkar.area</field>
+        <field name="arch" type="xml">
+            <list string="Areas" editable="bottom">
+                <field name="state_id"/>
+                <field name="name"/>
+                <field name="name_ar"/>
+                <!-- Editable straight from the list: the shop repriced 156
+                     areas in one sitting, and a form per area would have taken
+                     an afternoon. -->
+                <field name="sukkar_delivery_fee" string="Delivery Fee (KWD)"/>
+                <field name="paci_no" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_area_view_search" model="ir.ui.view">
+        <field name="name">sukkar.area.search</field>
+        <field name="model">sukkar.area</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Area"
+                       filter_domain="['|', ('name', 'ilike', self), ('name_ar', 'ilike', self)]"/>
+                <field name="state_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Governorate"
+                            context="{'group_by': 'state_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="sukkar_area_action" model="ir.actions.act_window">
+        <field name="name">Areas</field>
+        <field name="res_model">sukkar.area</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_group_state': 1}</field>
+    </record>
+
+    <menuitem id="menu_sukkar_areas" name="Areas"
+              parent="menu_sukkar_config" action="sukkar_area_action" sequence="25"/>
+</odoo>

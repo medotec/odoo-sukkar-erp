@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_delivery_sheet" model="ir.actions.report">
+        <field name="name">Delivery Sheet</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sukkar.report_delivery_sheet</field>
+        <field name="report_file">sukkar.report_delivery_sheet</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_delivery_sheet">
+        <t t-call="web.html_container">
+            <!-- external_layout gives the branded Sukkar header/footer and
+                 correct UTF-8 / Arabic rendering. -->
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        table.ks-tbl { width:100%; border-collapse:collapse; font-size:11px; margin-top:8px; }
+                        table.ks-tbl thead th { background:#D82B7D; color:#fff; text-align:left;
+                            padding:7px 8px; font-weight:600; }
+                        table.ks-tbl tbody td { padding:6px 8px; border-bottom:1px solid #F0E6DD; vertical-align:top; }
+                        table.ks-tbl tbody tr:nth-child(even) { background:#FFF9F0; }
+                        .ks-badge { padding:2px 8px; border-radius:100px; font-weight:700; font-size:10px; color:#fff; }
+                        .ks-paid { background:#1FA752; }
+                        .ks-unpaid { background:#C0392B; }
+                        .ks-h { color:#8E1650; font-weight:700; font-size:20px; margin:0; }
+                        .ks-tag { color:#A0607A; font-size:11px; margin:0 0 6px; }
+                    </style>
+                    <h2 class="ks-h">Delivery Sheet</h2>
+                    <p class="ks-tag">When taste becomes memory</p>
+                    <table class="ks-tbl">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Customer</th>
+                                <th>Receiver</th>
+                                <th>Phone</th>
+                                <th>Delivery Address</th>
+                                <th>Delivery</th>
+                                <th>Items</th>
+                                <th class="text-end">Total</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="o">
+                                <td><span t-field="o.name"/></td>
+                                <td><span t-field="o.partner_id.name"/></td>
+                                <td><span t-field="o.sukkar_receiver_name"/></td>
+                                <td><span t-field="o.sukkar_receiver_phone"/></td>
+                                <td><span t-field="o.partner_shipping_id"
+                                          t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'/></td>
+                                <td>
+                                    <span t-field="o.sukkar_delivery_datetime"/>
+                                    <div t-if="o.sukkar_delivery_time_range">
+                                        <small t-field="o.sukkar_delivery_time_range"/>
+                                    </div>
+                                    <div t-if="o.carrier_id">
+                                        <small t-field="o.carrier_id.name"/>
+                                    </div>
+                                    <div t-if="o.sukkar_delivery_fee">
+                                        <small>Fee: <span t-field="o.sukkar_delivery_fee"
+                                            t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <t t-foreach="o.order_line.filtered(lambda l: not l.display_type and not l.is_delivery)" t-as="l">
+                                        <div><t t-esc="int(l.product_uom_qty)"/>× <span t-field="l.product_id"/></div>
+                                    </t>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="o.amount_total"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                                <td>
+                                    <span t-esc="o.sukkar_payment_status"
+                                          t-attf-class="ks-badge #{o.sukkar_payment_status == 'PAID' and 'ks-paid' or 'ks-unpaid'}"/>
+                                    <div t-if="o.sukkar_payment_method">
+                                        <small t-field="o.sukkar_payment_method"/>
+                                    </div>
+                                    <div t-if="o.sukkar_payment_reference">
+                                        <small>Ref: <t t-esc="o.sukkar_payment_reference"/></small>
+                                    </div>
+                                    <div t-if="o.sukkar_knet_approval">
+                                        <small>KNET: <t t-esc="o.sukkar_knet_approval"/></small>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="color:#A0607A; font-size:10px; margin-top:10px;">Generated for <t t-esc="len(docs)"/> order(s) · sukkar-demo.com</p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

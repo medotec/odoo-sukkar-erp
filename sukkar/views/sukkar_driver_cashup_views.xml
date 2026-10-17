@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Taking the day's cash off a driver. Two screens only: who is holding
+         what right now, and the hand-in itself. -->
+
+    <record id="sukkar_driver_cashup_view_form" model="ir.ui.view">
+        <field name="name">sukkar.driver.cashup.form</field>
+        <field name="model">sukkar.driver.cashup</field>
+        <field name="arch" type="xml">
+            <form string="Driver Cash Hand-in">
+                <header>
+                    <button name="action_collect" type="object" string="Collect the money"
+                            class="btn-primary" invisible="state == 'done'"
+                            confirm="Mark every order on this list as paid in cash?"/>
+                    <button name="action_reload_orders" type="object"
+                            string="Refresh the list" invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="driver_id" options="{'no_create': True}"
+                                   readonly="state == 'done'"/></h1>
+                        <h3><field name="date" readonly="state == 'done'"/></h3>
+                    </div>
+                    <group>
+                        <group string="The money">
+                            <field name="expected_amount" readonly="1"/>
+                            <field name="counted_amount" readonly="state == 'done'"/>
+                            <field name="difference" readonly="1"
+                                   decoration-danger="difference &lt; 0"
+                                   decoration-success="difference &gt; 0"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Taken in by">
+                            <field name="collected_by" readonly="1"
+                                   invisible="state != 'done'"/>
+                            <field name="collected_at" readonly="1"
+                                   invisible="state != 'done'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="difference == 0 or state == 'done'">
+                        The count does not match the orders. Write what happened
+                        below — a short day has to be explainable afterwards.
+                    </div>
+                    <group string="Note">
+                        <field name="note" nolabel="1" readonly="state == 'done'"
+                               placeholder="Anything that explains a difference…"/>
+                    </group>
+                    <notebook>
+                        <page string="Orders he collected for">
+                            <field name="order_ids" readonly="state == 'done'"
+                                   widget="many2many" options="{'no_create': True}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="sukkar_delivery_date"/>
+                                    <field name="partner_id"/>
+                                    <field name="sukkar_receiver_name"/>
+                                    <field name="sukkar_cash_due" sum="Total"/>
+                                    <field name="sukkar_payment_status"/>
+                                </list>
+                            </field>
+                        </page>
+                        <!-- The cash as the books see it (owner, 10 Oct 2026). -->
+                        <page string="Cash Booked" invisible="state != 'done'">
+                            <field name="payment_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="partner_id"/>
+                                    <field name="memo"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_driver_cashup_view_list" model="ir.ui.view">
+        <field name="name">sukkar.driver.cashup.list</field>
+        <field name="model">sukkar.driver.cashup</field>
+        <field name="arch" type="xml">
+            <list string="Cash Hand-ins" decoration-muted="state == 'done'">
+                <field name="date"/>
+                <field name="driver_id"/>
+                <field name="expected_amount" sum="Should hand in"/>
+                <field name="counted_amount" sum="Counted"/>
+                <field name="difference" sum="Difference"
+                       decoration-danger="difference &lt; 0"/>
+                <field name="collected_by" optional="show"/>
+                <field name="state"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_driver_cashup_action" model="ir.actions.act_window">
+        <field name="name">Driver Cash Hand-ins</field>
+        <field name="res_model">sukkar.driver.cashup</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No cash has been handed in yet.</p>
+            <p>Pick a driver and the orders he collected money for appear by
+               themselves. Count what he puts on the counter, then press
+               Collect — every order on the list is marked paid in cash.</p>
+        </field>
+    </record>
+
+    <!-- Who is holding what, right now. -->
+    <record id="sukkar_driver_cash_view_list" model="ir.ui.view">
+        <field name="name">sukkar.driver.cash.list</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <list string="Cash with the drivers" create="false">
+                <field name="name"/>
+                <field name="sukkar_cash_orders" string="Orders"/>
+                <field name="sukkar_cash_held" sum="Cash out with drivers"/>
+                <field name="sukkar_currency_id" column_invisible="1"/>
+                <button name="action_sukkar_cashup" type="object" icon="fa-money"
+                        string="Collect" class="btn-link"
+                        invisible="sukkar_cash_held == 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_driver_cash_action" model="ir.actions.act_window">
+        <field name="name">Cash with Drivers</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="sukkar_driver_cash_view_list"/>
+        <field name="domain">[('sukkar_is_driver', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No driver is holding shop money.</p>
+            <p>Every cash order a driver has delivered but not handed the money
+               in for adds up here.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_sukkar_driver_cash" name="Cash with Drivers"
+              parent="menu_sukkar_delivery_root"
+              action="sukkar_driver_cash_action" sequence="25"/>
+    <menuitem id="menu_sukkar_driver_cashup" name="Cash Hand-ins"
+              parent="menu_sukkar_delivery_root"
+              action="sukkar_driver_cashup_action" sequence="26"/>
+</odoo>

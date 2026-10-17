@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Delivery calendar: see upcoming/pending orders by delivery date/time -->
+    <record id="view_order_calendar_sukkar" model="ir.ui.view">
+        <field name="name">sale.order.calendar.sukkar</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <!-- date_start is the DATE, not the derived datetime: the datetime is
+                 computed from date + slot and read-only, so dragging a card would
+                 silently do nothing. Dragging moves the delivery day; the slot stays. -->
+            <calendar string="Deliveries" date_start="sukkar_delivery_date"
+                      color="user_id" mode="month" quick_create="0">
+                <field name="partner_id"/>
+                <field name="sukkar_delivery_slot_id"/>
+                <field name="sukkar_payment_status"/>
+                <field name="amount_total"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="sukkar_delivery_action" model="ir.actions.act_window">
+        <field name="name">Deliveries</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('sukkar_delivery_datetime', '!=', False)]</field>
+        <field name="context">{'search_default_sale': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No scheduled deliveries</p>
+            <p>Confirmed orders with a delivery date/time appear here.</p>
+        </field>
+    </record>
+</odoo>

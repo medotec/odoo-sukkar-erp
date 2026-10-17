@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="sukkar.OrderTypePopup">
+        <Dialog title.translate="Delivery or Pickup">
+            <div class="d-flex flex-column gap-2">
+                <div t-if="state.error" class="alert alert-danger py-1" t-esc="state.error"/>
+                <!-- The choice first, as two big targets: everything below it
+                     depends on which one the cashier pressed. -->
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button class="ks-choice w-100 btn btn-lg"
+                                t-att-class="state.order_type === 'delivery' ? 'btn-primary' : 'btn-light'"
+                                t-on-click="() => this.choose('delivery')">
+                            <i class="fa fa-motorcycle fa-2x d-block mb-1" role="img"/>
+                            <span class="d-block fw-bolder">Delivery</span>
+                            <span class="d-block small">Driven to the customer</span>
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="ks-choice w-100 btn btn-lg"
+                                t-att-class="state.order_type === 'pickup' ? 'btn-primary' : 'btn-light'"
+                                t-on-click="() => this.choose('pickup')">
+                            <i class="fa fa-shopping-bag fa-2x d-block mb-1" role="img"/>
+                            <span class="d-block fw-bolder">Pickup</span>
+                            <span class="d-block small">Collected at the shop</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="form-label fw-bolder">Date</label>
+                        <input type="date" class="form-control form-control-lg" t-model="state.date"/>
+                        <div class="d-flex gap-2 mt-1">
+                            <button class="ks-day btn btn-light flex-fill"
+                                    t-on-click="() => this.setDate(0)">Today</button>
+                            <button class="ks-day btn btn-light flex-fill"
+                                    t-on-click="() => this.setDate(1)">Tomorrow</button>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-bolder">Window</label>
+                        <select class="form-select form-select-lg" t-model="state.slot_id">
+                            <option value="0">—</option>
+                            <t t-foreach="state.slots" t-as="slot" t-key="slot.id">
+                                <option t-att-value="slot.id" t-esc="slot.name"/>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+                <!-- Address, receiver, driver and the fee belong to a delivery
+                     only, and they open from here rather than from a far-away
+                     bar. A pickup never sees them. -->
+                <t t-if="state.order_type === 'delivery'">
+                    <button class="ks-detail btn btn-light text-start w-100"
+                            t-on-click="() => this.openRecipient()">
+                        <i class="fa fa-map-marker me-2" role="img"/>
+                        <span class="fw-bolder">Recipient &amp; Address</span>
+                        <span class="d-block small"
+                              t-att-class="state.receiver ? 'text-muted' : 'text-danger'"
+                              t-esc="state.receiver or 'Nobody chosen yet'"/>
+                    </button>
+                    <button class="ks-detail btn btn-light text-start w-100"
+                            t-on-click="() => this.openFee()">
+                        <i class="fa fa-money me-2" role="img"/>
+                        <span class="fw-bolder">Delivery Fee</span>
+                        <span class="d-block small text-muted" t-esc="feeLabel"/>
+                    </button>
+                </t>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary btn-lg" t-on-click="() => this.confirm()">
+                    Save
+                </button>
+                <button class="btn btn-link btn-lg" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

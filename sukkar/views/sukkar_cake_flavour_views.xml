@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sukkar_cake_flavour_view_list" model="ir.ui.view">
+        <field name="name">sukkar.cake.flavour.list</field>
+        <field name="model">sukkar.cake.flavour</field>
+        <field name="arch" type="xml">
+            <list string="Cake Flavours" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="name_ar"/>
+                <field name="code"/>
+                <field name="is_mixed" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sukkar_cake_flavour_view_form" model="ir.ui.view">
+        <field name="name">sukkar.cake.flavour.form</field>
+        <field name="model">sukkar.cake.flavour</field>
+        <field name="arch" type="xml">
+            <form string="Cake Flavour">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Red Velvet"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name_ar" placeholder="The flavour's name in Arabic"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="is_mixed"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sukkar_cake_flavour_action" model="ir.actions.act_window">
+        <field name="name">Cake Flavours</field>
+        <field name="res_model">sukkar.cake.flavour</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a cake flavour</p>
+            <p>These are the flavours staff can put on a bouquet, in English and Arabic.</p>
+        </field>
+    </record>
+</odoo>
